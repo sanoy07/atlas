@@ -4,9 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-atlas-ir      = { path = "../ir" }
-atlas-git     = { path = "../git" }
-atlas-parser  = { path = "../parser" }
-atlas-storage = { path = "../storage" }
-anyhow        = { workspace = true }
-tracing       = { workspace = true }
+atlas-ir         = { path = "../ir" }
+atlas-connectors = { path = "../connectors" }
+atlas-git        = { path = "../git" }
+atlas-parser     = { path = "../parser" }
+atlas-storage    = { path = "../storage" }
+anyhow           = { workspace = true }
+tracing          = { workspace = true }

@@ -1,0 +1,8 @@
+[package]
+name    = "atlas-connectors"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+atlas-ir = { path = "../ir" }
+anyhow   = { workspace = true }

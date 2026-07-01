@@ -4,5 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow  = { workspace = true }
-tracing = { workspace = true }
+atlas-connectors = { path = "../connectors" }
+atlas-ir         = { path = "../ir" }
+anyhow           = { workspace = true }
+tracing          = { workspace = true }

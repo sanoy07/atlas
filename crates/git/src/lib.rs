@@ -1,7 +1,9 @@
 pub mod github;
-pub use github::GitHub;
+pub use github::{GitHubIssueConnector, GitHubPrConnector};
 
 use anyhow::{Context, Result};
+use atlas_connectors::{Capability, Connector, RawPayload};
+use atlas_ir::EntityKind;
 use std::process::Command;
 
 pub struct GitRepo {
@@ -26,7 +28,6 @@ impl GitRepo {
                 &self.path,
                 "log",
                 &format!("--max-count={}", limit),
-                // \x1e = ASCII record separator; safe inside git pretty-format
                 "--format=\x1e%H\x1f%h\x1f%an\x1f%ae\x1f%at\x1f%s",
                 "--name-only",
             ])
@@ -47,13 +48,37 @@ impl GitRepo {
     }
 }
 
+impl Connector for GitRepo {
+    fn name(&self) -> &str {
+        "git"
+    }
+
+    fn capability(&self) -> Capability {
+        Capability {
+            name:     "Repository History",
+            produces: vec![EntityKind::Commit, EntityKind::File, EntityKind::Author],
+        }
+    }
+
+    fn fetch_raw(&self) -> Result<RawPayload> {
+        Ok(RawPayload { data: self.log_raw(10_000)? })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn open_rejects_non_repo() {
-        let result = GitRepo::open("/tmp");
-        assert!(result.is_err());
+        assert!(GitRepo::open("/tmp").is_err());
+    }
+
+    #[test]
+    fn git_connector_identity() {
+        let repo = GitRepo::open(".").unwrap();
+        assert_eq!(repo.name(), "git");
+        assert_eq!(repo.capability().name, "Repository History");
+        assert!(!repo.capability().produces.is_empty());
     }
 }
