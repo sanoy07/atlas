@@ -1,0 +1,17 @@
+[package]
+name    = "atlas"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "atlas"
+path = "src/main.rs"
+
+[dependencies]
+atlas-core    = { path = "../../crates/core" }
+atlas-storage = { path = "../../crates/storage" }
+clap               = { workspace = true }
+anyhow             = { workspace = true }
+tokio              = { workspace = true }
+tracing            = { workspace = true }
+tracing-subscriber = { workspace = true }

@@ -1,0 +1,12 @@
+[package]
+name    = "atlas-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+atlas-ir      = { path = "../ir" }
+atlas-git     = { path = "../git" }
+atlas-parser  = { path = "../parser" }
+atlas-storage = { path = "../storage" }
+anyhow        = { workspace = true }
+tracing       = { workspace = true }
