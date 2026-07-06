@@ -57,6 +57,13 @@ enum Commands {
     /// Full context reconstruction for a file: identity, activity, coupling, coverage
     Context {
         file: String,
+        /// Emit the ContextDocument as JSON instead of formatted text
+        #[arg(long)]
+        json: bool,
+    },
+    /// Record a friction log entry for a file after using atlas context
+    Feedback {
+        file: String,
     },
 }
 
@@ -65,6 +72,7 @@ async fn main() -> Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter(EnvFilter::from_default_env())
         .without_time()
+        .with_writer(std::io::stderr)
         .init();
 
     let cli = Cli::parse();
@@ -78,6 +86,7 @@ async fn main() -> Result<()> {
         Commands::Timeline { file }             => commands::timeline::run(&file),
         Commands::HotFiles { limit }            => commands::hotfiles::run(limit),
         Commands::WhenIntroduced { file }       => commands::whenintroduced::run(&file),
-        Commands::Context { file }              => commands::context::run(&file),
+        Commands::Context { file, json }        => commands::context::run(&file, json),
+        Commands::Feedback { file }             => commands::feedback::run(&file),
     }
 }
