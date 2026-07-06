@@ -12,6 +12,10 @@ atlas-core    = { path = "../../crates/core" }
 atlas-storage = { path = "../../crates/storage" }
 clap               = { workspace = true }
 anyhow             = { workspace = true }
+chrono             = { workspace = true }
 tokio              = { workspace = true }
 tracing            = { workspace = true }
 tracing-subscriber = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }

@@ -1,4 +1,8 @@
+pub mod cochanges;
 pub mod explain;
+pub mod hotfiles;
 pub mod ingest;
 pub mod query;
 pub mod status;
+pub mod timeline;
+pub mod whenintroduced;

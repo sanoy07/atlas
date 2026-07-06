@@ -20,7 +20,7 @@ impl GitHubPrConnector {
                 "pr", "list",
                 "--state", "all",
                 "--limit", "500",
-                "--json", "number,title,state,body,author,mergeCommit",
+                "--json", "number,title,state,body,author,mergeCommit,closingIssuesReferences,createdAt,mergedAt",
             ])
             .current_dir(&self.repo_path)
             .output()
@@ -70,7 +70,7 @@ impl GitHubIssueConnector {
                 "issue", "list",
                 "--state", "all",
                 "--limit", "500",
-                "--json", "number,title,state,body,author",
+                "--json", "number,title,state,body,author,createdAt",
             ])
             .current_dir(&self.repo_path)
             .output()

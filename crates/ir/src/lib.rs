@@ -81,15 +81,18 @@ pub struct PullRequest {
     pub body:             Option<String>,
     pub author:           String,
     pub merge_commit_sha: Option<String>,
+    pub created_at:       Option<DateTime<Utc>>,
+    pub merged_at:        Option<DateTime<Utc>>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Issue {
-    pub number: i64,
-    pub title:  String,
-    pub state:  String,
-    pub body:   Option<String>,
-    pub author: String,
+    pub number:     i64,
+    pub title:      String,
+    pub state:      String,
+    pub body:       Option<String>,
+    pub author:     String,
+    pub created_at: Option<DateTime<Utc>>,
 }
 
 #[cfg(test)]
@@ -122,9 +125,28 @@ mod tests {
             body:             None,
             author:           "bob".into(),
             merge_commit_sha: Some("def456".into()),
+            created_at:       Some(DateTime::from_timestamp(1_700_000_000, 0).unwrap()),
+            merged_at:        Some(DateTime::from_timestamp(1_700_000_100, 0).unwrap()),
         };
         let back: PullRequest = serde_json::from_str(&serde_json::to_string(&pr).unwrap()).unwrap();
         assert_eq!(back.number, 1);
         assert_eq!(back.merge_commit_sha, Some("def456".into()));
+        assert_eq!(back.created_at, pr.created_at);
+        assert_eq!(back.merged_at, pr.merged_at);
+    }
+
+    #[test]
+    fn issue_roundtrips_json() {
+        let issue = Issue {
+            number:     10,
+            title:      "Bug".into(),
+            state:      "CLOSED".into(),
+            body:       None,
+            author:     "alice".into(),
+            created_at: Some(DateTime::from_timestamp(1_700_000_000, 0).unwrap()),
+        };
+        let back: Issue = serde_json::from_str(&serde_json::to_string(&issue).unwrap()).unwrap();
+        assert_eq!(back.number, 10);
+        assert_eq!(back.created_at, issue.created_at);
     }
 }

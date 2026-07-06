@@ -26,8 +26,32 @@ enum Commands {
     Query {
         file: String,
     },
-    /// Full history of a file: commits + PRs
+    /// Full history of a file: commits, PRs, and linked issues
     Explain {
+        file: String,
+    },
+    /// Which other files co-change with this file?
+    #[command(name = "co-changes")]
+    CoChanges {
+        file: String,
+        /// Only show files that co-changed at least this many times
+        #[arg(long, default_value_t = 1)]
+        min_count: i64,
+    },
+    /// Chronological story for a file: issues → commits → PRs
+    Timeline {
+        file: String,
+    },
+    /// Most frequently modified files in this repository
+    #[command(name = "hot-files")]
+    HotFiles {
+        /// Maximum number of files to show
+        #[arg(long, default_value_t = 20)]
+        limit: i64,
+    },
+    /// Which commit first introduced a file?
+    #[command(name = "when-introduced")]
+    WhenIntroduced {
         file: String,
     },
 }
@@ -42,9 +66,13 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Status => commands::status::run(),
+        Commands::Status                => commands::status::run(),
         Commands::Ingest { path, github } => commands::ingest::run(&path, github),
-        Commands::Query { file } => commands::query::run(&file),
-        Commands::Explain { file } => commands::explain::run(&file),
+        Commands::Query { file }        => commands::query::run(&file),
+        Commands::Explain { file }      => commands::explain::run(&file),
+        Commands::CoChanges { file, min_count } => commands::cochanges::run(&file, min_count),
+        Commands::Timeline { file }             => commands::timeline::run(&file),
+        Commands::HotFiles { limit }            => commands::hotfiles::run(limit),
+        Commands::WhenIntroduced { file }       => commands::whenintroduced::run(&file),
     }
 }
