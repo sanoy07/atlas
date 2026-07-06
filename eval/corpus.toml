@@ -1,8 +1,10 @@
 # Atlas Evaluation Corpus
 #
-# Two sections:
+# Three sections:
 #   [[fixture]]  — deterministic questions against the canonical 3-commit fixture.
 #                  The expected answers are known before running Atlas.
+#   [[context]]  — quality evaluation for atlas context (correctness, completeness,
+#                  relevance, coverage transparency).
 #   [[dogfood]]  — questions to answer manually after ingesting the Atlas repo itself.
 #                  Record your findings in the `verified_answer` field as you go.
 #
@@ -105,6 +107,67 @@ command       = "atlas when-introduced user.ts"
 must_contain  = ["Add user model"]
 must_not_contain = ["Add getUser function"]
 evidence_chain = "user.ts first appears in commit_B, commit_C only modifies it"
+
+# ─── Context quality corpus (deterministic, fixture-based) ───────────────────
+#
+# Evaluation dimensions:
+#   Correctness   — does atlas context report the right facts?
+#   Completeness  — does it include everything Atlas knows?
+#   Relevance     — does it exclude noise (wrong file's data)?
+#   Transparency  — does coverage map accurately say what is/isn't ingested?
+#
+# Pre-conditions: ingest git only unless noted.
+# Commands marked [+github] require: atlas ingest --github . after git ingest.
+
+[[context]]
+id              = "C1"
+question        = "Does atlas context show the correct introduction commit for auth.ts?"
+command         = "atlas context auth.ts"
+must_contain    = ["Add authentication module", "IDENTITY", "Total touches: 2"]
+must_not_contain= ["Add getUser function"]
+evidence_chain  = "first_seen(auth.ts) = commit_A; touch_count = 2 (A + B)"
+dimension       = "correctness"
+
+[[context]]
+id              = "C2"
+question        = "Does atlas context report git available but PRs/issues not ingested when only git is ingested?"
+command         = "atlas context auth.ts"
+must_contain    = ["✓ available", "✗ not ingested", "COVERAGE"]
+evidence_chain  = "commit_count > 0 → git Available; pr_count = 0, issue_count = 0 → NotIngested"
+dimension       = "transparency"
+
+[[context]]
+id              = "C3"
+question        = "Does atlas context include co-change coupling for auth.ts?"
+command         = "atlas context auth.ts"
+must_contain    = ["HISTORICAL COUPLING", "user.ts"]
+evidence_chain  = "auth.ts and user.ts both changed in commit_B → co_change_count = 1"
+dimension       = "completeness"
+
+[[context]]
+id              = "C4"
+question        = "Does atlas context for auth.ts show PR and issue after GitHub ingestion? [+github]"
+command         = "atlas context auth.ts"
+must_contain    = ["#12", "#10", "RELATED HISTORY", "✓ available"]
+evidence_chain  = "PR #12 merge commit = hash_b → touches auth.ts; PR #12 closes Issue #10"
+dimension       = "correctness"
+
+[[context]]
+id              = "C5"
+question        = "Does atlas context show the evidence count?"
+command         = "atlas context auth.ts"
+must_contain    = ["EVIDENCE", "deterministic fact", "no inferred claims"]
+evidence_chain  = "2 commits + 1 co-change (user.ts) = 3 facts minimum"
+dimension       = "transparency"
+
+[[context]]
+id              = "C6"
+question        = "Does atlas context for user.ts exclude auth.ts's introduction commit?"
+command         = "atlas context user.ts"
+must_contain    = ["Add user model"]
+must_not_contain= ["Add authentication module"]
+evidence_chain  = "first_seen(user.ts) = commit_B; commit_A does not touch user.ts"
+dimension       = "relevance"
 
 # ─── Dogfood corpus (manual verification against Atlas itself) ───────────────
 #
