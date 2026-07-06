@@ -140,7 +140,7 @@ pub fn build_context(file: &str, repo_path: &str, store: &Store) -> Result<Conte
     };
 
     Ok(ContextDocument {
-        schema_version: 1,
+        schema_version: 2,
         subject: file.to_string(),
         identity: FileIdentity {
             first_commit: first_commit.map(row_to_summary),
@@ -154,11 +154,14 @@ pub fn build_context(file: &str, repo_path: &str, store: &Store) -> Result<Conte
         significance,
         evidence,
         coverage: CoverageMap {
-            git_history:   if repo_commits > 0 { CoverageStatus::Available } else { CoverageStatus::NotIngested },
-            github_prs:    if repo_prs     > 0 { CoverageStatus::Available } else { CoverageStatus::NotIngested },
-            github_issues: if repo_issues  > 0 { CoverageStatus::Available } else { CoverageStatus::NotIngested },
-            documentation: doc_status,
-            working_tree:  CoverageStatus::NotIngested,
+            // PathScoped: git history is available but scoped to the exact path.
+            // Pre-rename history at other paths is not tracked (no --follow / rename detection).
+            git_history:     if repo_commits > 0 { CoverageStatus::PathScoped } else { CoverageStatus::NotIngested },
+            rename_tracking: CoverageStatus::NotIngested,
+            github_prs:      if repo_prs    > 0 { CoverageStatus::Available } else { CoverageStatus::NotIngested },
+            github_issues:   if repo_issues > 0 { CoverageStatus::Available } else { CoverageStatus::NotIngested },
+            documentation:   doc_status,
+            working_tree:    CoverageStatus::NotIngested,
         },
     })
 }
@@ -418,8 +421,9 @@ mod tests {
             doc.identity.first_commit.as_ref().unwrap().short_hash,
             &fixture.hash_a[..7]
         );
-        assert_eq!(doc.coverage.git_history, atlas_ir::CoverageStatus::Available);
-        assert_eq!(doc.coverage.github_prs,  atlas_ir::CoverageStatus::NotIngested);
+        assert_eq!(doc.coverage.git_history,     atlas_ir::CoverageStatus::PathScoped);
+        assert_eq!(doc.coverage.rename_tracking, atlas_ir::CoverageStatus::NotIngested);
+        assert_eq!(doc.coverage.github_prs,      atlas_ir::CoverageStatus::NotIngested);
         assert_eq!(doc.evidence.commits, 2);
         assert_eq!(doc.evidence.prs,     0);
         assert_eq!(doc.evidence.issues,  0);

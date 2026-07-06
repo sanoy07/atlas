@@ -176,11 +176,12 @@ pub struct EvidenceSummary {
 
 #[derive(Debug, Clone, Serialize, PartialEq)]
 pub struct CoverageMap {
-    pub git_history:   CoverageStatus,
-    pub github_prs:    CoverageStatus,
-    pub github_issues: CoverageStatus,
-    pub documentation: CoverageStatus,
-    pub working_tree:  CoverageStatus,
+    pub git_history:      CoverageStatus,
+    pub rename_tracking:  CoverageStatus,
+    pub github_prs:       CoverageStatus,
+    pub github_issues:    CoverageStatus,
+    pub documentation:    CoverageStatus,
+    pub working_tree:     CoverageStatus,
 }
 
 #[derive(Debug, Clone, Serialize, PartialEq)]
@@ -191,6 +192,9 @@ pub enum CoverageStatus {
     NotIngested,
     /// Detectable only through co-change proximity, not direct ingestion.
     CoChangeOnly,
+    /// Data exists but is scoped to exact file paths — rename/move history is not tracked.
+    /// Queries return correct facts about the current path but may be missing pre-rename history.
+    PathScoped,
 }
 
 #[cfg(test)]

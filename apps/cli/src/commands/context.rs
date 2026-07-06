@@ -119,7 +119,8 @@ fn render(doc: &ContextDocument) {
 
     // ── COVERAGE ──────────────────────────────────────────────────────────────
     println!("COVERAGE");
-    println!("  Git history       {}", fmt_coverage(&doc.coverage.git_history, None));
+    println!("  Git history       {}", fmt_coverage(&doc.coverage.git_history, Some("path-scoped")));
+    println!("  Rename tracking   {}", fmt_coverage(&doc.coverage.rename_tracking, None));
     println!("  GitHub PRs        {}", fmt_coverage(&doc.coverage.github_prs, None));
     println!("  GitHub issues     {}", fmt_coverage(&doc.coverage.github_issues, None));
     println!("  Documentation     {}", fmt_coverage(&doc.coverage.documentation, Some("co-change proximity")));
@@ -145,5 +146,6 @@ fn fmt_coverage(status: &CoverageStatus, partial_note: Option<&str>) -> String {
         CoverageStatus::Available    => "✓ available".to_string(),
         CoverageStatus::NotIngested  => "✗ not ingested".to_string(),
         CoverageStatus::CoChangeOnly => format!("△ {}", partial_note.unwrap_or("co-change only")),
+        CoverageStatus::PathScoped   => format!("△ {}", partial_note.unwrap_or("path-scoped")),
     }
 }

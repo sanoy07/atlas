@@ -398,14 +398,19 @@ fn context_coverage_shows_not_ingested_without_github() {
         output.contains("COVERAGE"),
         "expected COVERAGE section:\n{output}"
     );
+    // Git history is present but only path-scoped (no rename tracking)
     assert!(
-        output.contains("✓ available"),
-        "expected git history available:\n{output}"
+        output.contains("△ path-scoped"),
+        "expected git history reported as path-scoped:\n{output}"
+    );
+    assert!(
+        output.contains("Rename tracking") && output.contains("✗ not ingested"),
+        "expected rename tracking listed as not ingested:\n{output}"
     );
     // Without GitHub ingestion, PRs and issues should be not ingested
     assert!(
-        output.matches("✗ not ingested").count() >= 2,
-        "expected at least 2 'not ingested' entries (PRs, issues):\n{output}"
+        output.matches("✗ not ingested").count() >= 3,
+        "expected at least 3 'not ingested' entries (rename, PRs, issues):\n{output}"
     );
 }
 
