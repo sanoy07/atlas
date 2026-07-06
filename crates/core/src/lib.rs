@@ -140,6 +140,7 @@ pub fn build_context(file: &str, repo_path: &str, store: &Store) -> Result<Conte
     };
 
     Ok(ContextDocument {
+        schema_version: 1,
         subject: file.to_string(),
         identity: FileIdentity {
             first_commit: first_commit.map(row_to_summary),

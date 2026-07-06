@@ -101,6 +101,9 @@ pub struct Issue {
 /// Single unit passed to CLI, JSON, AI, or future consumers — never raw SQL rows.
 #[derive(Debug, Clone, Serialize)]
 pub struct ContextDocument {
+    /// Incremented when the JSON shape changes incompatibly.
+    /// Consumers should check this before deserializing.
+    pub schema_version:  u32,
     pub subject:         String,
     pub identity:        FileIdentity,
     pub recent_activity: Vec<CommitSummary>,
