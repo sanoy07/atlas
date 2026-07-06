@@ -1,5 +1,6 @@
 pub mod cochanges;
 pub mod context;
+pub mod feedback;
 pub mod explain;
 pub mod hotfiles;
 pub mod ingest;
