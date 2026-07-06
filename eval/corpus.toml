@@ -118,55 +118,55 @@ evidence_chain = "user.ts first appears in commit_B, commit_C only modifies it"
 id              = "D1"
 question        = "Which commits most recently modified the storage layer?"
 command         = "atlas explain crates/storage/src/lib.rs"
-verified_answer = ""
-verified_date   = ""
+verified_answer = "2 commits: 1cbeaf5 (Day 1-3 foundation, 2026-07-01) and 8272b2f (v0.1-v0.2 verification + PR-issue linkage, 2026-07-06). Storage was untouched by the granular v0.2.1 commits (hot-files, when-introduced) because those commands only call the primitives added in 8272b2f."
+verified_date   = "2026-07-06"
 
 [[dogfood]]
 id              = "D2"
 question        = "Which files are most tightly coupled to the IR types?"
 command         = "atlas co-changes crates/ir/src/lib.rs"
-verified_answer = ""
-verified_date   = ""
+verified_answer = "Top co-changers at 3×: Cargo.toml, crates/core/Cargo.toml, crates/core/src/lib.rs, crates/git/src/github.rs. At 2×: Cargo.lock, apps/cli/Cargo.toml, apps/cli/src/commands/explain.rs, crates/storage/src/lib.rs, crates/parser/src/gh_json.rs, crates/git/src/lib.rs. IR changes propagate immediately across the full pipeline. Note: frequency counts are inflated by the large foundation commit."
+verified_date   = "2026-07-06"
 
 [[dogfood]]
 id              = "D3"
 question        = "What is the full development timeline of the parser?"
 command         = "atlas timeline crates/parser/src/lib.rs"
-verified_answer = ""
-verified_date   = ""
+verified_answer = "1 commit: 1cbeaf5 (Day 1-3 foundation, 2026-07-01 12:47 UTC). The parser entry point (lib.rs) was untouched after the initial implementation — all subsequent changes went to crates/parser/src/gh_json.rs instead."
+verified_date   = "2026-07-06"
 
 [[dogfood]]
 id              = "D4"
 question        = "Which commits touched the CLI entrypoint?"
 command         = "atlas explain apps/cli/src/main.rs"
-verified_answer = ""
-verified_date   = ""
+verified_answer = "2 commits: 1cbeaf5 (initial CLI with Status/Ingest/Query/Explain, 2026-07-01) and 8272b2f (added CoChanges, Timeline, HotFiles, WhenIntroduced subcommands, 2026-07-06). The granular v0.2.1 commits (hotfiles.rs, whenintroduced.rs) added command files but did not re-touch main.rs because the routing was already wired in 8272b2f."
+verified_date   = "2026-07-06"
 
 [[dogfood]]
 id              = "D5"
 question        = "What files change together with the connector abstraction?"
 command         = "atlas co-changes crates/connectors/src/lib.rs"
-verified_answer = ""
-verified_date   = ""
+verified_answer = "11 co-changed files all at 1× (single shared commit fcaa267): Cargo.toml, crates/connectors/Cargo.toml, crates/core/Cargo.toml, crates/core/src/lib.rs, crates/git/Cargo.toml, crates/git/src/github.rs, crates/git/src/lib.rs, crates/ir/src/lib.rs, docs/adr/0004-connector-trait.md, docs/atlas-ir.md, docs/atlas-philosophy.md. The ADR and philosophy docs co-changed with the trait — Atlas surfaces its own design decisions."
+verified_date   = "2026-07-06"
 
 [[dogfood]]
 id              = "D6"
 question        = "Was the Connector trait introduced in the same commit as GitRepo?"
 command         = "atlas explain crates/git/src/lib.rs"
-verified_answer = ""
-verified_date   = ""
+verified_answer = "No. crates/git/src/lib.rs was first introduced in 1cbeaf5 (Day 1-3 foundation). crates/connectors/src/lib.rs was first introduced in fcaa267 (Connector trait refactor). when-introduced confirms: GitRepo first_seen=1cbeaf5, Connector first_seen=fcaa267. They are different commits — the trait was extracted in a dedicated refactor commit."
+verified_date   = "2026-07-06"
 
 [[dogfood]]
 id              = "D7"
 question        = "What is the development history of the gh_json parser?"
 command         = "atlas timeline crates/parser/src/gh_json.rs"
-verified_answer = ""
-verified_date   = ""
+verified_answer = "2 commits: 1cbeaf5 (initial implementation, 2026-07-01 12:47 UTC) and 8272b2f (added parse_pr_issue_links + timestamp parsing for closingIssuesReferences, 2026-07-06 12:06 UTC). No PRs or issues (no GitHub ingestion performed). The 5-day gap between commits corresponds to the v0.1 verification work that revealed the missing PR→issue linkage chain."
+verified_date   = "2026-07-06"
 
 [[dogfood]]
 id              = "D8"
 question        = "Which files have been modified the most times overall?"
 command         = "atlas hot-files"
 note            = "Compare top results manually to: git log --format='' --name-only | sort | uniq -c | sort -rn | head -20"
-verified_answer = ""
-verified_date   = ""
+verified_answer = "Top at 3×: Cargo.toml, crates/core/Cargo.toml, crates/core/src/lib.rs, crates/git/src/github.rs, crates/ir/src/lib.rs. At 2×: Cargo.lock, apps/cli/Cargo.toml, apps/cli/src/commands/explain.rs, apps/cli/src/commands/mod.rs, apps/cli/src/main.rs, crates/git/Cargo.toml, crates/git/src/lib.rs, crates/parser/src/gh_json.rs, crates/storage/src/lib.rs. Matches raw `git log` counts exactly. The 3× files are the integration points that changed in every major phase."
+verified_date   = "2026-07-06"
