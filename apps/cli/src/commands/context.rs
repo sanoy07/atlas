@@ -3,13 +3,18 @@ use atlas_core::build_context;
 use atlas_ir::{CoverageStatus, ContextDocument};
 use atlas_storage::Store;
 use chrono::{DateTime, Utc};
+use serde_json;
 
-pub fn run(file: &str) -> Result<()> {
+pub fn run(file: &str, json: bool) -> Result<()> {
     let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
     let store   = Store::open(&db_path)?;
 
     let doc = build_context(file, ".", &store)?;
-    render(&doc);
+    if json {
+        println!("{}", serde_json::to_string_pretty(&doc)?);
+    } else {
+        render(&doc);
+    }
     Ok(())
 }
 

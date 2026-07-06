@@ -477,3 +477,30 @@ fn context_unknown_file_returns_zero_touches() {
         "expected 0 touches for unknown file:\n{output}"
     );
 }
+
+#[test]
+fn context_json_flag_emits_valid_json_with_expected_keys() {
+    let f = Fixture::create();
+    f.run_ok(&["ingest", "."]);
+
+    let output = f.run_ok(&["context", "auth.ts", "--json"]);
+
+    let parsed: serde_json::Value =
+        serde_json::from_str(&output).expect("--json output must be valid JSON");
+
+    assert!(parsed["subject"].is_string(),   "expected 'subject' key");
+    assert!(parsed["identity"].is_object(),  "expected 'identity' object");
+    assert!(parsed["coverage"].is_object(),  "expected 'coverage' object");
+    assert!(parsed["evidence"].is_object(),  "expected 'evidence' object");
+
+    assert_eq!(
+        parsed["subject"].as_str().unwrap(),
+        "auth.ts",
+        "subject must match the requested file"
+    );
+    assert_eq!(
+        parsed["identity"]["touch_count"].as_i64().unwrap(),
+        2,
+        "touch_count must be 2 for auth.ts in the 3-commit fixture"
+    );
+}
