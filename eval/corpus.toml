@@ -1,0 +1,172 @@
+# Atlas Evaluation Corpus
+#
+# Two sections:
+#   [[fixture]]  — deterministic questions against the canonical 3-commit fixture.
+#                  The expected answers are known before running Atlas.
+#   [[dogfood]]  — questions to answer manually after ingesting the Atlas repo itself.
+#                  Record your findings in the `verified_answer` field as you go.
+#
+# A test passes when `atlas <command> <subject>` contains every string in `must_contain`
+# and none of the strings in `must_not_contain`.
+
+# ─── Fixture corpus (deterministic) ─────────────────────────────────────────
+#
+# Fixture state:
+#   Commit A  hash_a   Add authentication module      → auth.ts
+#   Commit B  hash_b   Add user model, extend auth    → auth.ts, user.ts  ← PR #12 merge commit
+#   Commit C  hash_c   Add getUser function            → user.ts
+#   PR  #12            Add user authentication          merge_commit = hash_b
+#   Issue #10          Add user authentication          closed by PR #12
+
+[[fixture]]
+id            = "F1"
+question      = "Which commits touched auth.ts?"
+command       = "atlas explain auth.ts"
+must_contain  = ["Add authentication module", "Add user model"]
+must_not_contain = ["Add getUser function"]
+evidence_chain = "auth.ts ← commit_A, commit_B"
+
+[[fixture]]
+id            = "F2"
+question      = "Which commits touched user.ts?"
+command       = "atlas explain user.ts"
+must_contain  = ["Add user model", "Add getUser function"]
+must_not_contain = ["Add authentication module"]
+evidence_chain = "user.ts ← commit_B, commit_C"
+
+[[fixture]]
+id            = "F3"
+question      = "Which PR introduced auth.ts?"
+command       = "atlas explain auth.ts"
+must_contain  = ["#12", "Add user authentication"]
+evidence_chain = "auth.ts ← commit_B (merge commit of PR #12)"
+
+[[fixture]]
+id            = "F4"
+question      = "Which issue motivated the auth work?"
+command       = "atlas explain auth.ts"
+must_contain  = ["#10"]
+evidence_chain = "auth.ts ← commit_B ← PR #12 closes Issue #10"
+
+[[fixture]]
+id            = "F5"
+question      = "What files are historically coupled to auth.ts?"
+command       = "atlas co-changes auth.ts"
+must_contain  = ["user.ts"]
+evidence_chain = "auth.ts and user.ts both changed in commit_B"
+
+[[fixture]]
+id            = "F6"
+question      = "What files are historically coupled to user.ts?"
+command       = "atlas co-changes user.ts"
+must_contain  = ["auth.ts"]
+evidence_chain = "user.ts and auth.ts both changed in commit_B"
+
+[[fixture]]
+id            = "F7"
+question      = "What is the full timeline of auth.ts?"
+command       = "atlas timeline auth.ts"
+must_contain  = ["#10", "#12", "Add authentication module", "Add user model"]
+evidence_chain = "Issue #10 → PR #12 → commit_A, commit_B → auth.ts"
+
+[[fixture]]
+id            = "F8"
+question      = "Double-ingest must not change explain output."
+command       = "atlas explain auth.ts"  # after two ingests
+must_contain  = ["Touch history (2 commits)"]
+evidence_chain = "Idempotency: INSERT OR IGNORE / INSERT OR REPLACE"
+
+[[fixture]]
+id            = "F9"
+question      = "Which commit first introduced auth.ts?"
+command       = "atlas when-introduced auth.ts"
+must_contain  = ["Add authentication module"]
+must_not_contain = ["Add user model", "Add getUser"]
+evidence_chain = "first_seen(auth.ts) = commit_A"
+
+[[fixture]]
+id            = "F10"
+question      = "Which files are modified most often?"
+command       = "atlas hot-files"
+must_contain  = ["auth.ts", "user.ts", "2×"]
+evidence_chain = "auth.ts: commits A+B; user.ts: commits B+C → both 2 touches"
+
+[[fixture]]
+id            = "F11"
+question      = "co-changes --min-count 2 should filter user.ts (only 1 shared commit with auth.ts)"
+command       = "atlas co-changes auth.ts --min-count 2"
+must_not_contain = ["user.ts"]
+evidence_chain = "auth.ts ∩ user.ts = {commit_B} → count=1, filtered by min_count=2"
+
+[[fixture]]
+id            = "F12"
+question      = "when-introduced user.ts should point to commit B, not commit C"
+command       = "atlas when-introduced user.ts"
+must_contain  = ["Add user model"]
+must_not_contain = ["Add getUser function"]
+evidence_chain = "user.ts first appears in commit_B, commit_C only modifies it"
+
+# ─── Dogfood corpus (manual verification against Atlas itself) ───────────────
+#
+# Instructions:
+#   1. Run:  atlas ingest .
+#   2. Run:  atlas ingest --github .   (requires gh auth)
+#   3. Answer each question below by running the command and recording findings.
+#   4. Fill in `verified_answer` and `verified_date`.
+
+[[dogfood]]
+id              = "D1"
+question        = "Which commits most recently modified the storage layer?"
+command         = "atlas explain crates/storage/src/lib.rs"
+verified_answer = ""
+verified_date   = ""
+
+[[dogfood]]
+id              = "D2"
+question        = "Which files are most tightly coupled to the IR types?"
+command         = "atlas co-changes crates/ir/src/lib.rs"
+verified_answer = ""
+verified_date   = ""
+
+[[dogfood]]
+id              = "D3"
+question        = "What is the full development timeline of the parser?"
+command         = "atlas timeline crates/parser/src/lib.rs"
+verified_answer = ""
+verified_date   = ""
+
+[[dogfood]]
+id              = "D4"
+question        = "Which commits touched the CLI entrypoint?"
+command         = "atlas explain apps/cli/src/main.rs"
+verified_answer = ""
+verified_date   = ""
+
+[[dogfood]]
+id              = "D5"
+question        = "What files change together with the connector abstraction?"
+command         = "atlas co-changes crates/connectors/src/lib.rs"
+verified_answer = ""
+verified_date   = ""
+
+[[dogfood]]
+id              = "D6"
+question        = "Was the Connector trait introduced in the same commit as GitRepo?"
+command         = "atlas explain crates/git/src/lib.rs"
+verified_answer = ""
+verified_date   = ""
+
+[[dogfood]]
+id              = "D7"
+question        = "What is the development history of the gh_json parser?"
+command         = "atlas timeline crates/parser/src/gh_json.rs"
+verified_answer = ""
+verified_date   = ""
+
+[[dogfood]]
+id              = "D8"
+question        = "Which files have been modified the most times overall?"
+command         = "atlas hot-files"
+note            = "Compare top results manually to: git log --format='' --name-only | sort | uniq -c | sort -rn | head -20"
+verified_answer = ""
+verified_date   = ""
