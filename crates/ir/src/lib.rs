@@ -95,6 +95,101 @@ pub struct Issue {
     pub created_at: Option<DateTime<Utc>>,
 }
 
+// ─── Context Document ─────────────────────────────────────────────────────────
+
+/// The assembled, typed output of the context engine.
+/// Single unit passed to CLI, JSON, AI, or future consumers — never raw SQL rows.
+#[derive(Debug, Clone, Serialize)]
+pub struct ContextDocument {
+    pub subject:         String,
+    pub identity:        FileIdentity,
+    pub recent_activity: Vec<CommitSummary>,
+    pub related_history: RelatedHistory,
+    pub coupling:        Vec<CouplingEntry>,
+    pub documentary:     Vec<CouplingEntry>,
+    pub significance:    Option<FileSignificance>,
+    pub evidence:        EvidenceSummary,
+    pub coverage:        CoverageMap,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct FileIdentity {
+    pub first_commit: Option<CommitSummary>,
+    pub last_commit:  Option<CommitSummary>,
+    pub touch_count:  i64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct CommitSummary {
+    pub short_hash: String,
+    pub message:    String,
+    pub author:     String,
+    pub timestamp:  i64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct RelatedHistory {
+    pub pull_requests: Vec<PrSummary>,
+    pub issues:        Vec<IssueSummary>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct PrSummary {
+    pub number:           i64,
+    pub title:            String,
+    pub state:            String,
+    pub merge_commit_sha: Option<String>,
+    pub linked_issues:    Vec<i64>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct IssueSummary {
+    pub number: i64,
+    pub title:  String,
+    pub state:  String,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct CouplingEntry {
+    pub file_path:    String,
+    pub change_count: i64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct FileSignificance {
+    pub rank:        usize,
+    pub total_files: usize,
+    pub touch_count: i64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct EvidenceSummary {
+    pub commits:     usize,
+    pub prs:         usize,
+    pub issues:      usize,
+    pub co_changes:  usize,
+    pub total_facts: usize,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub struct CoverageMap {
+    pub git_history:   CoverageStatus,
+    pub github_prs:    CoverageStatus,
+    pub github_issues: CoverageStatus,
+    pub documentation: CoverageStatus,
+    pub working_tree:  CoverageStatus,
+}
+
+#[derive(Debug, Clone, Serialize, PartialEq)]
+pub enum CoverageStatus {
+    /// Source was ingested and has data.
+    Available,
+    /// Source is recognised but not yet ingested.
+    NotIngested,
+    /// Detectable only through co-change proximity, not direct ingestion.
+    CoChangeOnly,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
