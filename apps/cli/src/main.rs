@@ -54,6 +54,10 @@ enum Commands {
     WhenIntroduced {
         file: String,
     },
+    /// Full context reconstruction for a file: identity, activity, coupling, coverage
+    Context {
+        file: String,
+    },
 }
 
 #[tokio::main]
@@ -74,5 +78,6 @@ async fn main() -> Result<()> {
         Commands::Timeline { file }             => commands::timeline::run(&file),
         Commands::HotFiles { limit }            => commands::hotfiles::run(limit),
         Commands::WhenIntroduced { file }       => commands::whenintroduced::run(&file),
+        Commands::Context { file }              => commands::context::run(&file),
     }
 }

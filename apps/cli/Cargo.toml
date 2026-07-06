@@ -9,6 +9,7 @@ path = "src/main.rs"
 
 [dependencies]
 atlas-core    = { path = "../../crates/core" }
+atlas-ir      = { path = "../../crates/ir" }
 atlas-storage = { path = "../../crates/storage" }
 clap               = { workspace = true }
 anyhow             = { workspace = true }
