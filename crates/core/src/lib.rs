@@ -171,6 +171,15 @@ fn row_to_summary(c: CommitRow) -> CommitSummary {
     }
 }
 
+// Document discovery uses a path-based heuristic.
+//
+// This is discovery evidence, not document ontology.
+// A path matching these patterns is treated as a document candidate
+// for context assembly under CoverageStatus::CoChangeOnly.
+//
+// Future sources may include: nested READMEs, RFC directories, exported
+// Notion documents, PDFs, office documents, browser captures, and chat
+// attachments.  Do not treat this heuristic as authoritative classification.
 fn is_documentary(path: &str) -> bool {
     path.starts_with("docs/")
         || path.ends_with(".md")
