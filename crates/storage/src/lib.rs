@@ -286,6 +286,31 @@ impl Store {
         )?)
     }
 
+    pub fn pr_count(&self, repo_path: &str) -> Result<i64> {
+        Ok(self.conn.query_row(
+            "SELECT COUNT(*) FROM pull_requests WHERE repo_path = ?1",
+            params![repo_path],
+            |r| r.get(0),
+        )?)
+    }
+
+    pub fn issue_count(&self, repo_path: &str) -> Result<i64> {
+        Ok(self.conn.query_row(
+            "SELECT COUNT(*) FROM issues WHERE repo_path = ?1",
+            params![repo_path],
+            |r| r.get(0),
+        )?)
+    }
+
+    /// Issue numbers closed by a specific PR.
+    pub fn issue_numbers_for_pr(&self, pr_number: i64, repo_path: &str) -> Result<Vec<i64>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT issue_number FROM pr_issues WHERE pr_number = ?1 AND repo_path = ?2",
+        )?;
+        let rows = stmt.query_map(params![pr_number, repo_path], |r| r.get(0))?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
     pub fn link_pr_to_issue(&self, pr_number: i64, issue_number: i64, repo_path: &str) -> Result<()> {
         self.conn.execute(
             "INSERT OR IGNORE INTO pr_issues (pr_number, issue_number, repo_path)
