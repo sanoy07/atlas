@@ -363,3 +363,117 @@ fn ingest_nonexistent_path_exits_nonzero() {
         "expected non-zero exit for bad repo path"
     );
 }
+
+#[test]
+fn context_identity_shows_first_and_last_commit() {
+    let f = Fixture::create();
+    f.run_ok(&["ingest", "."]);
+
+    let output = f.run_ok(&["context", "auth.ts"]);
+
+    // Identity section must report the correct introduction commit
+    assert!(
+        output.contains("Add authentication module"),
+        "expected intro commit message in IDENTITY:\n{output}"
+    );
+    assert!(
+        output.contains(&f.hash_a[..7]),
+        "expected commit A hash in IDENTITY:\n{output}"
+    );
+    // Last changed should mention commit B (auth.ts modified in commit B too)
+    assert!(
+        output.contains(&f.hash_b[..7]),
+        "expected commit B hash somewhere in context:\n{output}"
+    );
+}
+
+#[test]
+fn context_coverage_shows_not_ingested_without_github() {
+    let f = Fixture::create();
+    f.run_ok(&["ingest", "."]);
+
+    let output = f.run_ok(&["context", "auth.ts"]);
+
+    assert!(
+        output.contains("COVERAGE"),
+        "expected COVERAGE section:\n{output}"
+    );
+    assert!(
+        output.contains("✓ available"),
+        "expected git history available:\n{output}"
+    );
+    // Without GitHub ingestion, PRs and issues should be not ingested
+    assert!(
+        output.matches("✗ not ingested").count() >= 2,
+        "expected at least 2 'not ingested' entries (PRs, issues):\n{output}"
+    );
+}
+
+#[test]
+fn context_coupling_shows_co_changed_files() {
+    let f = Fixture::create();
+    f.run_ok(&["ingest", "."]);
+
+    let output = f.run_ok(&["context", "auth.ts"]);
+
+    assert!(
+        output.contains("HISTORICAL COUPLING"),
+        "expected HISTORICAL COUPLING section:\n{output}"
+    );
+    assert!(
+        output.contains("user.ts"),
+        "expected user.ts in coupling (changed with auth.ts in commit B):\n{output}"
+    );
+}
+
+#[test]
+fn context_evidence_section_present() {
+    let f = Fixture::create();
+    f.run_ok(&["ingest", "."]);
+
+    let output = f.run_ok(&["context", "auth.ts"]);
+
+    assert!(
+        output.contains("EVIDENCE"),
+        "expected EVIDENCE section:\n{output}"
+    );
+    assert!(
+        output.contains("deterministic fact"),
+        "expected deterministic facts count:\n{output}"
+    );
+    assert!(
+        output.contains("no inferred claims"),
+        "expected no inferred claims statement:\n{output}"
+    );
+}
+
+#[test]
+fn context_significance_shows_rank() {
+    let f = Fixture::create();
+    f.run_ok(&["ingest", "."]);
+
+    let output = f.run_ok(&["context", "auth.ts"]);
+
+    assert!(
+        output.contains("CURRENT SIGNIFICANCE"),
+        "expected CURRENT SIGNIFICANCE section:\n{output}"
+    );
+    assert!(
+        output.contains("Ranked #"),
+        "expected rank in significance:\n{output}"
+    );
+}
+
+#[test]
+fn context_unknown_file_returns_zero_touches() {
+    let f = Fixture::create();
+    f.run_ok(&["ingest", "."]);
+
+    let output = f.run_ok(&["context", "ghost.ts"]);
+
+    // No error, but touch count should be zero and no commits shown
+    assert!(
+        output.contains("Total touches: 0"),
+        "expected 0 touches for unknown file:\n{output}"
+    );
+}
