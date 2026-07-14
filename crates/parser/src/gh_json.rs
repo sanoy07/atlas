@@ -46,6 +46,40 @@ struct RawIssueRef {
     number: i64,
 }
 
+/// Parsed output of `gh pr view <number> --json title,body,closingIssuesReferences,files`.
+pub struct PrDetail {
+    pub title:                 String,
+    pub body:                  String,
+    pub linked_issue_numbers:  Vec<i64>,
+    pub changed_files:         Vec<String>,
+}
+
+#[derive(Deserialize)]
+struct RawPrView {
+    title:   String,
+    body:    Option<String>,
+    #[serde(rename = "closingIssuesReferences", default)]
+    closing_issues: Vec<RawIssueRef>,
+    #[serde(default)]
+    files: Vec<RawPrFile>,
+}
+
+#[derive(Deserialize)]
+struct RawPrFile {
+    path: String,
+}
+
+/// Parse a single-PR JSON object produced by `gh pr view <n> --json ...`.
+pub fn parse_pr_detail(json: &str) -> Result<PrDetail> {
+    let raw: RawPrView = serde_json::from_str(json)?;
+    Ok(PrDetail {
+        title:                raw.title,
+        body:                 raw.body.unwrap_or_default(),
+        linked_issue_numbers: raw.closing_issues.into_iter().map(|i| i.number).collect(),
+        changed_files:        raw.files.into_iter().map(|f| f.path).collect(),
+    })
+}
+
 fn parse_gh_timestamp(s: &Option<String>) -> Option<DateTime<Utc>> {
     s.as_deref()
         .and_then(|raw| DateTime::parse_from_rfc3339(raw).ok())

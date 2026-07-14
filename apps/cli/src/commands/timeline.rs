@@ -6,9 +6,10 @@ pub fn run(file: &str) -> Result<()> {
     let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
     let store = Store::open(&db_path)?;
 
-    let commits = store.commits_for_file_asc(file, ".")?;
-    let prs     = store.prs_for_file(file, ".")?;
-    let issues  = store.issues_for_file(file, ".")?;
+    let repo = super::discover_repo_root()?;
+    let commits = store.commits_for_file_asc(file, &repo)?;
+    let prs     = store.prs_for_file(file, &repo)?;
+    let issues  = store.issues_for_file(file, &repo)?;
 
     if commits.is_empty() && prs.is_empty() && issues.is_empty() {
         println!("No data found for '{}'.", file);

@@ -37,6 +37,27 @@ impl GitRepo {
         Ok(String::from_utf8(out.stdout)?)
     }
 
+    /// Run `git log --name-status -M` and return the raw output for rename parsing.
+    ///
+    /// Format: each commit begins with `\x1e<full_hash>`, followed by name-status
+    /// lines (`R{score}\t{old}\t{new}` for renames, `M`, `A`, `D`, etc. for others).
+    /// The caller is responsible for filtering to only the R lines.
+    pub fn log_renames_raw(&self) -> Result<String> {
+        let out = Command::new("git")
+            .args([
+                "-C",
+                &self.path,
+                "log",
+                "--format=\x1e%H",
+                "--name-status",
+                "-M50",
+            ])
+            .output()
+            .context("git log --name-status failed")?;
+
+        Ok(String::from_utf8(out.stdout)?)
+    }
+
     pub fn remote_url(&self) -> Option<String> {
         Command::new("git")
             .args(["-C", &self.path, "remote", "get-url", "origin"])

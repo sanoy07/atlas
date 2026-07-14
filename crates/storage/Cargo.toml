@@ -4,10 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-atlas-ir = { path = "../ir" }
-rusqlite = { workspace = true }
-anyhow   = { workspace = true }
-tracing  = { workspace = true }
+atlas-ir   = { path = "../ir" }
+rusqlite   = { workspace = true }
+anyhow     = { workspace = true }
+tracing    = { workspace = true }
+serde_json = { workspace = true }
 
 [dev-dependencies]
 chrono = { workspace = true }

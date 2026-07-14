@@ -6,7 +6,8 @@ pub fn run(file: &str) -> Result<()> {
     let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
     let store = Store::open(&db_path)?;
 
-    match store.first_seen(file, ".")? {
+    let repo = super::discover_repo_root()?;
+    match store.first_seen(file, &repo)? {
         None => {
             println!("'{}' not found in history.", file);
             println!("Hint: run `atlas ingest .` first.");

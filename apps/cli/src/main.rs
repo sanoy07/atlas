@@ -21,6 +21,8 @@ enum Commands {
         path: String,
         #[arg(long, help = "Also fetch GitHub PRs and issues")]
         github: bool,
+        #[arg(long, help = "Also extract TypeScript structural edges (IMPORTS, CALLS_STATIC, REFERENCES_MODEL)")]
+        typescript: bool,
     },
     /// Which commits touched this file?
     Query {
@@ -65,6 +67,38 @@ enum Commands {
     Feedback {
         file: String,
     },
+    /// Compose anchor retrieval, structural observation, and history into an investigation
+    Investigate {
+        #[arg(required = true)]
+        anchors: Vec<String>,
+        #[arg(long)]
+        json: bool,
+    },
+    /// Show observed structural relationships for a file (IMPORTS, CALLS_STATIC, CALLS_INSTANCE, REFERENCES_MODEL)
+    Structural {
+        file: String,
+        /// Also show which files import this file (reverse edges)
+        #[arg(long)]
+        reverse: bool,
+    },
+    /// Search corpus by anchor terms (file paths, commits, PRs, issues)
+    Search {
+        /// One or more anchor terms to search for
+        #[arg(required = true)]
+        anchors: Vec<String>,
+        /// Emit the SearchDocument as JSON instead of formatted text
+        #[arg(long)]
+        json: bool,
+    },
+    /// Assemble review context for a pull request from mandatory file seeds
+    #[command(name = "review-context")]
+    ReviewContext {
+        /// GitHub PR number
+        pr_number: u64,
+        /// Emit the ReviewContextDocument as JSON instead of formatted text
+        #[arg(long)]
+        json: bool,
+    },
 }
 
 #[tokio::main]
@@ -78,8 +112,8 @@ async fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Status                => commands::status::run(),
-        Commands::Ingest { path, github } => commands::ingest::run(&path, github),
+        Commands::Status                             => commands::status::run(),
+        Commands::Ingest { path, github, typescript } => commands::ingest::run(&path, github, typescript),
         Commands::Query { file }        => commands::query::run(&file),
         Commands::Explain { file }      => commands::explain::run(&file),
         Commands::CoChanges { file, min_count } => commands::cochanges::run(&file, min_count),
@@ -88,5 +122,9 @@ async fn main() -> Result<()> {
         Commands::WhenIntroduced { file }       => commands::whenintroduced::run(&file),
         Commands::Context { file, json }        => commands::context::run(&file, json),
         Commands::Feedback { file }             => commands::feedback::run(&file),
+        Commands::Investigate { anchors, json }     => commands::investigate::run(&anchors, json),
+        Commands::Search { anchors, json }          => commands::search::run(&anchors, json),
+        Commands::Structural { file, reverse }          => commands::structural::run(&file, reverse),
+        Commands::ReviewContext { pr_number, json }      => commands::review_context::run(pr_number, json),
     }
 }

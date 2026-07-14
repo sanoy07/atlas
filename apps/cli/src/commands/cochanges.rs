@@ -5,7 +5,8 @@ pub fn run(file: &str, min_count: i64) -> Result<()> {
     let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
     let store = Store::open(&db_path)?;
 
-    let co = store.co_changes_for_file(file, ".", min_count)?;
+    let repo = super::discover_repo_root()?;
+    let co = store.co_changes_for_file(file, &repo, min_count)?;
 
     if co.is_empty() {
         if min_count > 1 {

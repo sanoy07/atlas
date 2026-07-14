@@ -10,6 +10,7 @@ atlas-git        = { path = "../git" }
 atlas-parser     = { path = "../parser" }
 atlas-storage    = { path = "../storage" }
 anyhow           = { workspace = true }
+indexmap         = { workspace = true }
 tracing          = { workspace = true }
 
 [dev-dependencies]

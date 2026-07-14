@@ -9,7 +9,8 @@ pub fn run(file: &str, json: bool) -> Result<()> {
     let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
     let store   = Store::open(&db_path)?;
 
-    let doc = build_context(file, ".", &store)?;
+    let repo = super::discover_repo_root()?;
+    let doc = build_context(file, &repo, &store)?;
     if json {
         println!("{}", serde_json::to_string_pretty(&doc)?);
     } else {
@@ -31,6 +32,14 @@ fn render(doc: &ContextDocument) {
 
     // ── IDENTITY ─────────────────────────────────────────────────────────────
     println!("IDENTITY");
+    if doc.identity.is_historical_path {
+        if let Some(ref cp) = doc.identity.current_path {
+            println!("  ! Historical path — this artifact has moved.");
+            println!("    Current path:  {}", cp);
+            println!("    History below spans the full artifact lifetime.");
+            println!();
+        }
+    }
     match &doc.identity.first_commit {
         None => println!("  Introduced:    (unknown — run atlas ingest first)"),
         Some(c) => println!("  Introduced:    {}  ({}  {})",
