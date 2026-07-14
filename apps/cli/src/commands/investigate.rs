@@ -70,8 +70,14 @@ fn render(doc: &InvestigationDocument) {
 
     let total = doc.core_candidates.len() + doc.supporting_artifacts.len();
     if total == 0 {
-        println!("No candidates found. Run `atlas ingest .` first.");
-        println!();
+        if doc.related_decisions.is_empty() {
+            println!("No candidates found. Run `atlas ingest .` first.");
+            println!();
+        } else {
+            println!("No file candidates found — but engineering decisions matched.");
+            println!();
+        }
+        render_engineering_decisions(doc);
         render_coverage(doc);
         return;
     }
@@ -162,6 +168,9 @@ fn render(doc: &InvestigationDocument) {
         println!();
     }
 
+    // ── ENGINEERING DECISIONS ─────────────────────────────────────────────────
+    render_engineering_decisions(doc);
+
     // ── HISTORICAL EVIDENCE ───────────────────────────────────────────────────
     let historical_with_data: Vec<_> = doc.historical.iter()
         .filter(|h| h.touch_count > 0)
@@ -193,6 +202,17 @@ fn render(doc: &InvestigationDocument) {
     }
 
     render_coverage(doc);
+}
+
+fn render_engineering_decisions(doc: &InvestigationDocument) {
+    if !doc.related_decisions.is_empty() {
+        println!("ENGINEERING DECISIONS  ({} records)", doc.related_decisions.len());
+        for d in &doc.related_decisions {
+            println!("  {}  ({})", d.title, d.path);
+            println!("    \"{}\"", d.snippet.chars().take(120).collect::<String>());
+        }
+        println!();
+    }
 }
 
 fn render_coverage(doc: &InvestigationDocument) {

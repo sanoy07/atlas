@@ -10,7 +10,7 @@ pub fn run(path: &str, github: bool, typescript: bool) -> Result<()> {
 
     print!("Ingesting git history from {} … ", path);
     let count = atlas_core::ingest_git(path, &store)?;
-    println!("{} commits", count);
+    println!("{} commits  (build artifacts excluded)", count);
 
     print!("Ingesting rename evidence … ");
     let rename_count = atlas_core::ingest_rename_evidence(path, &store)?;
@@ -31,6 +31,10 @@ pub fn run(path: &str, github: bool, typescript: bool) -> Result<()> {
         let edge_count = atlas_core::ingest_typescript(path, &store)?;
         println!("{} edges", edge_count);
     }
+
+    print!("Ingesting decision records and ADRs … ");
+    let doc_count = atlas_core::ingest_documents(path, &store)?;
+    println!("{} documents", doc_count);
 
     println!("Done.");
     Ok(())

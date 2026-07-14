@@ -177,6 +177,8 @@ pub enum EvidenceType {
     Observed,
     /// Asserted in a commit, PR, issue, or documentation text.
     Documentary,
+    /// Captured in a decision record or ADR — engineering rationale committed to the repo.
+    Engineering,
     /// Inferred from commit co-change or historical coupling patterns.
     Historical,
 }
@@ -191,6 +193,7 @@ pub enum MatchSource {
     PrBody,
     IssueTitle,
     IssueBody,
+    DecisionBody,
 }
 
 /// A single match between one anchor term and one location in the corpus.
@@ -211,12 +214,13 @@ pub struct AnchorMatch {
 /// Which corpus sections were available and searched.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SearchCoverage {
-    pub file_paths:     bool,
-    pub commit_history: bool,
-    pub pull_requests:  bool,
-    pub issues:         bool,
-    pub source_code:    bool,  // always false until v0.5b
-    pub working_tree:   bool,  // always false until ingested
+    pub file_paths:            bool,
+    pub commit_history:        bool,
+    pub pull_requests:         bool,
+    pub issues:                bool,
+    pub engineering_decisions: bool,
+    pub source_code:           bool,  // always false until v0.5b
+    pub working_tree:          bool,  // always false until ingested
 }
 
 /// The assembled output of an anchor-retrieval search.
@@ -300,6 +304,15 @@ pub struct StructuralObservation {
     pub file:     String,
     pub outgoing: Vec<StructuralEdgeSummary>,
     pub incoming: Vec<StructuralEdgeSummary>,
+}
+
+/// A decision record or ADR whose body matched one or more anchor terms.
+/// Surfaces engineering rationale alongside code candidates in investigations.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RelatedDecision {
+    pub title:   String,
+    pub path:    String,
+    pub snippet: String,
 }
 
 /// A PR or issue that matched one or more anchor terms.
@@ -388,6 +401,9 @@ pub struct InvestigationDocument {
     pub documentary:          Vec<DocumentaryEvidence>,
     pub historical:           Vec<HistoricalEntry>,
     pub unresolved:           Vec<UnresolvedConnection>,
+    /// Decision records and ADRs whose bodies matched the investigation anchors.
+    /// Engineering rationale that explains why the observed code is the way it is.
+    pub related_decisions:    Vec<RelatedDecision>,
     pub coverage:             InvestigationCoverage,
 }
 
@@ -501,6 +517,47 @@ pub enum CoverageStatus {
     /// Data exists but is scoped to exact file paths — rename/move history is not tracked.
     /// Queries return correct facts about the current path but may be missing pre-rename history.
     PathScoped,
+}
+
+// ─── Campaign Engine ──────────────────────────────────────────────────────────
+
+/// One entry from docs/gaps.toml — a tracked investigation gap.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GapEntry {
+    pub id:                      String,
+    pub name:                    String,
+    pub classification:          String,
+    pub description:             String,
+    pub n:                       u32,
+    pub threshold:               u32,
+    /// "watch" | "candidate" | "earned" | "implemented"
+    pub status:                  String,
+    pub repositories:            Vec<String>,
+    pub benchmarks:              Vec<String>,
+    pub suggested_implementation: String,
+    pub success_criterion:       String,
+}
+
+impl GapEntry {
+    pub fn is_implemented(&self) -> bool { self.status == "implemented" }
+    pub fn is_earned(&self)      -> bool { self.status == "earned" || (self.n >= self.threshold && !self.is_implemented()) }
+    pub fn needs_to_earn(&self)  -> bool { !self.is_implemented() && !self.is_earned() }
+    pub fn remaining(&self)      -> u32  { self.threshold.saturating_sub(self.n) }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum CampaignOutcome {
+    /// At least one gap has n >= threshold and is not implemented — ready to code.
+    Ready { gap: GapEntry },
+    /// No gap is earned yet — show the closest candidates.
+    NoneEarned { candidates: Vec<GapEntry> },
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CampaignBrief {
+    pub outcome: CampaignOutcome,
+    /// All gaps, sorted by N descending, for context.
+    pub all_gaps: Vec<GapEntry>,
 }
 
 // ─── Project Registry (v0.7a) ─────────────────────────────────────────────────

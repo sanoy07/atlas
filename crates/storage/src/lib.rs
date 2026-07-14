@@ -817,7 +817,13 @@ impl Store {
 
              SELECT ?1, 'issue_body', CAST(number AS TEXT), body
              FROM issues
-             WHERE repo_path = ?2 AND body IS NOT NULL AND body LIKE ?3",
+             WHERE repo_path = ?2 AND body IS NOT NULL AND body LIKE ?3
+
+             UNION ALL
+
+             SELECT ?1, 'decision_body', file_path, body
+             FROM documents
+             WHERE repo_path = ?2 AND body LIKE ?3",
         )?;
         let rows = stmt.query_map(params![anchor, repo_path, pattern], |row| {
             Ok(AnchorMatchRow {
@@ -828,6 +834,38 @@ impl Store {
             })
         })?;
         Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    pub fn insert_document(
+        &self,
+        file_path: &str,
+        doc_type: &str,
+        title: &str,
+        body: &str,
+        repo_path: &str,
+    ) -> Result<()> {
+        self.conn.execute(
+            "INSERT OR REPLACE INTO documents (file_path, doc_type, title, body, repo_path)
+             VALUES (?1, ?2, ?3, ?4, ?5)",
+            params![file_path, doc_type, title, body, repo_path],
+        )?;
+        Ok(())
+    }
+
+    pub fn document_count(&self, repo_path: &str) -> Result<i64> {
+        Ok(self.conn.query_row(
+            "SELECT COUNT(*) FROM documents WHERE repo_path = ?1",
+            params![repo_path],
+            |r| r.get(0),
+        )?)
+    }
+
+    pub fn document_by_path(&self, file_path: &str, repo_path: &str) -> Result<Option<String>> {
+        Ok(self.conn.query_row(
+            "SELECT title FROM documents WHERE file_path = ?1 AND repo_path = ?2",
+            params![file_path, repo_path],
+            |r| r.get(0),
+        ).optional()?)
     }
 
     pub fn insert_structural_edge(&self, edge: &StructuralEdge, repo_path: &str) -> Result<()> {
@@ -1386,6 +1424,16 @@ CREATE TABLE IF NOT EXISTS structural_edges (
 );
 CREATE INDEX IF NOT EXISTS idx_structural_edges_source ON structural_edges(repo_path, source_file);
 CREATE INDEX IF NOT EXISTS idx_structural_edges_target ON structural_edges(repo_path, target_file);
+
+CREATE TABLE IF NOT EXISTS documents (
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    file_path TEXT NOT NULL,
+    doc_type  TEXT NOT NULL,
+    title     TEXT NOT NULL,
+    body      TEXT NOT NULL,
+    repo_path TEXT NOT NULL,
+    UNIQUE(file_path, repo_path)
+);
 
 CREATE TABLE IF NOT EXISTS projects (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,

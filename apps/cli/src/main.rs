@@ -99,6 +99,17 @@ enum Commands {
         #[arg(long)]
         json: bool,
     },
+    /// Campaign engine: determine the next evidence-backed improvement
+    Campaign {
+        #[command(subcommand)]
+        subcommand: CampaignCommand,
+    },
+}
+
+#[derive(Subcommand)]
+enum CampaignCommand {
+    /// Show the next campaign ready for implementation, or the closest candidates
+    Next,
 }
 
 #[tokio::main]
@@ -126,5 +137,8 @@ async fn main() -> Result<()> {
         Commands::Search { anchors, json }          => commands::search::run(&anchors, json),
         Commands::Structural { file, reverse }          => commands::structural::run(&file, reverse),
         Commands::ReviewContext { pr_number, json }      => commands::review_context::run(pr_number, json),
+        Commands::Campaign { subcommand } => match subcommand {
+            CampaignCommand::Next => commands::campaign::run_next(),
+        },
     }
 }

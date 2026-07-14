@@ -2,20 +2,73 @@ use anyhow::{Context, Result};
 use atlas_connectors::Connector;
 use atlas_git::{GitHubIssueConnector, GitHubPrConnector, GitRepo};
 use atlas_ir::{
-    AnchorMatch, ArtifactRole, CandidateArtifact, CandidateReason, CochangeEntry, CommitSummary,
-    ConceptExpansion, ContextDocument, CouplingEntry, CoverageMap, CoverageStatus,
-    DocumentaryEvidence, EvidenceSummary, EvidenceType, FileIdentity, FileSignificance,
-    HistoricalEntry, InvestigationCoverage, InvestigationDocument, IssueSummary, MatchSource,
-    PrFileContext, PrSummary, RelatedHistory, ReviewContextDocument, ReviewCoverage,
-    SearchCoverage, SearchDocument, StructuralEdgeSummary, StructuralObservation,
-    UnresolvedConnection, VerifiedExpansion,
+    AnchorMatch, ArtifactRole, CampaignBrief, CampaignOutcome, CandidateArtifact, CandidateReason,
+    CochangeEntry, CommitSummary, ConceptExpansion, ContextDocument, CouplingEntry, CoverageMap,
+    CoverageStatus, DocumentaryEvidence, EvidenceSummary, EvidenceType, FileIdentity,
+    FileSignificance, GapEntry, HistoricalEntry, InvestigationCoverage, InvestigationDocument,
+    IssueSummary, MatchSource, PrFileContext, PrSummary, RelatedDecision, RelatedHistory,
+    ReviewContextDocument, ReviewCoverage, SearchCoverage, SearchDocument, StructuralEdgeSummary,
+    StructuralObservation, UnresolvedConnection, VerifiedExpansion,
 };
 use atlas_parser::{gh_json, git_log, git_renames, ts_structural};
 use atlas_storage::{CommitRow, HotFileRow, Store};
 use std::collections::HashSet;
+use std::path::Path;
 use tracing::info;
 
+/// Repository Awareness: understands which paths represent generated artifacts
+/// vs. source code worth investigating. Applied during ingest to prevent build
+/// output from occupying candidate slots or polluting historical evidence.
+///
+/// Earned primitive (N=3): RWATP, Atlas self-ingest, and VestaScan all produced
+/// build artifact noise during investigation. VestaScan specifically commits
+/// `dist/` to version control, so `.gitignore` alone is insufficient —
+/// hardcoded common patterns are the primary exclusion mechanism.
+struct RepoAwareness {
+    exclude_prefixes: Vec<String>,
+}
+
+impl RepoAwareness {
+    fn load(repo_path: &str) -> Self {
+        let hardcoded = [
+            "dist/", "node_modules/", "target/", "build/", ".next/",
+            "coverage/", "__pycache__/", ".cache/", "out/", ".nuxt/",
+        ];
+        let mut prefixes: Vec<String> = hardcoded.iter().map(|&s| s.to_string()).collect();
+
+        let gitignore = Path::new(repo_path).join(".gitignore");
+        if let Ok(content) = std::fs::read_to_string(gitignore) {
+            for raw in content.lines() {
+                let line = raw.trim();
+                if line.is_empty() || line.starts_with('#') || line.starts_with('!') {
+                    continue;
+                }
+                // Only handle simple name patterns — skip globs (*/?/[).
+                if line.contains('*') || line.contains('?') || line.contains('[') {
+                    continue;
+                }
+                let prefix = if line.ends_with('/') {
+                    line.to_string()
+                } else {
+                    format!("{}/", line)
+                };
+                if !prefixes.contains(&prefix) {
+                    prefixes.push(prefix);
+                }
+            }
+        }
+
+        RepoAwareness { exclude_prefixes: prefixes }
+    }
+
+    fn is_excluded(&self, path: &str) -> bool {
+        let p = path.trim_start_matches('/');
+        self.exclude_prefixes.iter().any(|prefix| p.starts_with(prefix.as_str()))
+    }
+}
+
 pub fn ingest_git(repo_path: &str, store: &Store) -> Result<usize> {
+    let awareness = RepoAwareness::load(repo_path);
     let connector = GitRepo::open(repo_path)?;
     let payload   = connector.fetch_raw()?;
     let commits   = git_log::parse(&payload.data)?;
@@ -28,8 +81,16 @@ pub fn ingest_git(repo_path: &str, store: &Store) -> Result<usize> {
         count,
     );
 
+    let mut excluded = 0usize;
     for commit in &commits {
-        store.insert_commit(commit, repo_path)?;
+        let mut filtered = commit.clone();
+        let before = filtered.files_changed.len();
+        filtered.files_changed.retain(|p| !awareness.is_excluded(p));
+        excluded += before - filtered.files_changed.len();
+        store.insert_commit(&filtered, repo_path)?;
+    }
+    if excluded > 0 {
+        info!("repository awareness excluded {} file-change records", excluded);
     }
 
     Ok(count)
@@ -506,6 +567,9 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
     let mut candidates: indexmap::IndexMap<String, Vec<CandidateReason>> =
         indexmap::IndexMap::new();
 
+    // decision records matched: path → first snippet (preserve insertion order)
+    let mut decision_snippets: indexmap::IndexMap<String, String> = indexmap::IndexMap::new();
+
     for m in &search_doc.matches {
         match &m.source {
             MatchSource::FilePath => {
@@ -562,6 +626,13 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
                 if m.source == MatchSource::IssueBody {
                     entry.snippets.push(m.snippet.clone());
                 }
+            }
+            MatchSource::DecisionBody => {
+                // Decision records explain *why* — not candidates, but rationale.
+                // Collect first snippet per document; render as ENGINEERING DECISIONS.
+                decision_snippets
+                    .entry(m.source_id.clone())
+                    .or_insert_with(|| m.snippet.clone());
             }
         }
     }
@@ -771,8 +842,16 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
     let mut effective_anchors: Vec<String> = effective_anchor_strs;
     effective_anchors.sort();
 
+    let mut related_decisions: Vec<RelatedDecision> = Vec::new();
+    for (path, snippet) in decision_snippets {
+        let title = store
+            .document_by_path(&path, repo_path)?
+            .unwrap_or_else(|| path.clone());
+        related_decisions.push(RelatedDecision { title, path, snippet });
+    }
+
     Ok(InvestigationDocument {
-        schema_version:    3,
+        schema_version:    4,
         anchors:           anchors.iter().map(|s| s.to_string()).collect(),
         effective_anchors,
         concept_expansions,
@@ -782,18 +861,69 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
         documentary,
         historical,
         unresolved,
+        related_decisions,
         coverage,
     })
 }
 
 pub fn ingest_typescript(repo_path: &str, store: &Store) -> Result<usize> {
+    let awareness = RepoAwareness::load(repo_path);
     let (edges, _file_count) = ts_structural::extract_all(repo_path);
-    let count = edges.len();
+    let mut kept = 0usize;
+    let mut excluded = 0usize;
     for edge in &edges {
+        if awareness.is_excluded(&edge.source_file) || awareness.is_excluded(&edge.target_file) {
+            excluded += 1;
+            continue;
+        }
         store.insert_structural_edge(edge, repo_path)?;
+        kept += 1;
     }
-    info!("typescript structural edges inserted={}", count);
+    if excluded > 0 {
+        info!("repository awareness excluded {} structural edges", excluded);
+    }
+    info!("typescript structural edges inserted={}", kept);
+    Ok(kept)
+}
+
+/// Ingest decision records and ADRs from `docs/decisions/` and `docs/adr/`.
+/// Each markdown file's full content (frontmatter + body) is stored verbatim
+/// so that body text is searchable via `atlas search`.
+pub fn ingest_documents(repo_path: &str, store: &Store) -> Result<usize> {
+    let mut count = 0;
+    let scan_dirs = [("docs/decisions", "decision"), ("docs/adr", "adr")];
+    for (subdir, doc_type) in &scan_dirs {
+        let dir = Path::new(repo_path).join(subdir);
+        let entries = match std::fs::read_dir(&dir) {
+            Ok(e) => e,
+            Err(_) => continue,
+        };
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.extension().map(|e| e == "md").unwrap_or(false) {
+                let content = std::fs::read_to_string(&path)?;
+                let title = extract_frontmatter_title(&content)
+                    .unwrap_or_else(|| {
+                        path.file_name()
+                            .and_then(|n| n.to_str())
+                            .unwrap_or("unknown")
+                            .to_string()
+                    });
+                let rel_path = path
+                    .strip_prefix(repo_path)
+                    .map(|p| p.to_string_lossy().into_owned())
+                    .unwrap_or_else(|_| path.to_string_lossy().into_owned());
+                store.insert_document(&rel_path, doc_type, &title, &content, repo_path)?;
+                count += 1;
+            }
+        }
+    }
+    info!("documents ingested={}", count);
     Ok(count)
+}
+
+fn extract_frontmatter_title(content: &str) -> Option<String> {
+    parse_frontmatter(content).remove("title")
 }
 
 pub fn build_context(file: &str, repo_path: &str, store: &Store) -> Result<ContextDocument> {
@@ -954,14 +1084,16 @@ pub fn search(anchors: &[&str], repo_path: &str, store: &Store) -> Result<Search
     let pr_count    = store.pr_count(repo_path)?;
     let issue_count = store.issue_count(repo_path)?;
     let repo_commits = store.commit_count(repo_path)?;
+    let doc_count   = store.document_count(repo_path)?;
 
     let coverage = SearchCoverage {
-        file_paths:     true,
-        commit_history: repo_commits > 0,
-        pull_requests:  pr_count > 0,
-        issues:         issue_count > 0,
-        source_code:    false,
-        working_tree:   false,
+        file_paths:            true,
+        commit_history:        repo_commits > 0,
+        pull_requests:         pr_count > 0,
+        issues:                issue_count > 0,
+        engineering_decisions: doc_count > 0,
+        source_code:           false,
+        working_tree:          false,
     };
 
     // Collect matches across all anchors, deduplicating by (anchor, source_type, source_id).
@@ -1012,6 +1144,7 @@ fn classify_source(source_type: &str) -> (MatchSource, EvidenceType) {
         "pr_body"         => (MatchSource::PrBody,        EvidenceType::Documentary),
         "issue_title"     => (MatchSource::IssueTitle,    EvidenceType::Documentary),
         "issue_body"      => (MatchSource::IssueBody,     EvidenceType::Documentary),
+        "decision_body"   => (MatchSource::DecisionBody,  EvidenceType::Engineering),
         _                 => (MatchSource::FilePath,      EvidenceType::Observed),
     }
 }
@@ -1534,4 +1667,238 @@ pub fn build_review_context(
             structural_edges: edge_count > 0,
         },
     })
+}
+
+// ─── Campaign Engine ──────────────────────────────────────────────────────────
+
+/// One gap observation extracted from a single benchmark file's frontmatter.
+#[derive(Clone)]
+struct GapObs {
+    gap_id:         String,
+    classification: String,
+    description:    String,
+    implementation: String,
+    success:        String,
+    threshold:      u32,
+    benchmark_id:   String,
+    repository:     String,
+}
+
+/// Parse YAML frontmatter (`---` … `---`) into a flat key→value map.
+/// Handles quoted values; skips indented lines (nested YAML).
+fn parse_frontmatter(content: &str) -> std::collections::HashMap<String, String> {
+    let mut map = std::collections::HashMap::new();
+    let trimmed = content.trim_start();
+    if !trimmed.starts_with("---") { return map; }
+    let after = &trimmed[3..];
+    let end = match after.find("---") {
+        Some(e) => e,
+        None    => return map,
+    };
+    for line in after[..end].lines() {
+        if line.starts_with(' ') || line.starts_with('\t') { continue; }
+        if let Some(colon) = line.find(':') {
+            let key = line[..colon].trim().to_string();
+            let raw = line[colon + 1..].trim();
+            let value = if raw.len() >= 2
+                && ((raw.starts_with('"') && raw.ends_with('"'))
+                    || (raw.starts_with('\'') && raw.ends_with('\'')))
+            {
+                raw[1..raw.len() - 1].to_string()
+            } else {
+                raw.to_string()
+            };
+            if !key.is_empty() {
+                map.insert(key, value);
+            }
+        }
+    }
+    map
+}
+
+/// Extract zero or more gap observations from a benchmark's parsed frontmatter.
+///
+/// Supports two layouts:
+///   Single-gap:  `gap_id`, `gap_classification`, `gap_description`, …
+///   Multi-gap:   `gap_0_id`, `gap_0_classification`, … `gap_1_id`, …
+fn extract_gap_obs(
+    fm: &std::collections::HashMap<String, String>,
+    benchmark_id: &str,
+    repository: &str,
+) -> Vec<GapObs> {
+    let mut obs = Vec::new();
+
+    // Single-gap format
+    if let Some(id) = fm.get("gap_id").filter(|s| !s.is_empty()) {
+        obs.push(GapObs {
+            gap_id:         id.clone(),
+            classification: fm.get("gap_classification").cloned().unwrap_or_default(),
+            description:    fm.get("gap_description").cloned().unwrap_or_default(),
+            implementation: fm.get("gap_implementation").cloned().unwrap_or_default(),
+            success:        fm.get("gap_success").cloned().unwrap_or_default(),
+            threshold:      fm.get("gap_threshold").and_then(|s| s.parse().ok()).unwrap_or(3),
+            benchmark_id:   benchmark_id.to_string(),
+            repository:     repository.to_string(),
+        });
+    }
+
+    // Multi-gap format: gap_0_id, gap_1_id, …
+    for i in 0..10usize {
+        let id_key = format!("gap_{i}_id");
+        match fm.get(&id_key).filter(|s| !s.is_empty()) {
+            Some(id) => obs.push(GapObs {
+                gap_id:         id.clone(),
+                classification: fm.get(&format!("gap_{i}_classification")).cloned().unwrap_or_default(),
+                description:    fm.get(&format!("gap_{i}_description")).cloned().unwrap_or_default(),
+                implementation: fm.get(&format!("gap_{i}_implementation")).cloned().unwrap_or_default(),
+                success:        fm.get(&format!("gap_{i}_success")).cloned().unwrap_or_default(),
+                threshold:      fm.get(&format!("gap_{i}_threshold")).and_then(|s| s.parse().ok()).unwrap_or(3),
+                benchmark_id:   benchmark_id.to_string(),
+                repository:     repository.to_string(),
+            }),
+            None => break,
+        }
+    }
+
+    obs
+}
+
+/// Determine the next campaign Atlas is ready to execute.
+///
+/// Derives gap candidates entirely from benchmark frontmatter (`docs/benchmarks/*.md`)
+/// and decision record frontmatter (`docs/decisions/*.md`). No manually maintained
+/// registry — the benchmark files ARE the evidence.
+pub fn campaign_next(repo_path: &str) -> Result<CampaignBrief> {
+    // ── 1. Collect gap observations from all formal benchmarks ────────────────
+    let mut observations: Vec<GapObs> = Vec::new();
+    let benchmark_dir = Path::new(repo_path).join("docs/benchmarks");
+
+    if let Ok(entries) = std::fs::read_dir(&benchmark_dir) {
+        let mut paths: Vec<_> = entries
+            .flatten()
+            .map(|e| e.path())
+            .filter(|p| p.extension().map(|e| e == "md").unwrap_or(false))
+            .filter(|p| p.file_name().map(|n| n != "TEMPLATE.md").unwrap_or(false))
+            .collect();
+        paths.sort(); // date-prefixed filenames → chronological order
+
+        for path in paths {
+            let content = std::fs::read_to_string(&path)?;
+            let fm = parse_frontmatter(&content);
+            let benchmark_id = path
+                .file_stem()
+                .and_then(|s| s.to_str())
+                .unwrap_or("unknown")
+                .to_string();
+            let repository = fm.get("repository").cloned().unwrap_or_default();
+            observations.extend(extract_gap_obs(&fm, &benchmark_id, &repository));
+        }
+    }
+
+    // ── 2. Collect implemented gap IDs from decision records ──────────────────
+    let mut implemented: HashSet<String> = HashSet::new();
+    let decision_dir = Path::new(repo_path).join("docs/decisions");
+
+    if let Ok(entries) = std::fs::read_dir(&decision_dir) {
+        for entry in entries.flatten() {
+            let path = entry.path();
+            if path.extension().map(|e| e == "md").unwrap_or(false) {
+                let content = std::fs::read_to_string(&path)?;
+                let fm = parse_frontmatter(&content);
+                if fm.get("status").map(|s| s == "Implemented").unwrap_or(false) {
+                    if let Some(gap_id) = fm.get("implements_gap").filter(|s| !s.is_empty()) {
+                        implemented.insert(gap_id.clone());
+                    }
+                }
+            }
+        }
+    }
+
+    // ── 3. Aggregate observations → one GapEntry per gap ID ──────────────────
+    // IndexMap preserves insertion order (chronological by first observation).
+    let mut defs:  indexmap::IndexMap<String, GapObs>            = indexmap::IndexMap::new();
+    let mut repos: indexmap::IndexMap<String, HashSet<String>>   = indexmap::IndexMap::new();
+    let mut bms:   indexmap::IndexMap<String, Vec<String>>       = indexmap::IndexMap::new();
+
+    for obs in observations {
+        defs.entry(obs.gap_id.clone()).or_insert_with(|| obs.clone());
+        repos.entry(obs.gap_id.clone()).or_default().insert(obs.repository.clone());
+        bms.entry(obs.gap_id.clone()).or_default().push(obs.benchmark_id.clone());
+    }
+
+    let mut gaps: Vec<GapEntry> = defs
+        .into_iter()
+        .map(|(id, def)| {
+            let n = bms.get(&id).map(|v| v.len()).unwrap_or(0) as u32;
+            let mut repositories: Vec<String> = repos
+                .get(&id)
+                .map(|s| { let mut v: Vec<_> = s.iter().cloned().collect(); v.sort(); v })
+                .unwrap_or_default();
+            repositories.retain(|r| !r.is_empty());
+            let benchmarks = bms.get(&id).cloned().unwrap_or_default();
+
+            let status = if implemented.contains(&id) {
+                "implemented"
+            } else if n >= def.threshold {
+                "earned"
+            } else if n >= 2 {
+                "candidate"
+            } else {
+                "watch"
+            }
+            .to_string();
+
+            // Prettify id as display name: "cross-repo-contracts" → "Cross Repo Contracts"
+            let name = id
+                .split('-')
+                .map(|w| {
+                    let mut chars = w.chars();
+                    match chars.next() {
+                        None    => String::new(),
+                        Some(f) => f.to_uppercase().collect::<String>() + chars.as_str(),
+                    }
+                })
+                .collect::<Vec<_>>()
+                .join(" ");
+
+            GapEntry {
+                id,
+                name,
+                classification:          def.classification,
+                description:             def.description,
+                n,
+                threshold:               def.threshold,
+                status,
+                repositories,
+                benchmarks,
+                suggested_implementation: def.implementation,
+                success_criterion:        def.success,
+            }
+        })
+        .collect();
+
+    // Sort: non-implemented first (by N desc), implemented last
+    gaps.sort_by(|a, b| {
+        a.is_implemented()
+            .cmp(&b.is_implemented())
+            .then(b.n.cmp(&a.n))
+            .then(a.id.cmp(&b.id))
+    });
+
+    // ── 4. Determine outcome ──────────────────────────────────────────────────
+    let top_earned = gaps
+        .iter()
+        .filter(|g| !g.is_implemented())
+        .find(|g| g.is_earned())
+        .cloned();
+
+    let outcome = match top_earned {
+        Some(gap) => CampaignOutcome::Ready { gap },
+        None => {
+            let candidates = gaps.iter().filter(|g| !g.is_implemented()).cloned().collect();
+            CampaignOutcome::NoneEarned { candidates }
+        }
+    };
+
+    Ok(CampaignBrief { outcome, all_gaps: gaps })
 }

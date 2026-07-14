@@ -34,6 +34,7 @@ fn render(doc: &SearchDocument) {
 
     let observed:    Vec<&AnchorMatch> = doc.matches.iter().filter(|m| m.evidence_type == EvidenceType::Observed).collect();
     let documentary: Vec<&AnchorMatch> = doc.matches.iter().filter(|m| m.evidence_type == EvidenceType::Documentary).collect();
+    let engineering: Vec<&AnchorMatch> = doc.matches.iter().filter(|m| m.evidence_type == EvidenceType::Engineering).collect();
     let historical:  Vec<&AnchorMatch> = doc.matches.iter().filter(|m| m.evidence_type == EvidenceType::Historical).collect();
 
     if !observed.is_empty() {
@@ -41,6 +42,9 @@ fn render(doc: &SearchDocument) {
     }
     if !documentary.is_empty() {
         render_section("DOCUMENTARY", "PRs · issues", &documentary, &doc.anchors);
+    }
+    if !engineering.is_empty() {
+        render_section("ENGINEERING DECISIONS", "decision records · ADRs", &engineering, &doc.anchors);
     }
     if !historical.is_empty() {
         render_section("HISTORICAL", "commit messages", &historical, &doc.anchors);
@@ -82,6 +86,7 @@ fn fmt_source_label(m: &AnchorMatch) -> String {
         MatchSource::PrBody        => format!("PR #{} body", m.source_id),
         MatchSource::IssueTitle    => format!("Issue #{}", m.source_id),
         MatchSource::IssueBody     => format!("Issue #{} body", m.source_id),
+        MatchSource::DecisionBody  => m.source_id.clone(),
     }
 }
 
@@ -104,6 +109,7 @@ fn render_coverage(doc: &SearchDocument) {
     println!("  Commit history  {}", tick(doc.coverage.commit_history));
     println!("  Pull requests   {}", tick(doc.coverage.pull_requests));
     println!("  Issues          {}", tick(doc.coverage.issues));
+    println!("  Eng. decisions  {}", tick(doc.coverage.engineering_decisions));
     println!("  Source code     ✗ not yet (v0.5b)");
     println!("  Working tree    ✗ not ingested");
 }

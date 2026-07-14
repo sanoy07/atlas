@@ -707,7 +707,7 @@ fn investigate_json_flag_emits_valid_json_with_schema_version() {
     let parsed: serde_json::Value =
         serde_json::from_str(&output).expect("--json output must be valid JSON");
 
-    assert_eq!(parsed["schema_version"].as_u64().unwrap(), 3, "schema_version must be 3 (v0.6 concept resolution)");
+    assert_eq!(parsed["schema_version"].as_u64().unwrap(), 4, "schema_version must be 4 (v0.7 related_decisions)");
     assert!(parsed["anchors"].is_array(),                "expected 'anchors' array");
     assert!(parsed["effective_anchors"].is_array(),      "expected 'effective_anchors' array");
     assert!(parsed["concept_expansions"].is_array(),     "expected 'concept_expansions' array");
@@ -717,6 +717,7 @@ fn investigate_json_flag_emits_valid_json_with_schema_version() {
     assert!(parsed["documentary"].is_array());
     assert!(parsed["historical"].is_array());
     assert!(parsed["unresolved"].is_array());
+    assert!(parsed["related_decisions"].is_array(),      "expected 'related_decisions' array");
     assert!(parsed["coverage"].is_object());
 
     // auth.ts has no test/migration/schema path markers → must be in core_candidates

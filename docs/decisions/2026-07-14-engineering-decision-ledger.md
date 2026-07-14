@@ -1,82 +1,135 @@
-# Engineering Decision Ledger
+---
+title: Engineering Decision Ledger
+date: 2026-07-14
+status: Accepted (discipline); Pending (ingestion support)
+authors:
+  - Sanoy Simon
+contributors:
+  - Claude Sonnet 4.6
+validated_by:
+  - Atlas Self-Understanding Benchmark 2026-07-14
+pending_validation:
+  - Re-run Task 2 after 5+ decision records exist
+---
 
-**Date:** 2026-07-14  **Status:** Adopted (discipline), Not yet implemented (command)
+# Decision: Engineering Decision Ledger
 
-## Problem
+## Trigger
 
-The self-understanding benchmark (2026-07-14) ran Atlas against its own repository
-and asked 13 questions across three categories: architecture, historical evolution,
-and engineering philosophy.
+Atlas Self-Understanding Benchmark, 2026-07-14.
 
-Results:
-- Architecture (5 questions): 4 Answered, 1 Partial — ADRs work well
-- Historical Evolution (4 questions): 0 Answered, 4 Blocked
-- Engineering Philosophy (4 questions): 3 Answered, 1 Partial
+Atlas was run against its own repository with 13 questions across three
+categories: architecture, historical evolution, and engineering philosophy.
+
+## Observation
+
+Task 1 (Architecture): 4/5 Answered. ADRs work.
+Task 2 (Historical Evolution): 0/4 Answered. All Blocked.
+Task 3 (Engineering Philosophy): 3/4 Answered. Philosophy doc works.
 
 All 4 Task 2 failures had the same root cause: the features in question
 (CALLS_INSTANCE, peer observations, structural extraction, review-context,
-supporting artifacts, investigate command) were built but never committed with
-rationale. Their origin exists only in conversation transcripts.
+supporting artifacts, investigate command) were built in conversation and
+committed without rationale. Their origin — the observations that motivated them,
+the alternatives rejected, the limitations discovered — exists only in chat
+transcripts.
 
-Key sentence from the benchmark report:
+Key finding: "The engineering knowledge from this session exists only in
+this conversation."
 
-> "The engineering knowledge from this session exists only in this conversation."
+## Problem
+
+Atlas preserves code, commits, architecture (via ADRs), and philosophy
+(via `docs/atlas-philosophy.md`). It does not preserve the *reasoning* behind
+individual features: what was observed, what alternatives were rejected, what
+was learned during validation.
+
+This is the gap between what Atlas records and what a senior engineer actually
+wants to know: not just *what* was built, but *why this approach, why now,
+and what we learned*.
+
+## Alternatives Considered
+
+### AI memory as primary store
+
+Rejected. Conversation transcripts are not queryable by Atlas. They do not live
+in the git repository. They are lost when context windows clear.
+
+### Richer commit messages only
+
+Insufficient. A commit message subject line can state motivation but cannot
+capture alternatives considered, limitations discovered, or future validation
+targets without becoming unwieldy. The body rarely gets read.
+
+### No change — let history live in chat
+
+Rejected. The benchmark produced concrete evidence of the cost: 4 of 13
+questions about Atlas's own evolution were unanswerable.
+
+### `atlas record-decision` command built immediately
+
+Deferred. ADRs proved the discipline works without a specialized command —
+someone wrote markdown files and they became queryable. The command would lower
+friction but is not required to validate the concept. Build after 5+ decision
+records demonstrate the format is stable.
 
 ## Decision
 
 Adopt a three-layer knowledge preservation discipline:
 
-1. **ADRs** (`docs/adr/`) — major architecture, rare, already working
-2. **Decision records** (`docs/decisions/`) — feature evolution rationale,
-   frequent, each covering one decision with: Problem, Decision, Alternatives
-   considered, Evidence, Known limitations, Future validation
-3. **Git commit messages** — implementation, expressing the motivation in the
-   subject line (e.g. "feat: add peer observations to surface missing imports")
+1. **ADRs** (`docs/adr/`) — major architecture. Rare. Already working.
+2. **Decision records** (`docs/decisions/`) — feature-level rationale. Frequent.
+   One record per significant decision, committed atomically with the code it
+   documents.
+3. **Git commit messages** — implementation motivation in the subject line.
 
-Every significant feature addition should be committed with both the code change
-and a decision record in `docs/decisions/`, atomically in the same commit.
+Decision records follow the investigation log format: Trigger, Observation,
+Problem, Alternatives Considered, Decision, Validation, Limitations, Lessons
+Learned, Future Validation. Plus YAML frontmatter capturing authors,
+contributors, and validators — the provenance of the idea, not just the code.
 
-This is a discipline change, not primarily a tooling change. The ADRs already
-proved that well-named markdown files in a `docs/` subdirectory are sufficient
-for Atlas to find and surface them.
+**Authorship model:**
+Decision records capture four distinct kinds of provenance:
+- `authors` — who drove the decision
+- `contributors` — who participated in developing it (including AI collaborators)
+- `validated_by` — what evidence confirmed it worked
+- `pending_validation` — what still needs testing
 
-## What a decision record covers
+These are different from git blame. Git records who committed the code. Decision
+records record who introduced the *idea* and what convinced the team it was right.
 
-Decision records complement ADRs. ADRs answer "how does the system work?"
-Decision records answer "why did the team make this specific choice?"
+## Validation
 
-Things appropriate for decision records, not ADRs:
-- Why was a threshold chosen (e.g. ≥50% for peer observations)?
-- Why was an abstraction deferred (e.g. RepositoryExpectation)?
-- What repository evidence motivated a feature (e.g. Issue #55)?
-- What limitations were confirmed during production validation?
-- What the next validation target should be?
+Immediate test: after committing the two initial decision records and re-ingesting,
+`atlas search "peer observations"` returned the commit message naming the decision.
+`atlas search "decisions"` returned both record file paths.
 
-## Alternatives considered
+Limitation: decision record *bodies* are not yet searchable. `atlas search
+"first-use blindness"` returns nothing because source code is not ingested
+(v0.5b). When body ingestion for `docs/decisions/` is implemented, the full
+rationale becomes queryable.
 
-**AI memory / chat history** — rejected as primary store. Conversation transcripts
-are not queryable by Atlas. They are not in the git repository. They decay when
-context windows are cleared.
+## Lessons Learned
 
-**Richer commit messages only** — insufficient. A commit message can state the
-motivation but cannot capture alternatives considered, known limitations, or
-future validation targets without becoming unwieldy.
+The self-understanding benchmark exposed that Atlas's knowledge has a hard cutoff
+at commit time. Work that exists only in working tree or chat is invisible.
+The fix is not a new Atlas feature — it is a workflow change: commit rationale
+alongside code, atomically, every time.
 
-**`atlas record-decision` command** — not built yet. The discipline works
-without it (as ADRs demonstrated). The command would lower friction by opening
-an editor with a template. Build it after the discipline is proven to be valuable
-across 5+ decision records.
+The benchmark also confirmed that explicit documents outperform implicit knowledge.
+`docs/atlas-philosophy.md` scored 3/4 on philosophy questions because someone
+made the philosophy explicit. ADRs scored 4/5 on architecture because someone
+wrote ADRs. The lesson generalizes.
 
-## Evidence
+## Future Work
 
-Self-understanding benchmark 2026-07-14: Atlas scored 7/13 Answered.
-The 4 Blocked questions all pointed to features built without committed rationale.
-The 3 Answered Task 3 questions all pointed to `docs/atlas-philosophy.md` —
-a document that exists because someone made it explicit.
+**Decision record ingestion (next implementation):**
+Ingest `docs/decisions/*.md` and `docs/adr/*.md` bodies into a searchable
+documentary layer, surfaced as "ENGINEERING DECISIONS" in `atlas search` output.
+This makes `atlas search "first-use blindness"` return the peer observations
+decision record body.
 
-## Future validation
-
-After 5+ decision records are committed, re-run Task 2 of the self-understanding
-benchmark. Expected: questions about CALLS_INSTANCE, peer observations, and
-supporting artifacts become Answered. If they do, the discipline is validated.
-If they don't, the decision record format needs revision.
+**`atlas record-decision` command (after 5+ records):**
+Scaffold a new decision record with today's date, open `$EDITOR`, optionally
+stage the file. Build only after the format has stabilized across multiple real
+decisions.
