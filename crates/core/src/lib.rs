@@ -637,30 +637,46 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
         }
     }
 
-    // ── Seed scoring and trimming ─────────────────────────────────────────────
+    // -- Seed scoring and trimming ------------------------------------------------
     //
-    // When a broad anchor like "model" matches dozens of files, prefer candidates
-    // that matched more distinct anchors.  Trim to MAX_SEEDS before expansion so
-    // the investigation stays focused on the most-relevant neighborhood.
+    // Score candidates on two axes:
+    //   1. filename_hit -- does any matched anchor appear in the file's basename stem?
+    //      Prefers deployment.service.ts over deploy/lb-setup.sh for anchor "deploy".
+    //   2. anchor_count -- how many distinct anchors matched?
+    //
+    // Sorting always runs (not just when trimming) so directory-only matches
+    // never displace filename matches in the rendered output.
     const MAX_SEEDS: usize = 20;
-    if candidates.len() > MAX_SEEDS {
-        let mut scored: Vec<(String, Vec<CandidateReason>, usize)> = candidates
+    {
+        let mut scored: Vec<(String, Vec<CandidateReason>, bool, usize)> = candidates
             .into_iter()
             .map(|(file, reasons)| {
-                let anchor_count = reasons.iter()
+                let matched_anchors: std::collections::HashSet<&str> = reasons.iter()
                     .filter_map(|r| match r {
                         CandidateReason::AnchorMatch { anchor, .. } => Some(anchor.as_str()),
                         _ => None,
                     })
-                    .collect::<std::collections::HashSet<_>>()
-                    .len();
-                (file, reasons, anchor_count)
+                    .collect();
+                let anchor_count = matched_anchors.len();
+                // Check whether any anchor appears in the filename stem (basename up to
+                // first dot), not just in a parent directory component.
+                let basename = file.split('/').last().unwrap_or(file.as_str());
+                let stem = if let Some(dot) = basename.find('.') { &basename[..dot] } else { basename };
+                let stem_lower = stem.to_lowercase();
+                let filename_hit = matched_anchors.iter()
+                    .any(|a| stem_lower.contains(&a.to_lowercase()));
+                (file, reasons, filename_hit, anchor_count)
             })
             .collect();
-        scored.sort_by(|a, b| b.2.cmp(&a.2).then(a.0.cmp(&b.0)));
+        // Primary: filename hit (true > false), Secondary: anchor count (desc), Tertiary: path (asc)
+        scored.sort_by(|a, b| {
+            b.2.cmp(&a.2)
+                .then(b.3.cmp(&a.3))
+                .then(a.0.cmp(&b.0))
+        });
         scored.truncate(MAX_SEEDS);
         candidates = scored.into_iter()
-            .map(|(file, reasons, _)| (file, reasons))
+            .map(|(file, reasons, _, _)| (file, reasons))
             .collect();
     }
 
@@ -869,6 +885,7 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
 pub fn ingest_typescript(repo_path: &str, store: &Store) -> Result<usize> {
     let awareness = RepoAwareness::load(repo_path);
     let (edges, _file_count) = ts_structural::extract_all(repo_path);
+    store.clear_structural_edges(repo_path)?;
     let mut kept = 0usize;
     let mut excluded = 0usize;
     for edge in &edges {

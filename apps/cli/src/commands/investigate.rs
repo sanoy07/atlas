@@ -1,10 +1,10 @@
 use anyhow::Result;
 use atlas_core::investigate;
-use atlas_ir::{ArtifactRole, CandidateReason, ConceptExpansion, InvestigationDocument};
+use atlas_ir::{ArtifactRole, CandidateReason, ConceptExpansion, InvestigationDocument, InvestigationCoverage};
 use atlas_storage::Store;
 use serde_json;
 
-pub fn run(anchors: &[String], json: bool) -> Result<()> {
+pub fn run(anchors: &[String], json: bool, raw: bool) -> Result<()> {
     let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
     let store   = Store::open(&db_path)?;
     let repo    = super::discover_repo_root()?;
@@ -14,54 +14,48 @@ pub fn run(anchors: &[String], json: bool) -> Result<()> {
 
     if json {
         println!("{}", serde_json::to_string_pretty(&doc)?);
-    } else {
-        render(&doc);
+        return Ok(());
     }
+
+    if raw {
+        render(&doc);
+        return Ok(());
+    }
+
+    // Default: AI synthesis.
+    // Skip synthesis if there are no candidates — nothing useful to synthesize.
+    let has_candidates = !doc.core_candidates.is_empty() || !doc.supporting_artifacts.is_empty();
+    if !has_candidates {
+        render(&doc);
+        return Ok(());
+    }
+
+    eprintln!("Synthesizing with qwen2.5-coder:7b-instruct …");
+    let synthesis = crate::ai::synthesize(&doc);
+
+    println!("INVESTIGATION");
+    println!("anchors: {}", doc.anchors.join(" · "));
+    println!();
+
+    match synthesis {
+        Some(ref text) => {
+            println!("{}", text);
+            println!();
+            render_coverage(&doc.coverage);
+            println!();
+            println!("Run --raw for full evidence · --json for machine-readable output.");
+        }
+        None => {
+            eprintln!("(Ollama unavailable — showing raw evidence. Run `ollama serve` to enable synthesis.)");
+            eprintln!();
+            render_body(&doc);
+        }
+    }
+
     Ok(())
 }
 
-fn render_concept_expansion(exp: &ConceptExpansion) {
-    println!("  {} (no direct file-path match)", exp.original_term);
-    println!("    Bridge: {}:  \"{}\"",
-        exp.bridge_source,
-        exp.bridge_snippet.chars().take(110).collect::<String>());
-    for v in &exp.verified_expansions {
-        println!("    Verified expansion: {}  →  {}", v.term, v.verified_in);
-    }
-    let added: Vec<&str> = exp.verified_expansions.iter().map(|v| v.term.as_str()).collect();
-    println!("    Added to investigation: {}", added.join(", "));
-}
-
-fn role_label(role: &ArtifactRole) -> &'static str {
-    match role {
-        ArtifactRole::ProductionSource => "",
-        ArtifactRole::Test             => "[test]",
-        ArtifactRole::Migration        => "[migration]",
-        ArtifactRole::Seeder           => "[seeder]",
-        ArtifactRole::Script           => "[script]",
-        ArtifactRole::Example          => "[example]",
-        ArtifactRole::Schema           => "[schema]",
-        ArtifactRole::Validation       => "[validation]",
-        ArtifactRole::Permission       => "[permission]",
-        ArtifactRole::Documentation    => "[documentation]",
-        ArtifactRole::Generated        => "[generated]",
-        ArtifactRole::Unknown          => "[unknown]",
-    }
-}
-
-fn render_candidate_reasons(reasons: &[CandidateReason]) {
-    for reason in reasons {
-        match reason {
-            CandidateReason::AnchorMatch { anchor, via } => {
-                println!("    ← anchor match \"{}\" ({})", anchor, via);
-            }
-            CandidateReason::StructuralNeighbor { from_file, kind, direction } => {
-                let arrow = if direction == "outgoing" { "→" } else { "←" };
-                println!("    ← structural neighbor  {} {}  {}", kind, arrow, from_file);
-            }
-        }
-    }
-}
+// ── Raw render (--raw flag or Ollama fallback) ────────────────────────────────
 
 fn render(doc: &InvestigationDocument) {
     println!("INVESTIGATION");
@@ -78,10 +72,14 @@ fn render(doc: &InvestigationDocument) {
             println!();
         }
         render_engineering_decisions(doc);
-        render_coverage(doc);
+        render_coverage(&doc.coverage);
         return;
     }
 
+    render_body(doc);
+}
+
+fn render_body(doc: &InvestigationDocument) {
     // ── CONCEPT RESOLUTION ────────────────────────────────────────────────────
     if !doc.concept_expansions.is_empty() {
         println!("CONCEPT RESOLUTION  ({} expansion{})",
@@ -136,7 +134,6 @@ fn render(doc: &InvestigationDocument) {
     }
 
     // Core candidates with zero structural connections within the candidate set.
-    // Supporting artifacts being isolated is expected and not listed here.
     let core_files: std::collections::HashSet<&str> =
         doc.core_candidates.iter().map(|c| c.file.as_str()).collect();
     let isolated: Vec<_> = doc.observed_structure.iter()
@@ -201,7 +198,52 @@ fn render(doc: &InvestigationDocument) {
         println!();
     }
 
-    render_coverage(doc);
+    render_coverage(&doc.coverage);
+}
+
+// ── Shared helpers ────────────────────────────────────────────────────────────
+
+fn render_concept_expansion(exp: &ConceptExpansion) {
+    println!("  {} (no direct file-path match)", exp.original_term);
+    println!("    Bridge: {}:  \"{}\"",
+        exp.bridge_source,
+        exp.bridge_snippet.chars().take(110).collect::<String>());
+    for v in &exp.verified_expansions {
+        println!("    Verified expansion: {}  →  {}", v.term, v.verified_in);
+    }
+    let added: Vec<&str> = exp.verified_expansions.iter().map(|v| v.term.as_str()).collect();
+    println!("    Added to investigation: {}", added.join(", "));
+}
+
+fn role_label(role: &ArtifactRole) -> &'static str {
+    match role {
+        ArtifactRole::ProductionSource => "",
+        ArtifactRole::Test             => "[test]",
+        ArtifactRole::Migration        => "[migration]",
+        ArtifactRole::Seeder           => "[seeder]",
+        ArtifactRole::Script           => "[script]",
+        ArtifactRole::Example          => "[example]",
+        ArtifactRole::Schema           => "[schema]",
+        ArtifactRole::Validation       => "[validation]",
+        ArtifactRole::Permission       => "[permission]",
+        ArtifactRole::Documentation    => "[documentation]",
+        ArtifactRole::Generated        => "[generated]",
+        ArtifactRole::Unknown          => "[unknown]",
+    }
+}
+
+fn render_candidate_reasons(reasons: &[CandidateReason]) {
+    for reason in reasons {
+        match reason {
+            CandidateReason::AnchorMatch { anchor, via } => {
+                println!("    ← anchor match \"{}\" ({})", anchor, via);
+            }
+            CandidateReason::StructuralNeighbor { from_file, kind, direction } => {
+                let arrow = if direction == "outgoing" { "→" } else { "←" };
+                println!("    ← structural neighbor  {} {}  {}", kind, arrow, from_file);
+            }
+        }
+    }
 }
 
 fn render_engineering_decisions(doc: &InvestigationDocument) {
@@ -215,15 +257,15 @@ fn render_engineering_decisions(doc: &InvestigationDocument) {
     }
 }
 
-fn render_coverage(doc: &InvestigationDocument) {
+fn render_coverage(cov: &InvestigationCoverage) {
     println!("COVERAGE");
-    println!("  Git history      {}", tick(doc.coverage.git_history));
-    println!("  GitHub PRs       {}", tick(doc.coverage.github_prs));
-    println!("  GitHub issues    {}", tick(doc.coverage.github_issues));
-    println!("  File paths       {}", tick(doc.coverage.file_paths));
-    println!("  ES imports       {}", tick(doc.coverage.es_imports));
-    println!("  Static calls     {}", tick(doc.coverage.static_calls));
-    println!("  Model refs       {}", tick(doc.coverage.model_refs));
+    println!("  Git history      {}", tick(cov.git_history));
+    println!("  GitHub PRs       {}", tick(cov.github_prs));
+    println!("  GitHub issues    {}", tick(cov.github_issues));
+    println!("  File paths       {}", tick(cov.file_paths));
+    println!("  ES imports       {}", tick(cov.es_imports));
+    println!("  Static calls     {}", tick(cov.static_calls));
+    println!("  Model refs       {}", tick(cov.model_refs));
     println!("  Dynamic dispatch ✗ not analyzed");
     println!("  Runtime DI       ✗ not analyzed");
     println!("  Working tree     ✗ not ingested");

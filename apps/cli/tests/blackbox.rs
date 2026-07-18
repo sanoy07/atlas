@@ -661,7 +661,7 @@ fn investigate_finds_file_path_candidates() {
 
     // "auth" matches auth.ts (file path).  auth.ts has no test/migration/schema
     // path pattern so it must appear in the core implementation neighborhood.
-    let output = f.run_ok(&["investigate", "auth"]);
+    let output = f.run_ok(&["investigate", "auth", "--raw"]);
 
     assert!(
         output.contains("CORE IMPLEMENTATION NEIGHBORHOOD"),
@@ -685,7 +685,7 @@ fn investigate_shows_structural_neighbors_after_typescript_ingest() {
 
     // "user" matches user.ts AND src/models/user.model.ts AND src/services/user.service.ts.
     // user.service.ts imports user.model.ts — structural neighbor.
-    let output = f.run_ok(&["investigate", "user"]);
+    let output = f.run_ok(&["investigate", "user", "--raw"]);
 
     assert!(
         output.contains("OBSERVED STRUCTURE") || output.contains("CANDIDATE ARTIFACTS"),
@@ -828,7 +828,7 @@ fn investigate_incoming_expansion_surfaces_service_for_model_seed() {
     // user.service.ts has an outgoing REFERENCES_MODEL edge to user.model.ts,
     // so user.model.ts has an incoming REFERENCES_MODEL edge from user.service.ts.
     // Phase 2 incoming expansion must surface user.service.ts as a structural neighbor.
-    let output = f.run_ok(&["investigate", "model"]);
+    let output = f.run_ok(&["investigate", "model", "--raw"]);
 
     assert!(
         output.contains("user.service.ts"),

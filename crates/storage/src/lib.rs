@@ -868,6 +868,14 @@ impl Store {
         ).optional()?)
     }
 
+    pub fn clear_structural_edges(&self, repo_path: &str) -> Result<()> {
+        self.conn.execute(
+            "DELETE FROM structural_edges WHERE repo_path = ?1",
+            params![repo_path],
+        )?;
+        Ok(())
+    }
+
     pub fn insert_structural_edge(&self, edge: &StructuralEdge, repo_path: &str) -> Result<()> {
         let kind = match edge.kind {
             StructuralEdgeKind::Imports          => "imports",

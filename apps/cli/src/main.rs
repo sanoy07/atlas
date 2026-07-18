@@ -2,6 +2,7 @@ use anyhow::Result;
 use clap::{Parser, Subcommand};
 use tracing_subscriber::EnvFilter;
 
+mod ai;
 mod commands;
 
 #[derive(Parser)]
@@ -73,6 +74,9 @@ enum Commands {
         anchors: Vec<String>,
         #[arg(long)]
         json: bool,
+        /// Skip AI synthesis and show the full raw evidence output
+        #[arg(long)]
+        raw: bool,
     },
     /// Show observed structural relationships for a file (IMPORTS, CALLS_STATIC, CALLS_INSTANCE, REFERENCES_MODEL)
     Structural {
@@ -133,7 +137,7 @@ async fn main() -> Result<()> {
         Commands::WhenIntroduced { file }       => commands::whenintroduced::run(&file),
         Commands::Context { file, json }        => commands::context::run(&file, json),
         Commands::Feedback { file }             => commands::feedback::run(&file),
-        Commands::Investigate { anchors, json }     => commands::investigate::run(&anchors, json),
+        Commands::Investigate { anchors, json, raw }     => commands::investigate::run(&anchors, json, raw),
         Commands::Search { anchors, json }          => commands::search::run(&anchors, json),
         Commands::Structural { file, reverse }          => commands::structural::run(&file, reverse),
         Commands::ReviewContext { pr_number, json }      => commands::review_context::run(pr_number, json),

@@ -39,12 +39,22 @@ pub fn extract_structural_edges(
     known_files: &HashSet<String>,
     repo_root: &str,
 ) -> Vec<StructuralEdge> {
+    extract_structural_edges_with_aliases(source_file, content, known_files, repo_root, &HashMap::new())
+}
+
+fn extract_structural_edges_with_aliases(
+    source_file: &str,
+    content: &str,
+    known_files: &HashSet<String>,
+    repo_root: &str,
+    aliases: &HashMap<String, String>,
+) -> Vec<StructuralEdge> {
     let mut edges: Vec<StructuralEdge> = Vec::new();
 
     // Pass 1: collect all import statements.
     // Maps imported symbol name → resolved target file (or "UNRESOLVED:..." string).
     let (import_edges, symbol_to_file) =
-        extract_imports(source_file, content, known_files, repo_root);
+        extract_imports(source_file, content, known_files, repo_root, aliases);
     edges.extend(import_edges);
 
     // Pass 2: extract static calls and model references using the symbol map.
@@ -63,6 +73,7 @@ fn extract_imports(
     content: &str,
     known_files: &HashSet<String>,
     repo_root: &str,
+    aliases: &HashMap<String, String>,
 ) -> (Vec<StructuralEdge>, HashMap<String, String>) {
     let mut edges: Vec<StructuralEdge> = Vec::new();
     let mut symbol_to_file: HashMap<String, String> = HashMap::new();
@@ -89,9 +100,11 @@ fn extract_imports(
             .or_else(|| extract_side_effect_path(trimmed))
         else { continue };
 
-        // Only resolve relative imports — external packages stay UNRESOLVED.
+        // Resolve: relative → resolve from source dir; alias → resolve via tsconfig paths; else external.
         let resolved = if target_raw.starts_with('.') {
             resolve_import(source_file, &target_raw, known_files, repo_root)
+        } else if let Some(alias_resolved) = resolve_alias(&target_raw, aliases, known_files) {
+            alias_resolved
         } else {
             format!("UNRESOLVED:external:{}", target_raw)
         };
@@ -217,6 +230,87 @@ fn extract_calls(
     });
 
     edges
+}
+
+// ─── Path alias resolution ────────────────────────────────────────────────────
+
+/// Read tsconfig.json at `{repo_root}/tsconfig.json` and extract `compilerOptions.paths`
+/// as a map of alias-prefix → replacement-prefix.
+/// e.g. `"@/*": ["./src/*"]` → `{"@/" → "src/"}`.
+/// Returns an empty map if the file is absent, unparseable, or has no paths.
+fn load_path_aliases(repo_root: &str) -> HashMap<String, String> {
+    let tsconfig_path = format!("{}/tsconfig.json", repo_root);
+    let Ok(raw) = std::fs::read_to_string(&tsconfig_path) else {
+        return HashMap::new();
+    };
+
+    // tsconfig supports JSONC (JSON with comments). Strip full-line // comments before parsing.
+    let stripped: String = raw
+        .lines()
+        .map(|line| if line.trim().starts_with("//") { "" } else { line })
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    let Ok(json) = serde_json::from_str::<serde_json::Value>(&stripped) else {
+        return HashMap::new();
+    };
+
+    let Some(paths_obj) = json
+        .get("compilerOptions")
+        .and_then(|c| c.get("paths"))
+        .and_then(|p| p.as_object())
+    else {
+        return HashMap::new();
+    };
+
+    let mut aliases = HashMap::new();
+    for (pattern, replacements) in paths_obj {
+        // "@/*" → alias_prefix = "@/"
+        let alias_prefix = pattern.trim_end_matches('*');
+        if alias_prefix.is_empty() { continue; }
+
+        // First replacement: "./src/*" or "src/*" → replacement_prefix = "src/"
+        let Some(first) = replacements
+            .as_array()
+            .and_then(|arr| arr.first())
+            .and_then(|v| v.as_str())
+        else { continue };
+
+        let replacement_prefix = first
+            .trim_start_matches("./")
+            .trim_end_matches('*');
+
+        aliases.insert(alias_prefix.to_string(), replacement_prefix.to_string());
+    }
+
+    aliases
+}
+
+/// Try to resolve a non-relative import specifier via tsconfig path aliases.
+/// Returns `Some(repo_relative_path)` when an alias matches and the target exists.
+fn resolve_alias(
+    specifier: &str,
+    aliases: &HashMap<String, String>,
+    known_files: &HashSet<String>,
+) -> Option<String> {
+    for (alias_prefix, replacement_prefix) in aliases {
+        let Some(suffix) = specifier.strip_prefix(alias_prefix.as_str()) else { continue };
+        let base = format!("{}{}", replacement_prefix, suffix);
+        let stripped = base.strip_suffix(".js").unwrap_or(&base);
+        let candidates = [
+            format!("{}.ts", stripped),
+            format!("{}.tsx", stripped),
+            format!("{}/index.ts", stripped),
+            format!("{}/index.tsx", stripped),
+            stripped.to_string(),
+        ];
+        for candidate in &candidates {
+            if known_files.contains(candidate.as_str()) {
+                return Some(candidate.clone());
+            }
+        }
+    }
+    None
 }
 
 // ─── Path resolution ──────────────────────────────────────────────────────────
@@ -418,11 +512,12 @@ fn collect_recursive(root: &Path, dir: &Path, out: &mut Vec<(String, PathBuf)>) 
 pub fn extract_all(repo_root: &str) -> (Vec<StructuralEdge>, usize) {
     let files = collect_ts_files(repo_root);
     let known: HashSet<String> = files.iter().map(|(rel, _)| rel.clone()).collect();
+    let aliases = load_path_aliases(repo_root);
     let mut all_edges = Vec::new();
 
     for (rel_path, abs_path) in &files {
         let Ok(content) = std::fs::read_to_string(abs_path) else { continue };
-        let edges = extract_structural_edges(rel_path, &content, &known, repo_root);
+        let edges = extract_structural_edges_with_aliases(rel_path, &content, &known, repo_root, &aliases);
         all_edges.extend(edges);
     }
 
