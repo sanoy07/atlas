@@ -1,0 +1,19 @@
+RIPGREP symbol='TODO|FIXME|export'  (definition beats import)
+NOTE: TypeScript often imports `foo.js` while the source file is `foo.ts` — prefer [DEFINITION] paths ending in .ts/.tsx over .js import strings.
+
+IMPORTS / requires (195) — not definitions:
+  [IMPORT]     src/graphql/codegen/index.ts:1:export * from "./gql";
+  [IMPORT]     src/lib/firebase/index.ts:1:export { getFirebaseAuth } from "./firebase";
+  [IMPORT]     src/lib/firebase/utils/index.ts:1:export * from "./fireBaseErrors";
+  [IMPORT]     src/features/platform/hooks/index.ts:1:export * from "./useTheme";
+  [IMPORT]     src/features/auth/session.ts:42:export { authCapabilities, authAdapter } from "./providers";
+  [IMPORT]     src/features/auth/index.ts:1:export * from "./components";
+  [IMPORT]     src/features/auth/index.ts:2:export * from "./hooks";
+  [IMPORT]     src/features/auth/index.ts:3:export * from "./utils";
+  [IMPORT]     src/features/auth/index.ts:4:export { authCapabilities } from "./providers";
+  [IMPORT]     src/features/platform/utils/index.ts:1:export * from "./getGlobalConfig";
+  [IMPORT]     src/features/platform/utils/index.ts:2:export * from "./siteMetadata";
+  [IMPORT]     src/features/platform/utils/index.ts:3:export * from "./themeManager";
+  [IMPORT]     src/features/support/hooks/index.ts:1:export * from "./useCreateTicket";
+  [IMPORT]     src/features/support/hooks/index.ts:2:export * from "./useFaq";
+  [IMPORT]     src/features/support/hooks/index.ts:3:export * from "./useMarkTicketR

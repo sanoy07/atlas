@@ -1,0 +1,948 @@
+{
+  "case_id": "kyc-notification-001",
+  "task": "Why doesn't the user receive an email after KYC approval?",
+  "repo": "RWATP",
+  "repo_commit": "b21260594c0e8d66be01d6a24b7b79e428fcc947",
+  "generated_by": "atlas atlas 0.1.0",
+  "evidence": [
+    {
+      "id": "E1",
+      "type": "source_signal",
+      "summary": "src/common/enum/kyc-document.enums.ts",
+      "detail": "anchor \"kyc\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/enum/kyc-document.enums.ts"
+      }
+    },
+    {
+      "id": "E2",
+      "type": "source_signal",
+      "summary": "src/common/enum/kyc.enums.ts",
+      "detail": "anchor \"kyc\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/enum/kyc.enums.ts"
+      }
+    },
+    {
+      "id": "E3",
+      "type": "source_signal",
+      "summary": "src/modules/compliance/graphql/compliance.resolvers.ts",
+      "detail": "anchor \"compliance\" via file_path; calls_static neighbor from src/modules/compliance/services/compliance.service.ts; calls_static neighbor from src/modules/compliance/services/compliance.service.ts; calls_static neighbor from src/modules/compliance/services/compliance.service.ts; calls_static neighbor from src/modules/compliance/services/compliance.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/graphql/compliance.resolvers.ts"
+      }
+    },
+    {
+      "id": "E4",
+      "type": "source_signal",
+      "summary": "src/modules/compliance/graphql/compliance.typeDefs.ts",
+      "detail": "anchor \"compliance\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/graphql/compliance.typeDefs.ts"
+      }
+    },
+    {
+      "id": "E5",
+      "type": "source_signal",
+      "summary": "src/modules/compliance/models/kyc-flow.model.ts",
+      "detail": "anchor \"compliance\" via file_path; anchor \"kyc\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/models/kyc-flow.model.ts"
+      }
+    },
+    {
+      "id": "E6",
+      "type": "source_signal",
+      "summary": "src/modules/compliance/models/kyc-profile.model.ts",
+      "detail": "anchor \"compliance\" via file_path; anchor \"kyc\" via file_path; references_model neighbor from src/modules/compliance/services/compliance.service.ts; references_model neighbor from src/modules/compliance/services/compliance.service.ts; references_model neighbor from src/modules/compliance/services/compliance.service.ts; references_model neighbor from src/modules/compliance/services/compliance.service.ts; references_model neighbor from src/modules/compliance/services/compliance.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/models/kyc-profile.model.ts"
+      }
+    },
+    {
+      "id": "E7",
+      "type": "source_signal",
+      "summary": "src/modules/compliance/providers/internal.provider.ts",
+      "detail": "references_model neighbor from src/modules/compliance/models/kyc-profile.model.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/providers/internal.provider.ts"
+      }
+    },
+    {
+      "id": "E8",
+      "type": "source_signal",
+      "summary": "src/modules/compliance/providers/kyc.provider.factory.ts",
+      "detail": "anchor \"compliance\" via file_path; anchor \"kyc\" via file_path; calls_static neighbor from src/modules/compliance/services/compliance.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/providers/kyc.provider.factory.ts"
+      }
+    },
+    {
+      "id": "E9",
+      "type": "source_signal",
+      "summary": "src/modules/compliance/providers/kyc.provider.interface.ts",
+      "detail": "anchor \"compliance\" via file_path; anchor \"kyc\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/providers/kyc.provider.interface.ts"
+      }
+    },
+    {
+      "id": "E10",
+      "type": "source_signal",
+      "summary": "src/modules/compliance/services/compliance.service.ts",
+      "detail": "anchor \"compliance\" via file_path; references_model neighbor from src/modules/compliance/models/kyc-profile.model.ts; references_model neighbor from src/modules/compliance/models/kyc-profile.model.ts; references_model neighbor from src/modules/compliance/models/kyc-profile.model.ts; references_model neighbor from src/modules/compliance/models/kyc-profile.model.ts; references_model neighbor from src/modules/compliance/models/kyc-profile.model.ts; calls_static neighbor from src/modules/compliance/providers/kyc.provider.factory.ts; calls_static neighbor from src/webhooks/handlers/kyc.webhook.handler.ts; calls_static neighbor from src/modules/compliance/graphql/compliance.resolvers.ts; calls_static neighbor from src/modules/compliance/graphql/compliance.resolvers.ts;",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E11",
+      "type": "source_signal",
+      "summary": "src/modules/core/models/integration.model.ts",
+      "detail": "calls_static neighbor from src/modules/compliance/providers/kyc.provider.factory.ts; calls_static neighbor from src/modules/compliance/services/compliance.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/models/integration.model.ts"
+      }
+    },
+    {
+      "id": "E12",
+      "type": "source_signal",
+      "summary": "src/modules/core/services/integration.service.ts",
+      "detail": "calls_static neighbor from src/modules/compliance/providers/kyc.provider.factory.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/services/integration.service.ts"
+      }
+    },
+    {
+      "id": "E13",
+      "type": "source_signal",
+      "summary": "src/modules/notifications/enum/notification.enums.ts",
+      "detail": "anchor \"notification\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/notifications/enum/notification.enums.ts"
+      }
+    },
+    {
+      "id": "E14",
+      "type": "source_signal",
+      "summary": "src/modules/notifications/models/notification-message.model.ts",
+      "detail": "anchor \"notification\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/notifications/models/notification-message.model.ts"
+      }
+    },
+    {
+      "id": "E15",
+      "type": "source_signal",
+      "summary": "src/modules/notifications/models/notification-template.model.ts",
+      "detail": "anchor \"notification\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/notifications/models/notification-template.model.ts"
+      }
+    },
+    {
+      "id": "E16",
+      "type": "source_signal",
+      "summary": "src/webhooks/handlers/kyc.webhook.handler.ts",
+      "detail": "anchor \"kyc\" via file_path; anchor \"webhook\" via file_path; calls_static neighbor from src/modules/compliance/services/compliance.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/webhooks/handlers/kyc.webhook.handler.ts"
+      }
+    },
+    {
+      "id": "E17",
+      "type": "source_signal",
+      "summary": "src/webhooks/middleware/webhook-logger.ts",
+      "detail": "anchor \"webhook\" via file_path; references_model neighbor from src/webhooks/models/webhook-event.model.ts; references_model neighbor from src/webhooks/models/webhook-event.model.ts; references_model neighbor from src/webhooks/models/webhook-event.model.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/webhooks/middleware/webhook-logger.ts"
+      }
+    },
+    {
+      "id": "E18",
+      "type": "source_signal",
+      "summary": "src/webhooks/models/webhook-event.model.ts",
+      "detail": "anchor \"webhook\" via file_path; references_model neighbor from src/webhooks/middleware/webhook-logger.ts; references_model neighbor from src/webhooks/middleware/webhook-logger.ts; references_model neighbor from src/webhooks/middleware/webhook-logger.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/webhooks/models/webhook-event.model.ts"
+      }
+    },
+    {
+      "id": "E19",
+      "type": "source_signal",
+      "summary": "src/webhooks/utils/webhook-idempotency.util.ts",
+      "detail": "anchor \"webhook\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/webhooks/utils/webhook-idempotency.util.ts"
+      }
+    },
+    {
+      "id": "E20",
+      "type": "source_signal",
+      "summary": "src/webhooks/utils/webhook-response.ts",
+      "detail": "anchor \"webhook\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/webhooks/utils/webhook-response.ts"
+      }
+    },
+    {
+      "id": "E21",
+      "type": "source_signal",
+      "summary": "[validation] src/modules/compliance/validation/compliance.validation.ts",
+      "detail": "anchor \"compliance\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/validation/compliance.validation.ts"
+      }
+    },
+    {
+      "id": "E22",
+      "type": "observed_call",
+      "summary": "src/modules/compliance/graphql/compliance.resolvers.ts → src/modules/compliance/services/compliance.service.ts [ComplianceService.getKycMethods]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/graphql/compliance.resolvers.ts"
+      }
+    },
+    {
+      "id": "E23",
+      "type": "observed_call",
+      "summary": "src/modules/compliance/graphql/compliance.resolvers.ts → src/modules/compliance/services/compliance.service.ts [ComplianceService.getMyKycState]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/graphql/compliance.resolvers.ts"
+      }
+    },
+    {
+      "id": "E24",
+      "type": "observed_call",
+      "summary": "src/modules/compliance/graphql/compliance.resolvers.ts → src/modules/compliance/services/compliance.service.ts [ComplianceService.getKycApplicantInspection]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/graphql/compliance.resolvers.ts"
+      }
+    },
+    {
+      "id": "E25",
+      "type": "observed_call",
+      "summary": "src/modules/compliance/graphql/compliance.resolvers.ts → src/modules/compliance/services/compliance.service.ts [ComplianceService.initializeKyc]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/graphql/compliance.resolvers.ts"
+      }
+    },
+    {
+      "id": "E26",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/graphql/compliance.resolvers.ts → src/modules/compliance/services/compliance.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/graphql/compliance.resolvers.ts"
+      }
+    },
+    {
+      "id": "E27",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/providers/internal.provider.ts → src/modules/compliance/models/kyc-profile.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/providers/internal.provider.ts"
+      }
+    },
+    {
+      "id": "E28",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/providers/internal.provider.ts → src/modules/core/models/integration.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/providers/internal.provider.ts"
+      }
+    },
+    {
+      "id": "E29",
+      "type": "model_reference",
+      "summary": "src/modules/compliance/providers/internal.provider.ts → src/modules/compliance/models/kyc-profile.model.ts [KycProfile.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/providers/internal.provider.ts"
+      }
+    },
+    {
+      "id": "E30",
+      "type": "observed_call",
+      "summary": "src/modules/compliance/providers/kyc.provider.factory.ts → src/modules/core/models/integration.model.ts [Integration.findActiveProvider]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/providers/kyc.provider.factory.ts"
+      }
+    },
+    {
+      "id": "E31",
+      "type": "observed_call",
+      "summary": "src/modules/compliance/providers/kyc.provider.factory.ts → src/modules/core/services/integration.service.ts [IntegrationService.getProviderSecrets]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/providers/kyc.provider.factory.ts"
+      }
+    },
+    {
+      "id": "E32",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/providers/kyc.provider.factory.ts → src/modules/compliance/providers/internal.provider.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/providers/kyc.provider.factory.ts"
+      }
+    },
+    {
+      "id": "E33",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/providers/kyc.provider.factory.ts → src/modules/compliance/providers/kyc.provider.interface.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/providers/kyc.provider.factory.ts"
+      }
+    },
+    {
+      "id": "E34",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/providers/kyc.provider.factory.ts → src/modules/core/models/integration.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/providers/kyc.provider.factory.ts"
+      }
+    },
+    {
+      "id": "E35",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/providers/kyc.provider.factory.ts → src/modules/core/services/integration.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/providers/kyc.provider.factory.ts"
+      }
+    },
+    {
+      "id": "E36",
+      "type": "observed_call",
+      "summary": "src/modules/compliance/services/compliance.service.ts → src/modules/compliance/providers/kyc.provider.factory.ts [KycProviderFactory.getProvider]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E37",
+      "type": "observed_call",
+      "summary": "src/modules/compliance/services/compliance.service.ts → src/modules/core/models/integration.model.ts [Integration.findActiveByCategory]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E38",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/services/compliance.service.ts → src/modules/compliance/models/kyc-profile.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E39",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/services/compliance.service.ts → src/modules/compliance/providers/kyc.provider.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E40",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/services/compliance.service.ts → src/modules/core/models/integration.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E41",
+      "type": "model_reference",
+      "summary": "src/modules/compliance/services/compliance.service.ts → src/modules/compliance/models/kyc-profile.model.ts [KycProfile.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E42",
+      "type": "model_reference",
+      "summary": "src/modules/compliance/services/compliance.service.ts → src/modules/compliance/models/kyc-profile.model.ts [KycProfile.updateMany]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E43",
+      "type": "model_reference",
+      "summary": "src/modules/compliance/services/compliance.service.ts → src/modules/compliance/models/kyc-profile.model.ts [KycProfile.countDocuments]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E44",
+      "type": "model_reference",
+      "summary": "src/modules/compliance/services/compliance.service.ts → src/modules/compliance/models/kyc-profile.model.ts [KycProfile.create]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E45",
+      "type": "model_reference",
+      "summary": "src/modules/compliance/services/compliance.service.ts → src/modules/compliance/models/kyc-profile.model.ts [KycProfile.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E46",
+      "type": "observed_import",
+      "summary": "src/modules/compliance/validation/compliance.validation.ts → src/common/enum/kyc.enums.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/compliance/validation/compliance.validation.ts"
+      }
+    },
+    {
+      "id": "E47",
+      "type": "observed_call",
+      "summary": "src/webhooks/handlers/kyc.webhook.handler.ts → src/modules/compliance/services/compliance.service.ts [ComplianceService.handleWebhook]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/webhooks/handlers/kyc.webhook.handler.ts"
+      }
+    },
+    {
+      "id": "E48",
+      "type": "observed_import",
+      "summary": "src/webhooks/handlers/kyc.webhook.handler.ts → src/modules/compliance/services/compliance.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/webhooks/handlers/kyc.webhook.handler.ts"
+      }
+    },
+    {
+      "id": "E49",
+      "type": "observed_import",
+      "summary": "src/webhooks/middleware/webhook-logger.ts → src/webhooks/models/webhook-event.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/webhooks/middleware/webhook-logger.ts"
+      }
+    },
+    {
+      "id": "E50",
+      "type": "observed_import",
+      "summary": "src/webhooks/middleware/webhook-logger.ts → src/webhooks/utils/webhook-idempotency.util.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/webhooks/middleware/webhook-logger.ts"
+      }
+    },
+    {
+      "id": "E51",
+      "type": "model_reference",
+      "summary": "src/webhooks/middleware/webhook-logger.ts → src/webhooks/models/webhook-event.model.ts [WebhookEvent.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/webhooks/middleware/webhook-logger.ts"
+      }
+    },
+    {
+      "id": "E52",
+      "type": "model_reference",
+      "summary": "src/webhooks/middleware/webhook-logger.ts → src/webhooks/models/webhook-event.model.ts [WebhookEvent.create]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/webhooks/middleware/webhook-logger.ts"
+      }
+    },
+    {
+      "id": "E53",
+      "type": "model_reference",
+      "summary": "src/webhooks/middleware/webhook-logger.ts → src/webhooks/models/webhook-event.model.ts [WebhookEvent.findByIdAndUpdate]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/webhooks/middleware/webhook-logger.ts"
+      }
+    },
+    {
+      "id": "E54",
+      "type": "documentary",
+      "summary": "Issue #1: ",
+      "detail": "…ng) 3. **Fair Usage**: Ensure equitable resource distribution across users 4. **Compliance**: Meet regulatory requirements for rate-limited financial operations 5. **Perf…",
+      "source": {
+        "kind": "Issue",
+        "number": 1
+      }
+    },
+    {
+      "id": "E55",
+      "type": "documentary",
+      "summary": "Issue #10: ",
+      "detail": "…ount: String # Media thumbnailImageUrl: String heroImageUrl: String # Compliance allowedInvestorTypes: [InvestorType!] blockedCountries: [String!] } input…",
+      "source": {
+        "kind": "Issue",
+        "number": 10
+      }
+    },
+    {
+      "id": "E56",
+      "type": "documentary",
+      "summary": "Issue #33: ",
+      "detail": "…alse; return entity.can(permission); }); ``` **Apply isUser Rule**: - **Compliance Module** (`src/modules/compliance/graphql/permissions.ts`): `initializeKyc: cha…",
+      "source": {
+        "kind": "Issue",
+        "number": 33
+      }
+    },
+    {
+      "id": "E57",
+      "type": "documentary",
+      "summary": "Issue #34: ",
+      "detail": "…ups ### Rationale `getActiveIntegration(category)` is called on every payment/KYC/signing operation but currently hits the database every time. Integration confi…",
+      "source": {
+        "kind": "Issue",
+        "number": 34
+      }
+    },
+    {
+      "id": "E58",
+      "type": "documentary",
+      "summary": "Issue #37: ",
+      "detail": "…nly one active provider per category (e.g., can't have both SUMSUB and INTERNAL_KYC active simultaneously) 2. SUMSUB configuration doesn't support different `level…",
+      "source": {
+        "kind": "Issue",
+        "number": 37
+      }
+    },
+    {
+      "id": "E59",
+      "type": "documentary",
+      "summary": "Issue #44: ",
+      "detail": "…updateUserStatus()` | 291 | Status changed | | `updateFromKycVerification()` | 452 | KYC data updated | | `setUserRoles()`…",
+      "source": {
+        "kind": "Issue",
+        "number": 44
+      }
+    },
+    {
+      "id": "E60",
+      "type": "documentary",
+      "summary": "Issue #56: Complete notify command payloads and wire KYC notification commands",
+      "detail": "…# 2. Wire KYC status changes to publish notify commands **File:** `src/modules/compliance/services/compliance.service.ts` When KYC is approved or rejected, the complian…",
+      "source": {
+        "kind": "Issue",
+        "number": 56
+      }
+    },
+    {
+      "id": "E61",
+      "type": "documentary",
+      "summary": "Issue #62: ",
+      "detail": "…requires **three** contract refs: `primarySmartContract`, `identityRegistry`, `compliance`) is populated in `listing.service.ts:110-119` by blindly wrapping **arbitrary,…",
+      "source": {
+        "kind": "Issue",
+        "number": 62
+      }
+    },
+    {
+      "id": "E62",
+      "type": "documentary",
+      "summary": "PR #11: ",
+      "detail": "…tandard`, `primaryBlockchain`, `primarySmartContract` - `identityRegistry`, `compliance`, `controllerWallet` - `transferEnforcement` mode - **Output Type**: [Block…",
+      "source": {
+        "kind": "PR",
+        "number": 11
+      }
+    },
+    {
+      "id": "E63",
+      "type": "documentary",
+      "summary": "PR #13: ",
+      "detail": "…N | | `src/modules/identity/models/permission.model.ts` | Added `\"core\"` and `\"compliance\"` to category enum | | `src/modules/identity/rbac/smart-seeder.js` | Bumped ve…",
+      "source": {
+        "kind": "PR",
+        "number": 13
+      }
+    },
+    {
+      "id": "E64",
+      "type": "documentary",
+      "summary": "PR #40: ",
+      "detail": "…nsures only human users can perform specific mutations (e.g., `updateProfile`, `kyc`). - **`hasPermission`**: Automatically checks permissions against the aut…",
+      "source": {
+        "kind": "PR",
+        "number": 40
+      }
+    },
+    {
+      "id": "E65",
+      "type": "documentary",
+      "summary": "PR #41: ",
+      "detail": "…nsures only human users can perform specific mutations (e.g., `updateProfile`, `kyc`). - **`hasPermission`**: Automatically checks permissions against the aut…",
+      "source": {
+        "kind": "PR",
+        "number": 41
+      }
+    },
+    {
+      "id": "E66",
+      "type": "documentary",
+      "summary": "PR #47: ",
+      "detail": "…te Integration ✅ PASS: Activate Integration success [INFO] TEST 4: Get Active KYC Integrations ✅ PASS: Get Active KYC Integrations success [INFO] TEST 5: Get I…",
+      "source": {
+        "kind": "PR",
+        "number": 47
+      }
+    },
+    {
+      "id": "E67",
+      "type": "documentary",
+      "summary": "PR #51: ",
+      "detail": "…application), generate action links via the auth provider adapter, and dispatch notification commands for email delivery. --- ## Changes by File ### 1. GraphQL Sch…",
+      "source": {
+        "kind": "PR",
+        "number": 51
+      }
+    },
+    {
+      "id": "E68",
+      "type": "documentary",
+      "summary": "PR #52: ",
+      "detail": "…missionsFromUser` (Permissions) - `deleteUser` (Soft Delete) - `updateFromKycVerification` (KYC Sync) ### Architecture & Type Safety - **Context Type Upd…",
+      "source": {
+        "kind": "PR",
+        "number": 52
+      }
+    },
+    {
+      "id": "E69",
+      "type": "documentary",
+      "summary": "PR #61: implemented complete notify command payloads and wire KYC notificatio…",
+      "detail": "…ds and Wire KYC Notification Commands Closes: #56 **Test script:** `tests/compliance/test-issue-56-improvements.ts` (22/22 passing) **Branch:** enhancement/56-noti…",
+      "source": {
+        "kind": "PR",
+        "number": 61
+      }
+    },
+    {
+      "id": "E70",
+      "type": "documentary",
+      "summary": "PR #63: ",
+      "detail": "…ment()` which creates all four ERC-3643 contracts atomically (TOKEN, WHITELIST, COMPLIANCE, COMPLIANCE/transferEnforcement) and sets `listing.blockchainConfig`. | | `src…",
+      "source": {
+        "kind": "PR",
+        "number": 63
+      }
+    },
+    {
+      "id": "E71",
+      "type": "historical",
+      "summary": "touched 5x: src/modules/core/services/integration.service.ts",
+      "detail": "src/modules/core/models/integration.model.ts, src/modules/compliance/graphql/compliance.resolvers.ts, src/modules/compliance/graphql/compliance.typeDefs.ts, src/modules/compliance/providers/internal.provider.ts, src/modules/compliance/providers/kyc.provider.factory.ts, src/modules/compliance/services/compliance.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/services/integration.service.ts"
+      }
+    },
+    {
+      "id": "E72",
+      "type": "historical",
+      "summary": "touched 4x: src/modules/core/models/integration.model.ts",
+      "detail": "src/modules/core/services/integration.service.ts, src/modules/compliance/providers/kyc.provider.factory.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/models/integration.model.ts"
+      }
+    },
+    {
+      "id": "E73",
+      "type": "historical",
+      "summary": "touched 3x: src/modules/compliance/enum/index.ts",
+      "detail": "src/modules/compliance/enum/compliance.enums.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/enum/index.ts"
+      }
+    },
+    {
+      "id": "E74",
+      "type": "historical",
+      "summary": "touched 3x: src/modules/compliance/models/kyc-profile.model.ts",
+      "detail": "src/common/enum/kyc.enums.ts, src/modules/compliance/services/compliance.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/models/kyc-profile.model.ts"
+      }
+    },
+    {
+      "id": "E75",
+      "type": "historical",
+      "summary": "touched 3x: src/modules/compliance/providers/internal.provider.ts",
+      "detail": "src/modules/compliance/graphql/compliance.resolvers.ts, src/modules/compliance/graphql/compliance.typeDefs.ts, src/modules/compliance/providers/kyc.provider.factory.ts, src/modules/compliance/services/compliance.service.ts, src/modules/core/services/integration.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/providers/internal.provider.ts"
+      }
+    },
+    {
+      "id": "E76",
+      "type": "historical",
+      "summary": "touched 3x: src/modules/compliance/providers/kyc.provider.factory.ts",
+      "detail": "src/modules/compliance/graphql/compliance.resolvers.ts, src/modules/compliance/graphql/compliance.typeDefs.ts, src/modules/compliance/providers/internal.provider.ts, src/modules/compliance/services/compliance.service.ts, src/modules/core/models/integration.model.ts, src/modules/core/services/integration.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/providers/kyc.provider.factory.ts"
+      }
+    },
+    {
+      "id": "E77",
+      "type": "historical",
+      "summary": "touched 3x: src/modules/compliance/services/compliance.service.ts",
+      "detail": "src/modules/compliance/graphql/compliance.resolvers.ts, src/modules/compliance/graphql/compliance.typeDefs.ts, src/modules/compliance/models/kyc-profile.model.ts, src/modules/compliance/providers/internal.provider.ts, src/modules/compliance/providers/kyc.provider.factory.ts, src/modules/compliance/providers/kyc.provider.interface.ts, src/modules/core/services/integration.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/services/compliance.service.ts"
+      }
+    },
+    {
+      "id": "E78",
+      "type": "historical",
+      "summary": "touched 2x: src/common/enum/kyc.enums.ts",
+      "detail": "src/modules/compliance/models/kyc-profile.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/common/enum/kyc.enums.ts"
+      }
+    },
+    {
+      "id": "E79",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/compliance/enum/compliance.enums.ts",
+      "detail": "src/modules/compliance/enum/index.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/enum/compliance.enums.ts"
+      }
+    },
+    {
+      "id": "E80",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/compliance/graphql/compliance.resolvers.ts",
+      "detail": "src/modules/compliance/graphql/compliance.typeDefs.ts, src/modules/compliance/providers/internal.provider.ts, src/modules/compliance/providers/kyc.provider.factory.ts, src/modules/compliance/services/compliance.service.ts, src/modules/core/services/integration.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/graphql/compliance.resolvers.ts"
+      }
+    },
+    {
+      "id": "E81",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/compliance/graphql/compliance.typeDefs.ts",
+      "detail": "src/modules/compliance/graphql/compliance.resolvers.ts, src/modules/compliance/providers/internal.provider.ts, src/modules/compliance/providers/kyc.provider.factory.ts, src/modules/compliance/services/compliance.service.ts, src/modules/core/services/integration.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/graphql/compliance.typeDefs.ts"
+      }
+    },
+    {
+      "id": "E82",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/compliance/providers/kyc.provider.interface.ts",
+      "detail": "src/modules/compliance/services/compliance.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/providers/kyc.provider.interface.ts"
+      }
+    },
+    {
+      "id": "E83",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/notifications/models/notification-template.model.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/notifications/models/notification-template.model.ts"
+      }
+    },
+    {
+      "id": "E84",
+      "type": "historical",
+      "summary": "touched 1x: src/common/enum/kyc-document.enums.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/enum/kyc-document.enums.ts"
+      }
+    },
+    {
+      "id": "E85",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/compliance/models/kyc-flow.model.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/models/kyc-flow.model.ts"
+      }
+    },
+    {
+      "id": "E86",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/compliance/validation/compliance.validation.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/validation/compliance.validation.ts"
+      }
+    },
+    {
+      "id": "E87",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/notifications/enum/notification.enums.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/notifications/enum/notification.enums.ts"
+      }
+    },
+    {
+      "id": "E88",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/notifications/models/notification-message.model.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/notifications/models/notification-message.model.ts"
+      }
+    },
+    {
+      "id": "E89",
+      "type": "historical",
+      "summary": "touched 1x: src/webhooks/handlers/kyc.webhook.handler.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/webhooks/handlers/kyc.webhook.handler.ts"
+      }
+    },
+    {
+      "id": "E90",
+      "type": "historical",
+      "summary": "touched 1x: src/webhooks/middleware/webhook-logger.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/webhooks/middleware/webhook-logger.ts"
+      }
+    },
+    {
+      "id": "E91",
+      "type": "historical",
+      "summary": "touched 1x: src/webhooks/models/webhook-event.model.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/webhooks/models/webhook-event.model.ts"
+      }
+    },
+    {
+      "id": "E92",
+      "type": "historical",
+      "summary": "touched 1x: src/webhooks/utils/webhook-idempotency.util.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/webhooks/utils/webhook-idempotency.util.ts"
+      }
+    },
+    {
+      "id": "E93",
+      "type": "historical",
+      "summary": "touched 1x: src/webhooks/utils/webhook-response.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/webhooks/utils/webhook-response.ts"
+      }
+    },
+    {
+      "id": "E94",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/compliance/models/kyc-flow.model.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+# Atlas investigation benchmarks — Jujutsu (jj)
+# Repository: https://github.com/jj-vcs/jj
+#
+# Each [[case]] runs `atlas investigate <anchors>` and scores the result.
+# expected_center / supporting_evidence / false_positive_alert are matched
+# as *substrings* of candidate file paths.
+
+[[case]]
+id          = "jj-operation-log"
+description = "Operation log — immutable append-only mutation record"
+repo        = "/home/sanoy/projects/research/jj"
+db          = "/home/sanoy/projects/research/jj/atlas.db"
+anchors     = ["operation", "log"]
+expected_center      = ["operation.rs", "op_store.rs", "op_heads_store.rs"]
+supporting_evidence  = ["op_walk.rs", "simple_op_store.rs"]
+false_positive_alert = []
+
+[[case]]
+id          = "jj-conflicts"
+description = "First-class conflict representation"
+repo        = "/home/sanoy/projects/research/jj"
+db          = "/home/sanoy/projects/research/jj/atlas.db"
+anchors     = ["conflict", "merge"]
+expected_center      = ["conflicts.rs", "merge.rs"]
+supporting_evidence  = ["conflict_labels.rs"]
+false_positive_alert = []
+
+[[case]]
+id          = "jj-backend"
+description = "Pluggable backend trait and git backend implementation"
+repo        = "/home/sanoy/projects/research/jj"
+db          = "/home/sanoy/projects/research/jj/atlas.db"
+anchors     = ["backend", "git"]
+expected_center      = ["backend.rs", "git_backend.rs", "git.rs"]
+supporting_evidence  = []
+false_positive_alert = []
+
+[[case]]
+id          = "jj-workspace"
+description = "Working copy and workspace management"
+repo        = "/home/sanoy/projects/research/jj"
+db          = "/home/sanoy/projects/research/jj/atlas.db"
+anchors     = ["workspace", "working", "copy"]
+expected_center      = ["workspace.rs", "local_working_copy.rs", "working_copy.rs"]
+supporting_evidence  = ["workspace_store.rs"]
+false_positive_alert = []

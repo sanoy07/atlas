@@ -1,0 +1,31 @@
+atlas agent → /home/sanoy/projects/atlas/agent/atlas_agent.py  model=qwen3:4b  repo=/home/sanoy/Vesta/rwatp-core
+[36m→ atlas_investigate(question='how does payment settlement trigger order fulfillment?')[0m
+[2m  ← 5703 chars[0m
+[36m→ ripgrep(path='src/modules/payment/services/payment-settlement.service.ts', pattern='order fulfillment')[0m
+[2m  ← 101 chars[0m
+[36m→ ripgrep(path='src/modules/payment/services/payment-settlement.service.ts', pattern='fulfill')[0m
+[2m  ← 623 chars[0m
+[33m↻ flow question: forcing atlas_callers drill (paths_so_far=14, has_method=False, has_payment_caller=True)[0m
+[36m→ atlas_callers(subject='tryEnqueue') [host-forced][0m
+[2m  ← 749 chars[0m
+[36m→ atlas_callers(subject='OrderFulfillmentService') [host-forced][0m
+[2m  ← 762 chars[0m
+[36m→ atlas_callers(subject='payment-settlement') [host-forced][0m
+[2m  ← 419 chars[0m
+[36m→ ripgrep(pattern='tryEnqueue', path='src') [host-forced fallback][0m
+[2m  ← 3654 chars[0m
+[36m→ ripgrep(pattern='OrderFulfillmentService', path='src') [host-forced fallback][0m
+[2m  ← 1857 chars[0m
+
+Payment settlement triggers order fulfillment by calling `OrderFulfillmentService.tryEnqueue` in `src/modules/payment/services/payment-settlement.service.ts` after confirming payment. This method is explicitly invoked from both `payment-settlement.service.ts` (line 253) and `signing.service.ts` (line 1254) to enqueue orders for delivery. The primary definition of `OrderFulfillmentService` resides in `src/modules/core/services/order-fulfillment.service.ts`.
+
+---
+C4 FINAL GATE: SUPPORTED
+  Non-causal synthesis grounded in tool evidence.
+  evidence_paths_cited: 3
+  (Existence in a neighborhood ≠ causal support.)
+
+  note: host forced atlas_callers structural drill before accepting final answer.
+
+
+[2m[5 step(s), 144.3s, model=qwen3:4b, num_ctx=12288, investigate=yes, flow_drill=yes, storage_drill=no][0m

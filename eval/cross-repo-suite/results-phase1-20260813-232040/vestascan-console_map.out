@@ -1,0 +1,85 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+ATLAS MAP
+  repo: /home/sanoy/Vesta/vestascan-console
+  git_head: cc30d1e
+  modules_subject: src
+  modules (13): app, assets, components, context, features, graphql, hooks, icons, layout, lib, store, types, utils
+
+CLAIMS  (observed | derived | inferred | unknown)
+  [OBSERVED] map-001 — Module/layer inventory under `src` has 13 child directories.
+    method: compute_modules immediate children of subject from files table
+    evidence: [method] compute_modules — total_modules=13
+    limitation: Names are path segments, not business-domain labels.
+    limitation: Historical paths in files table may appear as modules.
+
+  [DERIVED] map-002 — `features` has the highest observed commit touch count under the inventory (16 commits).
+    method: max(observed_commit_count) over ModuleEntry
+    evidence: [module] src/features — commits=16
+    limitation: Commit count is not ownership or importance.
+
+  [OBSERVED] map-003 — Strongest observed cross-module coupling cell: features → components (85 structural edges).
+    method: compute_module_coupling sparse cells sorted by edge_count
+    evidence: [structural] features→components — 85 edges
+    limitation: Static edges only; snapshot of working tree at last structural ingest.
+
+  [OBSERVED] map-004 — Hottest file by commit touches: `src/layout/AppSidebar.tsx` (11 commits).
+    method: hot_files(repo, 15)
+    evidence: [file] src/layout/AppSidebar.tsx — touches=11
+    limitation: Path-scoped hot files; identity-aware hot files not used in map v1.
+
+  [DERIVED] map-005 — Most prevalent peer structural pattern: `kyc/` in 2/13 peers.
+    method: detect_peer_structure patterns prevalence
+    evidence: [pattern] kyc/ — 2/13
+    limitation: Prevalence is not a style judgment.
+
+  [DERIVED] map-006 — Dependency linkage: 102 declared, 38 observed via structural edges, 36 both.
+    method: compute_dependency_linkage
+    evidence: [config] package.json — working-tree package.json (not present in configuration_artifacts)
+    limitation: OBSERVED ≠ runtime usage.
+
+  [DERIVED] map-007 — Test↔module links: 1 links from 1 test files under path rules (0 unlinked).
+    method: compute_test_module_links
+    evidence: [method] test_linkage — links=1
+    limitation: Path rules only; unlinked is not 'orphan ownership'.
+
+HOT FILES
+    11  src/layout/AppSidebar.tsx
+     8  src/app/(dashboard)/tokens/[contractAddress]/page.tsx
+     8  src/app/(dashboard)/users/[accountId]/page.tsx
+     8  src/features/tokens/utils.ts
+     8  src/features/users/hooks/useUsers.ts
+     7  src/app/layout.jsx
+     7  src/features/tokens/hooks/useSmartSearch.ts
+     7  src/features/users/types.ts
+     6  src/features/tokens/components/TokenCard.tsx
+     6  src/features/tokens/graphql/queries.graphql
+     6  src/features/users/graphql/queries.graphql
+     6  src/features/users/index.ts
+     5  package.json
+     5  src/app/(dashboard)/kyc/[userId]/page.tsx
+     5  src/app/(dashboard)/kyc/page.tsx
+
+TOP COUPLING CELLS
+    85  features → components
+    40  app → components
+    24  app → features
+    21  components → utils
+    20  features → lib
+     5  components → lib
+     4  app → context
+     4  components → icons
+     3  app → layout
+     3  layout → context
+     2  graphql → lib
+     1  components → context
+
+COVERAGE
+  · commits_in_db≈17
+  · structural_edges=828
+  · modules_subject=src
+
+LIMITATIONS
+  · Map is orientation, not architectural meaning or quality judgment.
+  · Structural data is a working-tree snapshot from last structural ingest.
+  · Git history scope depends on last ingest (often HEAD-only).
+  · No runtime DI, dynamic dispatch, or production traffic.

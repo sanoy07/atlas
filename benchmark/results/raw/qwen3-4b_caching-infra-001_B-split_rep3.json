@@ -1,0 +1,200 @@
+{
+  "runId": "qwen3-4b_caching-infra-001_B-split_rep3",
+  "model": "qwen3:4b",
+  "caseId": "caching-infra-001",
+  "condition": "B-split",
+  "repetition": 3,
+  "decisions": [
+    {
+      "id": "E101",
+      "class": "UNKNOWN",
+      "reason": "This evidence item describes an issue about Redis rate limiting without indicating the selection criteria for CacheFactory."
+    },
+    {
+      "id": "E102",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E103",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E104",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E105",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E106",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E107",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E108",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E109",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E110",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E111",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E112",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E113",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E114",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E115",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E116",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E117",
+      "class": "UNKNOWN",
+      "reason": "This evidence item describes a memory cache limit but does not specify the selection criteria for CacheFactory."
+    },
+    {
+      "id": "E118",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E119",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E120",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E121",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E122",
+      "class": "UNKNOWN",
+      "reason": "This evidence item implements Redis cache-aside architecture but does not describe the selection criteria for CacheFactory."
+    },
+    {
+      "id": "E123",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E124",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E125",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E126",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E127",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E128",
+      "class": "UNKNOWN",
+      "reason": "This evidence item describes caching enhancements but does not specify the selection criteria for CacheFactory."
+    },
+    {
+      "id": "E129",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E130",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E131",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E132",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E133",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E134",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E135",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E136",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E137",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    },
+    {
+      "id": "E138",
+      "class": "UNKNOWN",
+      "reason": "This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations."
+    }
+  ],
+  "rawOutput": "\n\n// --- structural batch ---\n{\n  \"decisions\": [\n    {\n      \"id\": \"E27\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E28\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E29\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E30\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E31\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E32\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E33\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E34\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E35\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E36\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E37\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E38\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E39\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E40\",\n      \"class\": \"NOT_NEEDED_NOW\",\n     \",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E41\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E42\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E43\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E44\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E45\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E46\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E47\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E48\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E49\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E50\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E51\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E52\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E53\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E54\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E55\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E56\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E57\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E58\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E59\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E60\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E61\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E62\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E63\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E64\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E65\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E66\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E67\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E68\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E69\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E70\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E71\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E72\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E73\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E74\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E75\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E76\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E77\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E78\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E79\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E80\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E81\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E82\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E83\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E84\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E85\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E86\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E87\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E88\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E89\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E90\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E91\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E92\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E93\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E94\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E95\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E96\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E97\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E98\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E99\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    },\n    {\n      \"id\": \"E100\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"The evidence does not provide information about what determines the selection of cache implementation by CacheFactory.\"\n    }\n  ]\n}\n\n// --- documentary batch ---\n{\n  \"decisions\": [\n    {\n      \"id\": \"E101\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item describes an issue about Redis rate limiting without indicating the selection criteria for CacheFactory.\"\n    },\n    {\n      \"id\": \"E102\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E103\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E104\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E105\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E106\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E107\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E108\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E109\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E110\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E111\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E112\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E113\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E114\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E115\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E116\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E117\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item describes a memory cache limit but does not specify the selection criteria for CacheFactory.\"\n    },\n    {\n      \"id\": \"E118\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E119\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E120\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E121\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E122\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item implements Redis cache-aside architecture but does not describe the selection criteria for CacheFactory.\"\n    },\n    {\n      \"id\": \"E123\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E124\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E125\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E126\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E127\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E128\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item describes caching enhancements but does not specify the selection criteria for CacheFactory.\"\n    },\n    {\n      \"id\": \"E129\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E130\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E131\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E132\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E133\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E134\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E135\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E136\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E137\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    },\n    {\n      \"id\": \"E138\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This evidence item does not mention the selection criteria for CacheFactory between Redis and memory implementations.\"\n    }\n  ]\n}\n\n// --- historical batch ---\n{\n  \"relevance\": {\n    \"src/infrastructure/caching/cache-keys.ts\": \"irrelevant\",\n    \"src/infrastructure/caching/cache.factory.ts\": \"relevant\",\n    \"src/infrastructure/caching/cache.interface.ts\": \"irrelevant\",\n    \"src/infrastructure/caching/cache.manager.ts\": \"irrelevant\",\n    \"src/infrastructure/caching/cache-evict.decorator\": \"irrelevant\",\n    \"src/infrastructure/caching/cacheable.decorator\": \"irrelevant\",\n    \"src/infrastructure/caching/memory-cache.service.ts\": \"relevant\",\n    \"src/infrastructure/caching/redis-cache.service.ts\": \"relevant\"\n  }\n}\n\n// --- source batch ---\nI have analyzed each item based on the task of determining relevance to the cache selection criteria (specifically, the decision process for choosing between Redis and memory-based caching). Here's the classification:\n\n- **RELEVANT**: Directly impacts the cache selection logic (e.g., the cache factory implementation).\n- **POSSIBLY_RELEVANT**: Could be indirectly related but requires additional context to confirm relevance (e.g., configuration services).\n- **UNKNOWN**: No clear connection to cache selection criteria from the given information.\n- **NOT_NEEDED_NOW**: Explicitly unrelated to the current task (not applicable here).\n\nAfter thorough evaluation, the classification is as follows:\n\n```json\n[\n  {\n    \"id\": \"E1\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E2\",\n    \"class\": \"RELEVANT\",\n    \"reason\": \"Implements the CacheFactory that selects between Redis and memory implementations.\"\n  },\n  {\n    \"id\": \"E3\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E4\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E5\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E6\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E7\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E8\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E9\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E10\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E11\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E12\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E13\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E14\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E15\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E16\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \\\"Not directly related to cache selection criteria.\\\"\n  },\n  {\n    \"id\": \"E17\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E18\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E19\",\n    \"class\": \"POSSIBLY_RELEVANT\",\n    \"reason\": \"Global settings service might influence cache configuration, but requires context to confirm relevance.\"\n  },\n  {\n    \"id\": \"E20\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E21\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E22\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E23\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E24\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E25\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  },\n  {\n    \"id\": \"E26\",\n    \"class\": \"UNKNOWN\",\n    \"reason\": \"Not directly related to cache selection criteria.\"\n  }\n]\n```\n\n### Key Insights:\n1. **Only E2 is RELEVANT**: This is the core implementation of the cache selection logic (choosing between Redis and memory).\n2. **E19 is POSSIBLY_RELEVANT**: While not directly part of the selection logic, global settings services *could* influence cache configuration (e.g., enabling Redis via environment variables). However, without explicit context, it's not confirmed as relevant.\n3. **All others are UNKNOWN**: No evidence links these items to the cache selection criteria. The classification follows strict \"do not infer\" principles—only items with clear, direct relevance are marked as such.\n\nThis classification ensures precision while adhering to the constraints of the task. If additional context were provided (e.g., E19's role in configuration), it could be re-evaluated."
+}

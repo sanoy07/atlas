@@ -6,7 +6,7 @@ use chrono::{DateTime, Utc};
 use serde_json;
 
 pub fn run(file: &str, json: bool) -> Result<()> {
-    let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
+    let db_path = super::resolve_db_path();
     let store   = Store::open(&db_path)?;
 
     let repo = super::discover_repo_root()?;

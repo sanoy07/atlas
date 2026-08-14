@@ -1,0 +1,16 @@
+RIPGREP symbol='TODO|FIXME|export'  (definition beats import)
+NOTE: TypeScript often imports `foo.js` while the source file is `foo.ts` — prefer [DEFINITION] paths ending in .ts/.tsx over .js import strings.
+
+IMPORTS / requires (64) — not definitions:
+  [IMPORT]     src/blockchain/index.ts:21:export * from "./types.js";
+  [IMPORT]     src/lib/auth.ts:34: * Re-exported from src/lib/walletType.ts — the canonical blocklist implementation.
+  [IMPORT]     src/infrastructure/telemetry/instrumentation.ts:13:import { TraceExporter } from "@google-cloud/opentelemetry-cloud-trace-exporter";
+  [IMPORT]     src/infrastructure/secret-manager/index.ts:1:export * from "./secret-manager.interface.js";
+  [IMPORT]     src/infrastructure/secret-manager/index.ts:2:export * from "./google-secret-manager.adapter.js";
+  [IMPORT]     src/infrastructure/secret-manager/index.ts:3:export * from "./secret-manager.factory.js";
+  [IMPORT]     src/infrastructure/payment/index.ts:1:export * from "./payment.interface.js";
+  [IMPORT]     src/infrastructure/payment/index.ts:2:export { PaymentFactory, PaymentProvider, getPaymentProvider } from "./payment.factory.js";
+  [IMPORT]     src/infrastructure/payment/index.ts:3:export { StripePaymentAdapter } from "./stripe.adapter.js";
+  [IMPORT]     src/infrastructure/logger/index.ts:8:export * from "./types.js";
+  [IMPORT]     src/infrastructure/logger/index.ts:9:export * from "./logger.interface.js";
+  [IMPORT]     src/infrastructure/logger/index.ts:10:export * from

@@ -3,14 +3,15 @@ use atlas_storage::Store;
 use chrono::{DateTime, Utc};
 
 pub fn run(file: &str) -> Result<()> {
-    let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
+    let db_path = super::resolve_db_path();
     let store = Store::open(&db_path)?;
 
     // Oldest-first so the reader sees the story in chronological order.
     let repo = super::discover_repo_root()?;
-    let commits = store.commits_for_file_asc(file, &repo)?;
-    let prs     = store.prs_for_file(file, &repo)?;
-    let issues  = store.issues_for_file(file, &repo)?;
+    let file = super::resolve_and_notify_historical(&store, file, &repo);
+    let commits = store.commits_for_file_asc(&file, &repo)?;
+    let prs     = store.prs_for_file(&file, &repo)?;
+    let issues  = store.issues_for_file(&file, &repo)?;
 
     if commits.is_empty() && prs.is_empty() && issues.is_empty() {
         println!("No data found. Run `atlas ingest .` first.");
@@ -18,7 +19,7 @@ pub fn run(file: &str) -> Result<()> {
         return Ok(());
     }
 
-    println!("=== {} ===\n", file);
+    println!("=== {} ===\n", &file);
 
     // Build set of merge-commit short hashes so we can annotate commits.
     let merge_commits: std::collections::HashSet<String> = prs.iter()

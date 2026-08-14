@@ -1,0 +1,74 @@
+ATLAS MAP
+  repo: /home/sanoy/projects/research/gigatoken
+  git_head: a210b54
+  modules_subject: src
+  modules (8): bindings, bpe, encode, input, load_tokenizer, output, pretokenize, simd
+
+CLAIMS  (observed | derived | inferred | unknown)
+  [OBSERVED] map-001 — Module/layer inventory under `src` has 8 child directories.
+    method: compute_modules immediate children of subject from files table
+    evidence: [method] compute_modules — total_modules=8
+    limitation: Names are path segments, not business-domain labels.
+    limitation: Historical paths in files table may appear as modules.
+
+  [DERIVED] map-002 — `pretokenize` has the highest observed commit touch count under the inventory (75 commits).
+    method: max(observed_commit_count) over ModuleEntry
+    evidence: [module] src/pretokenize — commits=75
+    limitation: Commit count is not ownership or importance.
+
+  [OBSERVED] map-003 — Strongest observed cross-module coupling cell: bindings → input (6 structural edges).
+    method: compute_module_coupling sparse cells sorted by edge_count
+    evidence: [structural] bindings→input — 6 edges
+    limitation: Static edges only; snapshot of working tree at last structural ingest.
+
+  [OBSERVED] map-004 — Hottest file by commit touches: `Cargo.toml` (50 commits).
+    method: hot_files(repo, 15)
+    evidence: [file] Cargo.toml — touches=50
+    limitation: Path-scoped hot files; identity-aware hot files not used in map v1.
+
+  [DERIVED] map-005 — Dependency linkage: 0 declared, 0 observed via structural edges, 0 both.
+    method: compute_dependency_linkage
+    evidence: [config] package.json — no package.json in configuration_artifacts or working tree
+    limitation: OBSERVED ≠ runtime usage.
+
+  [DERIVED] map-006 — Test↔module links: 0 links from 30 test files under path rules (30 unlinked).
+    method: compute_test_module_links
+    evidence: [method] test_linkage — links=0
+    limitation: Path rules only; unlinked is not 'orphan ownership'.
+
+HOT FILES
+    50  Cargo.toml
+    47  src/lib.rs
+    43  src/bpe/tiktoken.rs
+    43  src/pretokenize/mod.rs
+    41  README.md
+    40  Cargo.lock
+    25  pyproject.toml
+    24  uv.lock
+    23  src/batch.rs
+    21  src/main.rs
+    19  src/load_tokenizer/hf.rs
+    18  benches/pretokenize.rs
+    18  src/bpe/mod.rs
+    18  src/pretokenize/fast/mod.rs
+    15  src/bpe.rs
+
+TOP COUPLING CELLS
+     6  bindings → input
+     3  load_tokenizer → bpe
+     2  bindings → pretokenize
+     2  load_tokenizer → pretokenize
+     2  pretokenize → input
+     1  bindings → load_tokenizer
+     1  bpe → pretokenize
+
+COVERAGE
+  · commits_in_db≈363
+  · structural_edges=132
+  · modules_subject=src
+
+LIMITATIONS
+  · Map is orientation, not architectural meaning or quality judgment.
+  · Structural data is a working-tree snapshot from last structural ingest.
+  · Git history scope depends on last ingest (often HEAD-only).
+  · No runtime DI, dynamic dispatch, or production traffic.

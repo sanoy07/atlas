@@ -1,0 +1,101 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  order fulfillment
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · core
+  · src/common/enum
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  1.18  implementation  [file] src/modules/core/services/order-fulfillment.service.ts — candidate score≈1.00
+  #2  0.86  implementation  [file] src/modules/core/services/order.service.ts — candidate score≈0.90
+  #3  0.76  implementation  [file] src/modules/core/services/order-history.service.ts — candidate score≈0.90
+  #4  0.76  implementation  [file] src/modules/core/services/order-eligibility.ts — candidate score≈0.90
+  #5  0.73  implementation  [file] src/common/enum/index.ts — candidate score≈0.90
+  #6  0.69  implementation  [file] src/modules/core/models/order.model.ts — candidate score≈0.90
+  #7  0.65  implementation  [file] src/modules/core/models/order-history.model.ts — candidate score≈0.90
+  #8  0.62  implementation  [file] src/common/types/order-history.types.ts — candidate score≈0.90
+  #9  0.62  implementation  [commit] 9552f507da86e830e58509cdcb017f3ad97cac1a — 9552f50 — feat(fulfillment): trigger delivery at payment confirmation, order-type-agnosti… (src/modules/core/services/order-fulfillment.service.ts)
+  #10 0.59  implementation  [file] src/common/enum/order-history.enums.ts — candidate score≈0.90
+  #11 0.55  implementation  [file] src/modules/signing/services/signing.service.ts — candidate score≈0.90
+  #12 0.51  implementation  [file] src/common/commands/order/contracts.ts — candidate score≈0.90
+  … 15 more
+
+SUPERSESSION  (not mere recency)
+  2e031225e8fc03ae916ce37dc3cb060a5c92404c → 3d24ab2b81e80a58c83e662d400298ca5e1cddcf  (implementation_supersedes_implementation)
+  2e031225e8fc03ae916ce37dc3cb060a5c92404c → 8e1b16465b753a3bf7bc960d73d782fa56fd9ae3  (implementation_supersedes_implementation)
+  2e031225e8fc03ae916ce37dc3cb060a5c92404c → 3881d7074ca96ac1fdd280d7873802190a26b460  (implementation_supersedes_implementation)
+  2e031225e8fc03ae916ce37dc3cb060a5c92404c → c4bdad7f6bcbb2905c012b95083d42d4c6daf269  (implementation_supersedes_implementation)
+  2e031225e8fc03ae916ce37dc3cb060a5c92404c → 86add817f11f09f3faec6adf41331d72a750664b  (implementation_supersedes_implementation)
+  2e031225e8fc03ae916ce37dc3cb060a5c92404c → 2c065588cc46393bb2eef3468ec455f2d7cd729d  (implementation_supersedes_implementation)
+  … 14 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/modules/core/services/order-fulfillment.service.ts` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/modules/core/services/order-fulfillment.service.ts — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1765985864  implementation  2e031225e8fc03ae916ce37dc3cb060a5c92404c  2e03122 — feat: Add core models and complete integration setup (src/common/enum/order-history.enums.ts)
+  1766077512  implementation  3d24ab2b81e80a58c83e662d400298ca5e1cddcf  3d24ab2 — feat(core/blockchain/payment): add blockchain and payment models (src/modules/core/models/sellback-order.model.ts)
+  1766179920  implementation  8e1b16465b753a3bf7bc960d73d782fa56fd9ae3  8e1b164 — feat(core/market/compliance): implement core architecture and harmonize financi… (src/modules/core/models/order.model.ts)
+  1766592680  implementation  3881d7074ca96ac1fdd280d7873802190a26b460  3881d70 — feat: refactor pubsub arch, add user events & commands (src/modules/core/models/order.model.ts)
+  1785766465  implementation  c4bdad7f6bcbb2905c012b95083d42d4c6daf269  c4bdad7 — feat(signing): pluggable document signing module  (#105) (src/modules/core/models/order.model.ts)
+  1785860496  implementation  86add817f11f09f3faec6adf41331d72a750664b  86add81 — feat: implement admin analytics layer (#126) (src/modules/core/models/order.model.ts)
+  1785881837  implementation  2c065588cc46393bb2eef3468ec455f2d7cd729d  2c06558 — feat(orders): quoteOrder — price and eligibility before an order exists (#134) (src/modules/core/services/order.service.ts)
+  1785914154  implementation  9c78478f10813251d0736c9402310af635727ea2  9c78478 — feat(identity,wallets): investor wallet collection, SIWE provisioning, and deli… (src/modules/core/models/order.model.ts)
+  1785925209  implementation  9552f507da86e830e58509cdcb017f3ad97cac1a  9552f50 — feat(fulfillment): trigger delivery at payment confirmation, order-type-agnosti… (src/modules/core/services/order-fulfillment.service.ts)
+  1785956098  implementation  3c652fd2eb31361f54316c830e82d0f033bc3598  3c652fd — fix(signing): close investor-facing gaps blocking the signing UI (#145) (#147) (src/modules/core/services/order.service.ts)
+  1785959477  implementation  79de9c724ea0ae190de43856f95d76e7fc8c0048  79de9c7 — feat(compliance): write approved investors to the on-chain whitelist registry (… (src/modules/core/services/order.service.ts)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/modules/core/services/order-fulfillment.service.ts
+  · src/modules/core/services/order.service.ts
+  · src/modules/core/services/order-history.service.ts
+  · src/modules/core/services/order-eligibility.ts
+  · src/common/enum/index.ts
+  · src/modules/core/models/order.model.ts
+  · src/modules/core/models/order-history.model.ts
+  · src/common/types/order-history.types.ts
+  · src/common/enum/order-history.enums.ts
+  · src/modules/signing/services/signing.service.ts
+  · src/common/commands/order/contracts.ts
+  · src/modules/market/models/secondary-market-order.model.ts
+  · src/modules/core/models/sellback-order.model.ts
+  · src/common/commands/order/constants.ts
+  · src/contracts/commands/deliver-shares/constants.ts
+  · src/modules/core/settlement/settlement-source.registry.ts
+
+WHAT ATLAS KNOWS
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 11 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=20 top=src/modules/core/services/order-fulfillment.service.ts
+  · c5.1e_concept_fragments domain=Order flow=false n=14
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

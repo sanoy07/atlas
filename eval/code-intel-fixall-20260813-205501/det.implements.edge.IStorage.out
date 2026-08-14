@@ -1,0 +1,20 @@
+STRUCTURAL OBSERVATION
+src/infrastructure/storage/google-cloud-storage.adapter.ts
+
+IMPORTS
+  → UNRESOLVED:external:@google-cloud/storage
+  → UNRESOLVED:external:fs
+  → UNRESOLVED:external:path
+  → src/config/index.ts
+  → src/infrastructure/storage/storage.interface.ts
+
+IMPLEMENTS
+  → IStorageProvider  (src/infrastructure/storage/storage.interface.ts:39)
+
+COVERAGE
+  ES imports      ✓ analyzed  (typescript-es-import)
+  Static calls    ✓ analyzed  (typescript-static-call)
+  Instance calls  ✓ analyzed  (typescript-instance-call)
+  Model refs      ✓ analyzed  (typescript-mongoose-ref)
+  Dynamic calls   ✗ not analyzed
+  Runtime DI      ✗ not analyzed

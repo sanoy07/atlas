@@ -1,0 +1,16 @@
+=== code-intel bench phase=after 2026-08-13T19:13:08+05:30 ===
+ATLAS=/home/sanoy/.local/bin/atlas REPO=/home/sanoy/Vesta/rwatp-core DB=/home/sanoy/projects/atlas/eval/cross-repo-suite/rwatp-eval.db
+atlas version: atlas 0.2.0
+--- deterministic ---
+  OK   det.callers.tryEnqueue (14ms)
+  OK   det.callers.OrderFulfillmentService.tryEnqueue (8ms)
+  OK   det.implementations.IStorageProvider (22ms)
+  OK   det.capabilities.storage (16ms)
+  OK   det.code-search.ListingAsset (9ms)
+  OK   det.code-search.getSignedUrl (9ms)
+  OK   det.callers.json (8ms)
+  OK   det.capabilities.json (14ms)
+  OK   det.map (36ms)
+  OK   det.investigate.storage (141ms)
+  SKIP agent (SKIP_AGENT=1 or no python3)
+=== done pass=10 fail=0 out=/home/sanoy/projects/atlas/eval/code-intel-det-20260813-191308 ===

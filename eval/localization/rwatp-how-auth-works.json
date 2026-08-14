@@ -1,0 +1,27 @@
+{
+  "id": "rwatp-how-auth-works",
+  "repository": "rwatp-core",
+  "workflow": "system_flow",
+  "question": "How does authentication work?",
+  "notes": "System understanding of auth. Gold = AuthService + providers + user model + resolvers. Order/commerce hard negatives.",
+  "gold_files": [
+    "src/modules/identity/auth/AuthService.ts",
+    "src/modules/identity/auth/FirebaseAuthService.ts",
+    "src/modules/identity/auth/auth-resolver.ts",
+    "src/modules/identity/auth/investor/InvestorAuthProvider.ts",
+    "src/modules/identity/services/user.service.ts",
+    "src/modules/identity/models/user.model.ts"
+  ],
+  "gold_optional": [
+    "src/modules/identity/auth/investor/SiwePrivyAuthProvider.ts",
+    "src/modules/identity/graphql/identity.resolvers.ts",
+    "src/modules/identity/services/permission.service.ts",
+    "src/modules/identity/models/permission.model.ts"
+  ],
+  "hard_negatives": [
+    "src/modules/core/services/order.service.ts",
+    "src/modules/core/services/listing.service.ts",
+    "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts"
+  ],
+  "metrics": { "top_k": [1, 5, 10] }
+}

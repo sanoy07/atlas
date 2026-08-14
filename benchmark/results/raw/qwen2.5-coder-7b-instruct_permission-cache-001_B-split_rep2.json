@@ -1,0 +1,590 @@
+{
+  "runId": "qwen2.5-coder-7b-instruct_permission-cache-001_B-split_rep2",
+  "model": "qwen2.5-coder:7b-instruct",
+  "caseId": "permission-cache-001",
+  "condition": "B-split",
+  "repetition": 2,
+  "decisions": [
+    {
+      "id": "E16",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a call to invalidate the user cache, which is relevant to understanding how permissions are loaded and cached."
+    },
+    {
+      "id": "E29",
+      "class": "RELEVANT",
+      "reason": "This evidence shows an import of permission.model.ts in user.service.ts, indicating that permissions are involved in user service operations."
+    },
+    {
+      "id": "E30",
+      "class": "RELEVANT",
+      "reason": "This evidence shows an import of role.model.ts in user.service.ts, indicating that roles are involved in user service operations."
+    },
+    {
+      "id": "E31",
+      "class": "RELEVANT",
+      "reason": "This evidence shows an import of user.model.ts in user.service.ts, indicating that users are involved in user service operations."
+    },
+    {
+      "id": "E32",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to Permission.findById in user.service.ts, indicating how permissions are accessed."
+    },
+    {
+      "id": "E33",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to Permission.findOne in user.service.ts, indicating how permissions are accessed."
+    },
+    {
+      "id": "E34",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to Permission.find in user.service.ts, indicating how permissions are accessed."
+    },
+    {
+      "id": "E35",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to Role.find in user.service.ts, indicating how roles are accessed."
+    },
+    {
+      "id": "E36",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to Role.findById in user.service.ts, indicating how roles are accessed."
+    },
+    {
+      "id": "E37",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to Role.findOne in user.service.ts, indicating how roles are accessed."
+    },
+    {
+      "id": "E38",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to User.findOne in user.service.ts, indicating how users are accessed."
+    },
+    {
+      "id": "E40",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to User.findById in user.service.ts, indicating how users are accessed."
+    },
+    {
+      "id": "E41",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to User.updateOne in user.service.ts, indicating how users are updated."
+    },
+    {
+      "id": "E42",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to User.find in user.service.ts, indicating how users are accessed."
+    },
+    {
+      "id": "E43",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a model reference to User.countDocuments in user.service.ts, indicating how users are counted."
+    },
+    {
+      "id": "E56",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E57",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E58",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E59",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E60",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E61",
+      "class": "RELEVANT",
+      "reason": "Describes implementing Redis-Based Global Permission Caching Infrastructure."
+    },
+    {
+      "id": "E62",
+      "class": "RELEVANT",
+      "reason": "Describes implementing Resource-Level Permission System & Caching."
+    },
+    {
+      "id": "E63",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E64",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E65",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E66",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E67",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E68",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E69",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E70",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E71",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E72",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E73",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E74",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Does not directly address permission loading and caching for GraphQL requests."
+    },
+    {
+      "id": "E75",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E76",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E77",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E78",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E79",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E80",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E81",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E82",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E83",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E84",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E85",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E86",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E87",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E88",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E89",
+      "class": "RELEVANT",
+      "reason": "Describes implementing Redis cache-Aside architecture for global permissions."
+    },
+    {
+      "id": "E90",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Does not directly address permission loading and caching for GraphQL requests."
+    },
+    {
+      "id": "E91",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E92",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E93",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Does not directly address permission loading and caching for GraphQL requests."
+    },
+    {
+      "id": "E94",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E95",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E96",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E97",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Does not directly address permission loading and caching for GraphQL requests."
+    },
+    {
+      "id": "E98",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E99",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E100",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Does not directly address permission loading and caching for GraphQL requests."
+    },
+    {
+      "id": "E101",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E102",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E103",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Does not directly address permission loading and caching for GraphQL requests."
+    },
+    {
+      "id": "E104",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E105",
+      "class": "RELEVANT",
+      "reason": "Describes implementing user document caching."
+    },
+    {
+      "id": "E106",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E107",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Does not directly address permission loading and caching for GraphQL requests."
+    },
+    {
+      "id": "E108",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E109",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Does not directly address permission loading and caching for GraphQL requests."
+    },
+    {
+      "id": "E110",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E111",
+      "class": "UNKNOWN",
+      "reason": "No information provided."
+    },
+    {
+      "id": "E112",
+      "class": "RELEVANT",
+      "reason": "Touched multiple times, likely contains core logic for permission loading."
+    },
+    {
+      "id": "E113",
+      "class": "RELEVANT",
+      "reason": "Touched multiple times, likely contains user-related services that handle permissions."
+    },
+    {
+      "id": "E114",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched multiple times, may contain user model definitions relevant to permission handling."
+    },
+    {
+      "id": "E115",
+      "class": "RELEVANT",
+      "reason": "Touched multiple times, likely contains services that manage permissions."
+    },
+    {
+      "id": "E116",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched multiple times, may contain permission-related logic for GraphQL shield."
+    },
+    {
+      "id": "E117",
+      "class": "RELEVANT",
+      "reason": "Touched multiple times, likely contains permission-related logic specific to identity module."
+    },
+    {
+      "id": "E121",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched multiple times, may contain examples of permission handling for GraphQL shield."
+    },
+    {
+      "id": "E122",
+      "class": "RELEVANT",
+      "reason": "Touched multiple times, likely contains resolvers that handle user-related permissions."
+    },
+    {
+      "id": "E123",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched multiple times, may contain type definitions for user-related GraphQL queries."
+    },
+    {
+      "id": "E128",
+      "class": "RELEVANT",
+      "reason": "Touched multiple times, likely contains resolvers that handle user permissions."
+    },
+    {
+      "id": "E130",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched once, may contain a script for verifying authentication user cache."
+    },
+    {
+      "id": "E131",
+      "class": "RELEVANT",
+      "reason": "Touched once, likely contains a loader for user data that could be used in permission caching."
+    },
+    {
+      "id": "E132",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched once, may contain permissions logic specific to the user module."
+    },
+    {
+      "id": "E133",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched once, may contain type definitions for user-related GraphQL queries."
+    },
+    {
+      "id": "E134",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched once, may contain permission-related logic for GraphQL shield."
+    },
+    {
+      "id": "E135",
+      "class": "UNKNOWN",
+      "reason": "Not enough context to determine relevance."
+    },
+    {
+      "id": "E136",
+      "class": "UNKNOWN",
+      "reason": "Not enough context to determine relevance."
+    },
+    {
+      "id": "E137",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched once, may contain a test for verifying permission cache."
+    },
+    {
+      "id": "E1",
+      "class": "RELEVANT",
+      "reason": "Directly related to the task as it contains permission-related code."
+    },
+    {
+      "id": "E2",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "May contain relevant permission logic for GraphQL requests."
+    },
+    {
+      "id": "E3",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "May contain specific permissions related to content blocks."
+    },
+    {
+      "id": "E4",
+      "class": "RELEVANT",
+      "reason": "Directly related to the task as it contains permission-related code."
+    },
+    {
+      "id": "E5",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "May contain specific permissions related to share classes."
+    },
+    {
+      "id": "E6",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E7",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "May contain relevant permission logic for GraphQL requests."
+    },
+    {
+      "id": "E8",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E9",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E10",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E11",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "May contain logic for managing permissions."
+    },
+    {
+      "id": "E12",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E13",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "May contain logic for refreshing user permissions."
+    },
+    {
+      "id": "E14",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E15",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E138",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E139",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E140",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E141",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E142",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E143",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E144",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E145",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E146",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E147",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E148",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    },
+    {
+      "id": "E149",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without additional context."
+    }
+  ],
+  "rawOutput": "\n\n// --- structural batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E16\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a call to invalidate the user cache, which is relevant to understanding how permissions are loaded and cached.\"\n    },\n    {\n      \"id\": \"E29\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows an import of permission.model.ts in user.service.ts, indicating that permissions are involved in user service operations.\"\n    },\n    {\n      \"id\": \"E30\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows an import of role.model.ts in user.service.ts, indicating that roles are involved in user service operations.\"\n    },\n    {\n      \"id\": \"E31\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows an import of user.model.ts in user.service.ts, indicating that users are involved in user service operations.\"\n    },\n    {\n      \"id\": \"E32\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to Permission.findById in user.service.ts, indicating how permissions are accessed.\"\n    },\n    {\n      \"id\": \"E33\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to Permission.findOne in user.service.ts, indicating how permissions are accessed.\"\n    },\n    {\n      \"id\": \"E34\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to Permission.find in user.service.ts, indicating how permissions are accessed.\"\n    },\n    {\n      \"id\": \"E35\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to Role.find in user.service.ts, indicating how roles are accessed.\"\n    },\n    {\n      \"id\": \"E36\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to Role.findById in user.service.ts, indicating how roles are accessed.\"\n    },\n    {\n      \"id\": \"E37\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to Role.findOne in user.service.ts, indicating how roles are accessed.\"\n    },\n    {\n      \"id\": \"E38\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to User.findOne in user.service.ts, indicating how users are accessed.\"\n    },\n    {\n      \"id\": \"E40\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to User.findById in user.service.ts, indicating how users are accessed.\"\n    },\n    {\n      \"id\": \"E41\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to User.updateOne in user.service.ts, indicating how users are updated.\"\n    },\n    {\n      \"id\": \"E42\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to User.find in user.service.ts, indicating how users are accessed.\"\n    },\n    {\n      \"id\": \"E43\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a model reference to User.countDocuments in user.service.ts, indicating how users are counted.\"\n    }\n  ]\n}\n```\n\n// --- documentary batch ---\n```json\n{\n  \"decisions\": [\n    {\"id\":\"E56\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E57\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E58\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E59\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E60\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E61\",\"class\":\"RELEVANT\",\"reason\":\"Describes implementing Redis-Based Global Permission Caching Infrastructure.\"},\n    {\"id\":\"E62\",\"class\":\"RELEVANT\",\"reason\":\"Describes implementing Resource-Level Permission System & Caching.\"},\n    {\"id\":\"E63\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E64\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E65\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E66\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E67\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E68\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E69\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E70\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E71\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E72\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E73\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E74\",\"class\":\"NOT_NEEDED_NOW\",\"reason\":\"Does not directly address permission loading and caching for GraphQL requests.\"},\n    {\"id\":\"E75\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E76\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E77\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E78\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E79\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E80\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E81\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E82\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E83\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E84\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E85\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E86\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E87\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E88\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E89\",\"class\":\"RELEVANT\",\"reason\":\"Describes implementing Redis cache-Aside architecture for global permissions.\"},\n    {\"id\":\"E90\",\"class\":\"NOT_NEEDED_NOW\",\"reason\":\"Does not directly address permission loading and caching for GraphQL requests.\"},\n    {\"id\":\"E91\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E92\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E93\",\"class\":\"NOT_NEEDED_NOW\",\"reason\":\"Does not directly address permission loading and caching for GraphQL requests.\"},\n    {\"id\":\"E94\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E95\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E96\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E97\",\"class\":\"NOT_NEEDED_NOW\",\"reason\":\"Does not directly address permission loading and caching for GraphQL requests.\"},\n    {\"id\":\"E98\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E99\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E100\",\"class\":\"NOT_NEEDED_NOW\",\"reason\":\"Does not directly address permission loading and caching for GraphQL requests.\"},\n    {\"id\":\"E101\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E102\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E103\",\"class\":\"NOT_NEEDED_NOW\",\"reason\":\"Does not directly address permission loading and caching for GraphQL requests.\"},\n    {\"id\":\"E104\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E105\",\"class\":\"RELEVANT\",\"reason\":\"Describes implementing user document caching.\"},\n    {\"id\":\"E106\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E107\",\"class\":\"NOT_NEEDED_NOW\",\"reason\":\"Does not directly address permission loading and caching for GraphQL requests.\"},\n    {\"id\":\"E108\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E109\",\"class\":\"NOT_NEEDED_NOW\",\"reason\":\"Does not directly address permission loading and caching for GraphQL requests.\"},\n    {\"id\":\"E110\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"},\n    {\"id\":\"E111\",\"class\":\"UNKNOWN\",\"reason\":\"No information provided.\"}\n  ]\n}\n```\n\n// --- historical batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E112\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Touched multiple times, likely contains core logic for permission loading.\"\n    },\n    {\n      \"id\": \"E113\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Touched multiple times, likely contains user-related services that handle permissions.\"\n    },\n    {\n      \"id\": \"E114\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched multiple times, may contain user model definitions relevant to permission handling.\"\n    },\n    {\n      \"id\": \"E115\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Touched multiple times, likely contains services that manage permissions.\"\n    },\n    {\n      \"id\": \"E116\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched multiple times, may contain permission-related logic for GraphQL shield.\"\n    },\n    {\n      \"id\": \"E117\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Touched multiple times, likely contains permission-related logic specific to identity module.\"\n    },\n    {\n      \"id\": \"E121\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched multiple times, may contain examples of permission handling for GraphQL shield.\"\n    },\n    {\n      \"id\": \"E122\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Touched multiple times, likely contains resolvers that handle user-related permissions.\"\n    },\n    {\n      \"id\": \"E123\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched multiple times, may contain type definitions for user-related GraphQL queries.\"\n    },\n    {\n      \"id\": \"E128\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Touched multiple times, likely contains resolvers that handle user permissions.\"\n    },\n    {\n      \"id\": \"E130\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched once, may contain a script for verifying authentication user cache.\"\n    },\n    {\n      \"id\": \"E131\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Touched once, likely contains a loader for user data that could be used in permission caching.\"\n    },\n    {\n      \"id\": \"E132\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched once, may contain permissions logic specific to the user module.\"\n    },\n    {\n      \"id\": \"E133\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched once, may contain type definitions for user-related GraphQL queries.\"\n    },\n    {\n      \"id\": \"E134\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched once, may contain permission-related logic for GraphQL shield.\"\n    },\n    {\n      \"id\": \"E135\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not enough context to determine relevance.\"\n    },\n    {\n      \"id\": \"E136\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not enough context to determine relevance.\"\n    },\n    {\n      \"id\": \"E137\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched once, may contain a test for verifying permission cache.\"\n    }\n  ]\n}\n```\n\n// --- source batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E1\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Directly related to the task as it contains permission-related code.\"\n    },\n    {\n      \"id\": \"E2\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"May contain relevant permission logic for GraphQL requests.\"\n    },\n    {\n      \"id\": \"E3\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"May contain specific permissions related to content blocks.\"\n    },\n    {\n      \"id\": \"E4\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Directly related to the task as it contains permission-related code.\"\n    },\n    {\n      \"id\": \"E5\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"May contain specific permissions related to share classes.\"\n    },\n    {\n      \"id\": \"E6\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E7\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"May contain relevant permission logic for GraphQL requests.\"\n    },\n    {\n      \"id\": \"E8\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E9\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E10\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E11\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"May contain logic for managing permissions.\"\n    },\n    {\n      \"id\": \"E12\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E13\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"May contain logic for refreshing user permissions.\"\n    },\n    {\n      \"id\": \"E14\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E15\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E138\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E139\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E140\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E141\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E142\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E143\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E144\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E145\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E146\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E147\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E148\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    },\n    {\n      \"id\": \"E149\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without additional context.\"\n    }\n  ]\n}\n```"
+}

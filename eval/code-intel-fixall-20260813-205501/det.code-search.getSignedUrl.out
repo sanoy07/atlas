@@ -1,0 +1,10 @@
+ATLAS CODE-SEARCH  (definition-ranked structural)
+  query: getSignedUrl
+
+  bucket        kind        path / symbol
+  (no structural hits — try ripgrep via atlas agent, or re-ingest)
+
+LIMITATIONS
+  · Ranked over structural_edges only — not a full-text code search.
+  · DEFINITION bucket is path/symbol heuristic, not a language-server definition.
+  · Use atlas callers / implementations for relationship questions.

@@ -1,0 +1,17 @@
+RIPGREP symbol='TODO|FIXME|export'  (definition beats import)
+NOTE: TypeScript often imports `foo.js` while the source file is `foo.ts` — prefer [DEFINITION] paths ending in .ts/.tsx over .js import strings.
+
+IMPORTS / requires (108) — not definitions:
+  [IMPORT]     codegen.ts:33:  // (and re-exports them so existing imports from ./generated keep working).
+  [IMPORT]     codegen.ts:58:            content: "/* eslint-disable */\nexport * from './schema-types';",
+  [IMPORT]     src/hooks/useListQueryState.ts:14: * nuqs does not export its parser-map type, so it is derived from the hook
+  [IMPORT]     src/store/store.js:2:import adminReducer from "@/features/identity/admin/adminSlice"; // Or from index if re-exported default
+  [IMPORT]     src/features/dashboard/index.ts:1:export * from "./permissions";
+  [IMPORT]     src/features/dashboard/index.ts:2:export * from "./search-params";
+  [IMPORT]     src/features/dashboard/index.ts:3:export * from "./action-items";
+  [IMPORT]     src/features/dashboard/index.ts:4:export * from "./format";
+  [IMPORT]     src/features/dashboard/index.ts:5:export * from "./chart-theme";
+  [IMPORT]     src/features/dashboard/index.ts:7:export { useDashboard } from "./hooks/useDashboard";
+  [IMPORT]     src/graphql/codegen/generated.ts:2:export * from './schema-types';
+  [IMPORT]     src/components/rbac/index.ts:11:export { default as PermissionGuard } from "./PermissionGuard";
+  [IMPORT]     src/components/rbac/index.ts:12:export type { PermissionGua

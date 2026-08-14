@@ -1,0 +1,61 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+ATLAS MAP
+  repo: /home/sanoy/projects/research/jj
+  git_head: 732bbc0d2
+  modules_subject: lib/src
+  modules (5): config, default_index, diff_presentation, lock, protos
+
+CLAIMS  (observed | derived | inferred | unknown)
+  [OBSERVED] map-001 — Module/layer inventory under `lib/src` has 5 child directories.
+    method: compute_modules immediate children of subject from files table
+    evidence: [method] compute_modules — total_modules=5
+    limitation: Names are path segments, not business-domain labels.
+    limitation: Historical paths in files table may appear as modules.
+
+  [DERIVED] map-002 — `default_index` has the highest observed commit touch count under the inventory (381 commits).
+    method: max(observed_commit_count) over ModuleEntry
+    evidence: [module] lib/src/default_index — commits=381
+    limitation: Commit count is not ownership or importance.
+
+  [OBSERVED] map-003 — Hottest file by commit touches: `CHANGELOG.md` (1243 commits).
+    method: hot_files(repo, 15)
+    evidence: [file] CHANGELOG.md — touches=1243
+    limitation: Path-scoped hot files; identity-aware hot files not used in map v1.
+
+  [DERIVED] map-004 — Dependency linkage: 0 declared, 0 observed via structural edges, 0 both.
+    method: compute_dependency_linkage
+    evidence: [config] package.json — no package.json in configuration_artifacts or working tree
+    limitation: OBSERVED ≠ runtime usage.
+
+  [DERIVED] map-005 — Test↔module links: 0 links from 268 test files under path rules (268 unlinked).
+    method: compute_test_module_links
+    evidence: [method] test_linkage — links=0
+    limitation: Path rules only; unlinked is not 'orphan ownership'.
+
+HOT FILES
+  1243  CHANGELOG.md
+   907  Cargo.lock
+   798  Cargo.toml
+   693  cli/src/cli_util.rs
+   529  lib/src/revset.rs
+   459  cli/tests/cli-reference@.md.snap
+   442  lib/src/git.rs
+   394  lib/src/repo.rs
+   315  docs/config.md
+   302  src/cli_util.rs
+   296  lib/tests/test_git.rs
+   279  lib/tests/test_revset.rs
+   258  cli/src/commit_templater.rs
+   250  lib/src/rewrite.rs
+   244  lib/src/git_backend.rs
+
+COVERAGE
+  · commits_in_db≈10000
+  · structural_edges=2582
+  · modules_subject=lib/src
+
+LIMITATIONS
+  · Map is orientation, not architectural meaning or quality judgment.
+  · Structural data is a working-tree snapshot from last structural ingest.
+  · Git history scope depends on last ingest (often HEAD-only).
+  · No runtime DI, dynamic dispatch, or production traffic.

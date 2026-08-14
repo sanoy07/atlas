@@ -1,0 +1,837 @@
+{
+  "case_id": "listing-status-001",
+  "task": "What validates listing readiness before a status change to REVIEW?",
+  "repo": "RWATP",
+  "repo_commit": "b21260594c0e8d66be01d6a24b7b79e428fcc947",
+  "generated_by": "atlas atlas 0.1.0",
+  "evidence": [
+    {
+      "id": "E1",
+      "type": "source_signal",
+      "summary": "src/common/constants/validation.constants.ts",
+      "detail": "anchor \"validation\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/constants/validation.constants.ts"
+      }
+    },
+    {
+      "id": "E2",
+      "type": "source_signal",
+      "summary": "src/common/enum/listing.enums.ts",
+      "detail": "anchor \"listing\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/enum/listing.enums.ts"
+      }
+    },
+    {
+      "id": "E3",
+      "type": "source_signal",
+      "summary": "src/common/enum/share-class.enums.ts",
+      "detail": "anchor \"share\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/enum/share-class.enums.ts"
+      }
+    },
+    {
+      "id": "E4",
+      "type": "source_signal",
+      "summary": "src/common/enum/smart-contract.enums.ts",
+      "detail": "anchor \"contract\" via file_path; anchor \"smart\" via file_path; anchor \"smart-contract\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/enum/smart-contract.enums.ts"
+      }
+    },
+    {
+      "id": "E5",
+      "type": "source_signal",
+      "summary": "src/common/types/listing.types.ts",
+      "detail": "anchor \"listing\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/types/listing.types.ts"
+      }
+    },
+    {
+      "id": "E6",
+      "type": "source_signal",
+      "summary": "src/common/types/share-class.types.ts",
+      "detail": "anchor \"share\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/types/share-class.types.ts"
+      }
+    },
+    {
+      "id": "E7",
+      "type": "source_signal",
+      "summary": "src/modules/blockchain/models/smart-contract.model.ts",
+      "detail": "anchor \"contract\" via file_path; anchor \"smart\" via file_path; anchor \"smart-contract\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/blockchain/models/smart-contract.model.ts"
+      }
+    },
+    {
+      "id": "E8",
+      "type": "source_signal",
+      "summary": "[script] scripts/rbac/add-listing-member.js",
+      "detail": "anchor \"listing\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "scripts/rbac/add-listing-member.js"
+      }
+    },
+    {
+      "id": "E9",
+      "type": "source_signal",
+      "summary": "[validation] src/modules/compliance/validation/compliance.validation.ts",
+      "detail": "anchor \"compliance\" via file_path; anchor \"validation\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/validation/compliance.validation.ts"
+      }
+    },
+    {
+      "id": "E10",
+      "type": "source_signal",
+      "summary": "[validation] src/modules/core/validations/listing.validation.ts",
+      "detail": "anchor \"listing\" via file_path; anchor \"validation\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/validations/listing.validation.ts"
+      }
+    },
+    {
+      "id": "E11",
+      "type": "source_signal",
+      "summary": "[validation] src/modules/core/validations/share-class-management.validation.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"validation\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/validations/share-class-management.validation.ts"
+      }
+    },
+    {
+      "id": "E12",
+      "type": "source_signal",
+      "summary": "[validation] src/modules/core/validations/share-class.validation.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"validation\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/validations/share-class.validation.ts"
+      }
+    },
+    {
+      "id": "E13",
+      "type": "documentary",
+      "summary": "Issue #1: ",
+      "detail": "…ng) 3. **Fair Usage**: Ensure equitable resource distribution across users 4. **Compliance**: Meet regulatory requirements for rate-limited financial operations 5. **Perf…",
+      "source": {
+        "kind": "Issue",
+        "number": 1
+      }
+    },
+    {
+      "id": "E14",
+      "type": "documentary",
+      "summary": "Issue #4: ",
+      "detail": "…tors**: `@Cacheable` for read-through caching and `@CacheEvict` for automatic invalidation, cleaning up business logic. - **Cache Manager**: Singleton facade for manual c…",
+      "source": {
+        "kind": "Issue",
+        "number": 4
+      }
+    },
+    {
+      "id": "E15",
+      "type": "documentary",
+      "summary": "Issue #10: feat(core): implement listing management (create & update)",
+      "detail": "…ount: String # Media thumbnailImageUrl: String heroImageUrl: String # Compliance allowedInvestorTypes: [InvestorType!] blockedCountries: [String!] } input…",
+      "source": {
+        "kind": "Issue",
+        "number": 10
+      }
+    },
+    {
+      "id": "E16",
+      "type": "documentary",
+      "summary": "Issue #12: feat(core): implement share class management & auto-creation logic",
+      "detail": "…tegy We follow the **\"Unified Share Class\" Pattern**. - **Data Model**: Every Listing **MUST** have at least one `ShareClass` record. - **Abstraction**: - **Multi-…",
+      "source": {
+        "kind": "Issue",
+        "number": 12
+      }
+    },
+    {
+      "id": "E17",
+      "type": "documentary",
+      "summary": "Issue #14: feat(core): implement share class management & supply operations",
+      "detail": "…t reduce total supply below already issued shares\", ); } // 4. Guard - Contract Deployed if (shareClass.smartContract) { throw createError( ErrorCo…",
+      "source": {
+        "kind": "Issue",
+        "number": 14
+      }
+    },
+    {
+      "id": "E18",
+      "type": "documentary",
+      "summary": "Issue #17: ",
+      "detail": "…PermissionCacheService` using our existing infrastructure. 2. Implement O(1) invalidation using a Versioning Strategy. 3. Migrate `User.prototype.can()` to use Redis.…",
+      "source": {
+        "kind": "Issue",
+        "number": 17
+      }
+    },
+    {
+      "id": "E19",
+      "type": "documentary",
+      "summary": "Issue #18: ",
+      "detail": "…**ResourceRole Model**: Add `version` (Number, default 0). Required for O(1) invalidation when a resource role definition changes. - **ResourceMember Model (Refactor)**…",
+      "source": {
+        "kind": "Issue",
+        "number": 18
+      }
+    },
+    {
+      "id": "E20",
+      "type": "documentary",
+      "summary": "Issue #29: ",
+      "detail": "…issue establishes the foundational setup for the asset taxonomy and block-based listing architecture. The goal is to: - Update the existing asset taxonomy with newly…",
+      "source": {
+        "kind": "Issue",
+        "number": 29
+      }
+    },
+    {
+      "id": "E21",
+      "type": "documentary",
+      "summary": "Issue #30: ",
+      "detail": "…dels/content-block.model.ts` This generic model stores content for any entity (Listing or ShareClass). It uses explicit references for type safety and indexing. ```t…",
+      "source": {
+        "kind": "Issue",
+        "number": 30
+      }
+    },
+    {
+      "id": "E22",
+      "type": "documentary",
+      "summary": "Issue #33: ",
+      "detail": "…alse; return entity.can(permission); }); ``` **Apply isUser Rule**: - **Compliance Module** (`src/modules/compliance/graphql/permissions.ts`): `initializeKyc: cha…",
+      "source": {
+        "kind": "Issue",
+        "number": 33
+      }
+    },
+    {
+      "id": "E23",
+      "type": "documentary",
+      "summary": "Issue #34: ",
+      "detail": "…(`v1:core:integration:active:${category}`), }, CONTENT_BLOCKS: { LISTING: (id: string) => k(`v1:core:blocks:listing:${id}`), SHARE_CLASS: (id: str…",
+      "source": {
+        "kind": "Issue",
+        "number": 34
+      }
+    },
+    {
+      "id": "E24",
+      "type": "documentary",
+      "summary": "Issue #35: ",
+      "detail": "…y Extend the `getUser` query to optionally include auth provider metadata (2FA status, last login, etc.) from Firebase. Use GraphQL field resolvers with caching to a…",
+      "source": {
+        "kind": "Issue",
+        "number": 35
+      }
+    },
+    {
+      "id": "E25",
+      "type": "documentary",
+      "summary": "Issue #36: ",
+      "detail": "…or auto-population, while crypto currencies require strict validation including contract addresses and chain information. --- ## Requirements ### Fiat Currencies -…",
+      "source": {
+        "kind": "Issue",
+        "number": 36
+      }
+    },
+    {
+      "id": "E26",
+      "type": "documentary",
+      "summary": "Issue #37: ",
+      "detail": "…rs 5. Add proper caching with category-specific eviction 6. Replace delete with status toggle for data integrity 7. Ensure new integrations are inactive by default -…",
+      "source": {
+        "kind": "Issue",
+        "number": 37
+      }
+    },
+    {
+      "id": "E27",
+      "type": "documentary",
+      "summary": "Issue #43: ",
+      "detail": "…Type\"` to enum mappings, then run `npm run codegen` --- ### 7. Notify Command Contracts Update `src/contracts/commands/notify/contracts.ts`: ```typescript export in…",
+      "source": {
+        "kind": "Issue",
+        "number": 43
+      }
+    },
+    {
+      "id": "E28",
+      "type": "documentary",
+      "summary": "Issue #44: ",
+      "detail": "…updateUser()` | 252 | Profile data changed | | `updateUserStatus()` | 291 | Status changed | | `updateFromKycVerification(…",
+      "source": {
+        "kind": "Issue",
+        "number": 44
+      }
+    },
+    {
+      "id": "E29",
+      "type": "documentary",
+      "summary": "Issue #46: ",
+      "detail": "## Overview Implement an **email availability validation step** within the registration flow of the **Identity module** to provide real-…",
+      "source": {
+        "kind": "Issue",
+        "number": 46
+      }
+    },
+    {
+      "id": "E30",
+      "type": "documentary",
+      "summary": "Issue #48: ",
+      "detail": "…Actually converts `_id.toString()` to `id` Currently missing for: **Currency, Listing, ShareClass, ContentBlock, Integration, Role** ## Current State ### ✅ Already…",
+      "source": {
+        "kind": "Issue",
+        "number": 48
+      }
+    },
+    {
+      "id": "E31",
+      "type": "documentary",
+      "summary": "Issue #54: Fix critical data integrity issues in share class and listing services",
+      "detail": "## Summary There are three data integrity issues across the share class and listing services that need to be addressed before any investor-facing operations go liv…",
+      "source": {
+        "kind": "Issue",
+        "number": 54
+      }
+    },
+    {
+      "id": "E32",
+      "type": "documentary",
+      "summary": "Issue #55: ",
+      "detail": "…rictions - Follow the same error patterns used in `share-class.service.ts` and `listing.service.ts` --- ## 2. Currency audit trail is broken (empty `createdBy`) **F…",
+      "source": {
+        "kind": "Issue",
+        "number": 55
+      }
+    },
+    {
+      "id": "E33",
+      "type": "documentary",
+      "summary": "Issue #56: ",
+      "detail": "…# 2. Wire KYC status changes to publish notify commands **File:** `src/modules/compliance/services/compliance.service.ts` When KYC is approved or rejected, the complian…",
+      "source": {
+        "kind": "Issue",
+        "number": 56
+      }
+    },
+    {
+      "id": "E34",
+      "type": "documentary",
+      "summary": "Issue #57: ",
+      "detail": "…t changing the cache interface. --- ## 3. Add subscription date validation to listing readiness **File:** `src/modules/core/validations/listing.validation.ts` A li…",
+      "source": {
+        "kind": "Issue",
+        "number": 57
+      }
+    },
+    {
+      "id": "E35",
+      "type": "documentary",
+      "summary": "Issue #62: Record Smart Contract Deployment — solid ShareClass + Listing linking with DEPLOYED status",
+      "detail": "…requires **three** contract refs: `primarySmartContract`, `identityRegistry`, `compliance`) is populated in `listing.service.ts:110-119` by blindly wrapping **arbitrary,…",
+      "source": {
+        "kind": "Issue",
+        "number": 62
+      }
+    },
+    {
+      "id": "E36",
+      "type": "documentary",
+      "summary": "PR #9: ",
+      "detail": "…ded `.js` extensions and `index.js` references to all local imports across `src/contracts`, `src/modules`, and `src/infrastructure` to comply with native Node.js ESM re…",
+      "source": {
+        "kind": "PR",
+        "number": 9
+      }
+    },
+    {
+      "id": "E37",
+      "type": "documentary",
+      "summary": "PR #11: Implemented listing management (create/update)",
+      "detail": "…tandard`, `primaryBlockchain`, `primarySmartContract` - `identityRegistry`, `compliance`, `controllerWallet` - `transferEnforcement` mode - **Output Type**: [Block…",
+      "source": {
+        "kind": "PR",
+        "number": 11
+      }
+    },
+    {
+      "id": "E38",
+      "type": "documentary",
+      "summary": "PR #13: Feature/12 share class backend",
+      "detail": "…N | | `src/modules/identity/models/permission.model.ts` | Added `\"core\"` and `\"compliance\"` to category enum | | `src/modules/identity/rbac/smart-seeder.js` | Bumped ve…",
+      "source": {
+        "kind": "PR",
+        "number": 13
+      }
+    },
+    {
+      "id": "E39",
+      "type": "documentary",
+      "summary": "PR #15: Feature/12 share class backend",
+      "detail": "## 🔁 Sync Listing Review Fixes into Share Class Branch ### Summary This PR merges the latest…",
+      "source": {
+        "kind": "PR",
+        "number": 15
+      }
+    },
+    {
+      "id": "E40",
+      "type": "documentary",
+      "summary": "PR #16: implementation of share class management & supply operations",
+      "detail": "…to manage share classes post-creation. It includes manual creation for ERC-1400 listings, precise supply management (linked to a new immutable [SupplyLedger](cci:2://f…",
+      "source": {
+        "kind": "PR",
+        "number": 16
+      }
+    },
+    {
+      "id": "E41",
+      "type": "documentary",
+      "summary": "PR #20: ",
+      "detail": "…only computed and cached when requested, spreading load over time. - **O(1) Invalidation Strategy**: Instead of finding and updating thousands of user permission arrays…",
+      "source": {
+        "kind": "PR",
+        "number": 20
+      }
+    },
+    {
+      "id": "E42",
+      "type": "documentary",
+      "summary": "PR #21: ",
+      "detail": "…)**, enabling granular permissions for specific resources (e.g., Organizations, Listings). It introduces a dedicated [ResourceMemberService](cci:2://file:///home/sanoy…",
+      "source": {
+        "kind": "PR",
+        "number": 21
+      }
+    },
+    {
+      "id": "E43",
+      "type": "documentary",
+      "summary": "PR #25: Bug fix/update listing mutation and redis fix",
+      "detail": "listing",
+      "source": {
+        "kind": "PR",
+        "number": 25
+      }
+    },
+    {
+      "id": "E44",
+      "type": "documentary",
+      "summary": "PR #26: ",
+      "detail": "…cess to a specific resource query { getMyResourcePermissions(resourceType: \"listing\", resourceId: \"abc123\") { roles permissions } } ``` ### Admin…",
+      "source": {
+        "kind": "PR",
+        "number": 26
+      }
+    },
+    {
+      "id": "E45",
+      "type": "documentary",
+      "summary": "PR #27: ",
+      "detail": "…- Moved MongoDB connection before GraphQL setup (lines 59-68) - Added GraphQL readiness log (line 71) ## Startup Timeline (After Fix) ``` ✅ Server ready at http:/…",
+      "source": {
+        "kind": "PR",
+        "number": 27
+      }
+    },
+    {
+      "id": "E46",
+      "type": "documentary",
+      "summary": "PR #31: ",
+      "detail": "…abels** | `enhancement`, `backend`, `taxonomy` | | **Milestone** | Block-Based Listing Architecture | --- ## Overview This PR establishes the foundational se…",
+      "source": {
+        "kind": "PR",
+        "number": 31
+      }
+    },
+    {
+      "id": "E47",
+      "type": "documentary",
+      "summary": "PR #32: ",
+      "detail": "…ontent Block Logic Layer and GraphQL API for managing dynamic content blocks on Listings and Share Classes. This builds on the Block Registry foundation from #29. -…",
+      "source": {
+        "kind": "PR",
+        "number": 32
+      }
+    },
+    {
+      "id": "E48",
+      "type": "documentary",
+      "summary": "PR #38: implemented caching enhancements and testSMTPConnection cache invalidation upon update of config",
+      "detail": "…saveBlock()`, `deleteContentBlock()`, `toggleBlockVisibility()` - Added parent Listing cache invalidation when ShareClass blocks are updated ## Testing ### Part…",
+      "source": {
+        "kind": "PR",
+        "number": 38
+      }
+    },
+    {
+      "id": "E49",
+      "type": "documentary",
+      "summary": "PR #40: ",
+      "detail": "…**Caching**: Verified internal permission cache population. **Result**: - **Status**: PASSED - **Log Proof**: ``` ✅ MongoDB Connected ✅ Created Pe…",
+      "source": {
+        "kind": "PR",
+        "number": 40
+      }
+    },
+    {
+      "id": "E50",
+      "type": "documentary",
+      "summary": "PR #41: ",
+      "detail": "…**Caching**: Verified internal permission cache population. **Result**: - **Status**: PASSED - **Log Proof**: ``` ✅ MongoDB Connected ✅ Created Pe…",
+      "source": {
+        "kind": "PR",
+        "number": 41
+      }
+    },
+    {
+      "id": "E51",
+      "type": "documentary",
+      "summary": "PR #42: ",
+      "detail": "…acheable`. - Added `UserService.invalidateAuthUserCache(authUid)` for manual invalidation. - Implemented efficient data fetching using `FirebaseAuthService`. ### 3.…",
+      "source": {
+        "kind": "PR",
+        "number": 42
+      }
+    },
+    {
+      "id": "E52",
+      "type": "documentary",
+      "summary": "PR #45: ",
+      "detail": "…nid.ts ``` *Note: Legacy data with missing mappings will be logged for manual review.* ### Step 2: Seed Native Assets Initialize system-critical assets (ETH, MA…",
+      "source": {
+        "kind": "PR",
+        "number": 45
+      }
+    },
+    {
+      "id": "E53",
+      "type": "documentary",
+      "summary": "PR #47: ",
+      "detail": "…adata: ... }`, improving security and validation. * **Audit Fields**: Added `statusChangedBy` and `statusChangedAt` to track who activates/deactivates integrations…",
+      "source": {
+        "kind": "PR",
+        "number": 47
+      }
+    },
+    {
+      "id": "E54",
+      "type": "documentary",
+      "summary": "PR #50: ",
+      "detail": "…RVER_ERROR\" } } ], \"data\": null } ``` This same issue affected `Listing`, `ShareClass`, and `Role` types as well. ## Root Cause MongoDB stores do…",
+      "source": {
+        "kind": "PR",
+        "number": 50
+      }
+    },
+    {
+      "id": "E55",
+      "type": "documentary",
+      "summary": "PR #51: ",
+      "detail": "…ge `\"System configuration error.\"` and HTTP status `500` ### 8. Notification Contracts **`src/contracts/commands/notify/contracts.ts`** - Added `VerificationEm…",
+      "source": {
+        "kind": "PR",
+        "number": 51
+      }
+    },
+    {
+      "id": "E56",
+      "type": "documentary",
+      "summary": "PR #52: ",
+      "detail": "…reshness immediately after updates: - `updateUser` (Profile) - `updateUserStatus` (Status) - `setUserRoles`, `addRolesToUser`, `removeRolesFromUser` (Roles)…",
+      "source": {
+        "kind": "PR",
+        "number": 52
+      }
+    },
+    {
+      "id": "E57",
+      "type": "documentary",
+      "summary": "PR #53: implemented email availability validation",
+      "detail": "…d to `FIELD_LIMITS` registry. ## ✅ Requirements Checklist | Requirement | Status | Implementation Details | |-------------|--------|------------------------|…",
+      "source": {
+        "kind": "PR",
+        "number": 53
+      }
+    },
+    {
+      "id": "E58",
+      "type": "documentary",
+      "summary": "PR #58: implemented auth logging, memory cache limit, subscription date validation, daysLeft resolver for listings",
+      "detail": "…(key, value, { ttl: ms })`, preserving the existing `set(key, value, ttl?)` API contract. --- ### 3. Add Subscription Date Ordering Validation to Listing Schemas…",
+      "source": {
+        "kind": "PR",
+        "number": 58
+      }
+    },
+    {
+      "id": "E59",
+      "type": "documentary",
+      "summary": "PR #59: implemented data integrity fix for share class and listing service",
+      "detail": "…: Closing Notes **Branch:** enhancement/54-data-integrity-in-share-class-and-listing-services **Test script:** `tests/core/test-issue-54-improvements.ts` (16/16 pa…",
+      "source": {
+        "kind": "PR",
+        "number": 59
+      }
+    },
+    {
+      "id": "E60",
+      "type": "documentary",
+      "summary": "PR #61: ",
+      "detail": "…ds and Wire KYC Notification Commands Closes: #56 **Test script:** `tests/compliance/test-issue-56-improvements.ts` (22/22 passing) **Branch:** enhancement/56-noti…",
+      "source": {
+        "kind": "PR",
+        "number": 61
+      }
+    },
+    {
+      "id": "E61",
+      "type": "documentary",
+      "summary": "PR #63: implemented smart contract deployement recording, with shareClass and listing linking with deployed status",
+      "detail": "…ment()` which creates all four ERC-3643 contracts atomically (TOKEN, WHITELIST, COMPLIANCE, COMPLIANCE/transferEnforcement) and sets `listing.blockchainConfig`. | | `src…",
+      "source": {
+        "kind": "PR",
+        "number": 63
+      }
+    },
+    {
+      "id": "E62",
+      "type": "historical",
+      "summary": "touched 2x: docs/refactoring-validation-naming.md",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "docs/refactoring-validation-naming.md"
+      }
+    },
+    {
+      "id": "E63",
+      "type": "historical",
+      "summary": "touched 2x: src/common/commands/blockchain/contracts.ts",
+      "detail": "src/common/commands/order/contracts.ts, src/common/events/order/contracts.ts, src/common/events/payment/contracts.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/common/commands/blockchain/contracts.ts"
+      }
+    },
+    {
+      "id": "E64",
+      "type": "historical",
+      "summary": "touched 2x: src/common/commands/order/contracts.ts",
+      "detail": "src/common/commands/blockchain/contracts.ts, src/common/events/order/contracts.ts, src/common/events/payment/contracts.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/common/commands/order/contracts.ts"
+      }
+    },
+    {
+      "id": "E65",
+      "type": "historical",
+      "summary": "touched 2x: src/common/constants/validation.constants.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/constants/validation.constants.ts"
+      }
+    },
+    {
+      "id": "E66",
+      "type": "historical",
+      "summary": "touched 2x: src/common/events/order/contracts.ts",
+      "detail": "src/common/commands/blockchain/contracts.ts, src/common/commands/order/contracts.ts, src/common/events/payment/contracts.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/common/events/order/contracts.ts"
+      }
+    },
+    {
+      "id": "E67",
+      "type": "historical",
+      "summary": "touched 2x: src/common/events/payment/contracts.ts",
+      "detail": "src/common/commands/blockchain/contracts.ts, src/common/commands/order/contracts.ts, src/common/events/order/contracts.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/common/events/payment/contracts.ts"
+      }
+    },
+    {
+      "id": "E68",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/core/validations/share-class.validation.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/validations/share-class.validation.ts"
+      }
+    },
+    {
+      "id": "E69",
+      "type": "historical",
+      "summary": "touched 1x: scripts/rbac/add-listing-member.js",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "scripts/rbac/add-listing-member.js"
+      }
+    },
+    {
+      "id": "E70",
+      "type": "historical",
+      "summary": "touched 1x: src/common/commands/email/contracts.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/commands/email/contracts.ts"
+      }
+    },
+    {
+      "id": "E71",
+      "type": "historical",
+      "summary": "touched 1x: src/common/enum/listing.enums.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/enum/listing.enums.ts"
+      }
+    },
+    {
+      "id": "E72",
+      "type": "historical",
+      "summary": "touched 1x: src/common/enum/share-class.enums.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/enum/share-class.enums.ts"
+      }
+    },
+    {
+      "id": "E73",
+      "type": "historical",
+      "summary": "touched 1x: src/common/enum/smart-contract.enums.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/enum/smart-contract.enums.ts"
+      }
+    },
+    {
+      "id": "E74",
+      "type": "historical",
+      "summary": "touched 1x: src/common/events/user/contracts.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/events/user/contracts.ts"
+      }
+    },
+    {
+      "id": "E75",
+      "type": "historical",
+      "summary": "touched 1x: src/common/types/listing.types.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/types/listing.types.ts"
+      }
+    },
+    {
+      "id": "E76",
+      "type": "historical",
+      "summary": "touched 1x: src/common/types/share-class.types.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/types/share-class.types.ts"
+      }
+    },
+    {
+      "id": "E77",
+      "type": "historical",
+      "summary": "touched 1x: src/contracts/commands/email/contracts.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/contracts/commands/email/contracts.ts"
+      }
+    },
+    {
+      "id": "E78",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/blockchain/models/smart-contract.model.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/blockchain/models/smart-contract.model.ts"
+      }
+    },
+    {
+      "id": "E79",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/compliance/validation/compliance.validation.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/validation/compliance.validation.ts"
+      }
+    },
+    {
+      "id": "E80",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/validations/listing.validation.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/validations/listing.validation.ts"
+      }
+    },
+    {
+      "id": "E81",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/validations/share-class-management.validation.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/validations/share-class-management.validation.ts"
+      }
+    },
+    {
+      "id": "E82",
+      "type": "boundary",
+      "summary": "unresolved: src/common/enum/smart-contract.enums.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E83",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/blockchain/models/smart-contract.model.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    }
+  ]
+}

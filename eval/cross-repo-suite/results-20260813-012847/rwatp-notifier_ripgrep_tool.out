@@ -1,0 +1,19 @@
+/home/sanoy/Vesta/rwatp-notifier/src/app.ts-8-app.use(requestContextMiddleware);
+/home/sanoy/Vesta/rwatp-notifier/src/app.ts-9-
+/home/sanoy/Vesta/rwatp-notifier/src/app.ts:10:export default app;
+--
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/createApplicationError.ts-30- * );
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/createApplicationError.ts-31- */
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/createApplicationError.ts:32:export function createApplicationError(
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/createApplicationError.ts-33-  code: NotifierErrorCode,
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/createApplicationError.ts-34-  customMessage?: string,
+--
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/notifier.errorCodes.ts-7- * Error codes for the notifier service
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/notifier.errorCodes.ts-8- */
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/notifier.errorCodes.ts:9:export enum NotifierErrorCode {
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/notifier.errorCodes.ts-10-  // General Service Errors
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/notifier.errorCodes.ts-11-  INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR",
+--
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/notifier.errorCodes.ts-67- * Default error messages for each error code
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/notifier.errorCodes.ts-68- */
+/home/sanoy/Vesta/rwatp-notifier/src/common/errors/n

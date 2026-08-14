@@ -2,19 +2,116 @@ use anyhow::{Context, Result};
 use atlas_connectors::Connector;
 use atlas_git::{GitHubIssueConnector, GitHubPrConnector, GitRepo};
 use atlas_ir::{
-    AnchorMatch, ArtifactRole, CampaignBrief, CampaignOutcome, CandidateArtifact, CandidateReason,
-    CochangeEntry, CommitSummary, ConceptExpansion, ContextDocument, CouplingEntry, CoverageMap,
-    CoverageStatus, DocumentaryEvidence, EvidenceSummary, EvidenceType, FileIdentity,
-    FileSignificance, GapEntry, HistoricalEntry, InvestigationCoverage, InvestigationDocument,
-    IssueSummary, MatchSource, PrFileContext, PrSummary, RelatedDecision, RelatedHistory,
-    ReviewContextDocument, ReviewCoverage, SearchCoverage, SearchDocument, StructuralEdgeSummary,
-    StructuralObservation, UnresolvedConnection, VerifiedExpansion,
+    AnchorMatch, ArtifactRole, AuthorAggregate, AuthorScope, AuthorsReport, CampaignBrief,
+    CampaignOutcome, CandidateArtifact, CandidateReason, CochangeEntry, CommitSubject,
+    CommitSummary, ConceptExpansion, ConfigArtifactSubject, ContextDocument, CouplingEntry,
+    CoverageMap, CoverageStatus, DocumentaryEvidence, DocumentSubject, EvidenceSummary,
+    EvidenceType, ExternalDependencyRow, FileIdentity, FileSignificance, FileSubject, GapEntry,
+    HistoricalEntry, HistoricalRedirect, IdentitySubject, IngestRunSubject, InspectionChild,
+    InspectionCoverage, InspectionDocument, InspectionDocumentRef, InspectionEdge,
+    InspectionSubjectKind, InvestigationCoverage, InvestigationDocument, IssueSubject,
+    IssueSummary, LexiconExpansion, LexiconRelKind, LowComplexityNote, MatchSource,
+    ModuleCouplingCell, ModuleCouplingKindBreakdown, ModuleCouplingReport, ModuleFanIndicator,
+    PeerStructureDeviation, PeerStructurePattern, PeerStructureReport, PlatformUsageRow,
+    PrFileContext, PrSubject, PrSummary, ProfileClaim, ProfileClaimKind, RelatedDecision,
+    RelatedHistory, RepositoryTree, ReviewContextDocument, ReviewCoverage, ScoreBreakdown,
+    SearchCoverage, SearchDocument, ShowLink, ShowProvenance, ShowRecord, ShowRow, ShowSection,
+    ShowSectionKind, ShowSubject, StructuralEdgeSummary, StructuralObservation, TreeNode,
+    TreeNodeKind, UnresolvedConnection, VerifiedExpansion,
 };
-use atlas_parser::{gh_json, git_log, git_renames, ts_structural};
-use atlas_storage::{CommitRow, HotFileRow, Store};
+use atlas_parser::{c_structural, gh_json, git_log, git_renames, python_structural, rust_structural, ts_structural};
+use atlas_storage::{AuthorAggregateRow, CommitRow, HotFileRow, Store};
 use std::collections::HashSet;
 use std::path::Path;
 use tracing::info;
+
+mod lexicon;
+pub use lexicon::build_lexicon;
+
+mod repo_inspector;
+pub use repo_inspector::inspect_repository;
+
+mod project;
+pub use project::{
+    build_project_census, create_project, get_project, ingest_project, list_projects,
+    list_repositories, register_repository_at_path, IngestOptions, RepositoryIngestSummary,
+};
+
+/// B5–B10 aggregation reports (modules, tests, deps, cohorts, anomalies, config).
+mod b_layer;
+pub use b_layer::{
+    compute_anomalies, compute_config_inventory, compute_config_provenance,
+    compute_dependency_linkage, compute_directory_cohorts, compute_modules,
+    compute_test_module_links, external_package_name, path_looks_like_test,
+};
+
+/// Local AI provider abstraction (Ollama + fake).
+pub mod ollama_config;
+pub use ollama_config::{probe_ollama, OllamaConfig, OllamaProbe};
+
+pub mod ai_provider;
+pub use ai_provider::{
+    parse_reasoning_response, FakeReasoningProvider, OllamaProvider, ReasoningProvider,
+};
+
+/// Evidence packet + multi-round reasoning investigation loop.
+mod reasoning;
+pub use reasoning::{
+    anchors_from_question, build_evidence_packet, evidence_resolves_pub, options_from_file,
+    options_from_issue, options_from_question, run_reasoning_investigation, verify_claims,
+    verify_hypotheses, PacketOptions, ReasoningOptions,
+};
+
+/// C4-ER — evidence ranking, temporal supersession, hard claim entailment.
+mod evidence_reasoning;
+pub use evidence_reasoning::{
+    enrich_packet, enrich_packet_with_store, hard_verify_claim, hard_verify_claims,
+    hard_verify_hypotheses, parse_github_numbers, rank_evidence, statement_is_causal,
+    verification_policy,
+};
+
+/// C5.1 — question-personalized structural PageRank (Aider-inspired, Atlas edges).
+mod personalized_rank;
+pub use personalized_rank::{
+    collect_links_for_files, personalized_file_ranks, FileRank, PersonalizedRankInput,
+    StructuralLink,
+};
+
+/// Deterministic code-intelligence: callers, implementations, capabilities, ranked search.
+mod code_intel;
+pub use code_intel::{
+    compute_capabilities, definition_ranked_search, find_callees, find_callers,
+    find_implementations, CallSite, CallersReport, CapabilitiesReport, CapabilitySurface,
+    CodeSearchHit, CodeSearchReport, ImplementationHit, ImplementationsReport,
+};
+
+/// C5.1-R — deterministic retrieval recall expansion (issue / domain / flow seeds).
+mod retrieval_expand;
+pub use retrieval_expand::{detect_issue_numbers, expand_retrieval, RetrievalExpansion};
+
+/// C5.1-L — identifier-weighted lexical relevance + structure-aware dedup.
+mod lexical_relevance;
+pub use lexical_relevance::{rerank_candidates, score_path_for_question, structure_aware_dedup};
+
+/// C5.1-E — role-aware / entrypoint primacy from structure + bag IDF.
+mod role_aware;
+pub use role_aware::{apply_role_aware_rerank, concept_search_fragments, infer_role, InferredRole};
+
+/// Path/file class soft ranking (production vs demo/asset/CI/notebook).
+mod path_class;
+pub use path_class::{classify_path, PathClass};
+
+/// C5.1-S — free-text → structural subject resolution.
+mod subject_resolve;
+pub use subject_resolve::{discover_code_roots, resolve_subjects, SubjectResolution};
+
+/// Section C — Map / Focus / Impact (orientation claims over existing evidence).
+mod section_c;
+pub use section_c::{build_focus, build_impact, build_map, resolve_modules_subject};
+
+/// Is the evidence graph still describing the current tree?
+mod freshness;
+pub use freshness::{compute_freshness, Freshness, FreshnessReport};
 
 /// Repository Awareness: understands which paths represent generated artifacts
 /// vs. source code worth investigating. Applied during ingest to prevent build
@@ -24,8 +121,21 @@ use tracing::info;
 /// build artifact noise during investigation. VestaScan specifically commits
 /// `dist/` to version control, so `.gitignore` alone is insufficient —
 /// hardcoded common patterns are the primary exclusion mechanism.
+///
+/// Intentionally supports a small subset of `.gitignore` semantics:
+/// only the root `.gitignore`; only simple entries (no `*`, `?`, `[`,
+/// `!`, or anchored `/foo`); all patterns are matched **root-anchored**
+/// against a repo-relative path.  See
+/// docs/decisions/2026-08-08-repo-awareness-bare-name-fix.md.
 struct RepoAwareness {
-    exclude_prefixes: Vec<String>,
+    /// Patterns from `.gitignore` that ended in `/` and the hardcoded defaults.
+    /// Match: `path.starts_with(prefix)` (prefix always ends in `/`).
+    dir_prefixes: Vec<String>,
+    /// Bare-name patterns from `.gitignore` (no trailing `/`).
+    /// Match: `path == name` OR `path` is `name` followed by `/…`.
+    /// Kept root-anchored to preserve the existing `starts_with` semantics
+    /// used by every other prefix in this struct.
+    names:        Vec<String>,
 }
 
 impl RepoAwareness {
@@ -34,7 +144,8 @@ impl RepoAwareness {
             "dist/", "node_modules/", "target/", "build/", ".next/",
             "coverage/", "__pycache__/", ".cache/", "out/", ".nuxt/",
         ];
-        let mut prefixes: Vec<String> = hardcoded.iter().map(|&s| s.to_string()).collect();
+        let mut dir_prefixes: Vec<String> = hardcoded.iter().map(|&s| s.to_string()).collect();
+        let mut names: Vec<String> = Vec::new();
 
         let gitignore = Path::new(repo_path).join(".gitignore");
         if let Ok(content) = std::fs::read_to_string(gitignore) {
@@ -47,37 +158,167 @@ impl RepoAwareness {
                 if line.contains('*') || line.contains('?') || line.contains('[') {
                     continue;
                 }
-                let prefix = if line.ends_with('/') {
-                    line.to_string()
-                } else {
-                    format!("{}/", line)
-                };
-                if !prefixes.contains(&prefix) {
-                    prefixes.push(prefix);
+                // Skip anchored patterns (`/foo`) — supporting them requires
+                // deciding whether the leading `/` should also make nested
+                // matches invalid, and that is out of scope for this fix.
+                if line.starts_with('/') {
+                    continue;
+                }
+                if line.ends_with('/') {
+                    if !dir_prefixes.contains(&line.to_string()) {
+                        dir_prefixes.push(line.to_string());
+                    }
+                } else if !names.contains(&line.to_string()) {
+                    names.push(line.to_string());
                 }
             }
         }
 
-        RepoAwareness { exclude_prefixes: prefixes }
+        RepoAwareness { dir_prefixes, names }
     }
 
     fn is_excluded(&self, path: &str) -> bool {
         let p = path.trim_start_matches('/');
-        self.exclude_prefixes.iter().any(|prefix| p.starts_with(prefix.as_str()))
+        if self.dir_prefixes.iter().any(|prefix| p.starts_with(prefix.as_str())) {
+            return true;
+        }
+        // Bare names match the root file (`path == name`) or anything beneath a
+        // root directory of that name (`name/…`).  Both cases are root-anchored.
+        self.names.iter().any(|name| {
+            p == name.as_str()
+                || (p.len() > name.len()
+                    && p.starts_with(name.as_str())
+                    && p.as_bytes()[name.len()] == b'/')
+        })
     }
 }
 
+#[cfg(test)]
+mod repo_awareness_tests {
+    use super::*;
+    use tempfile::TempDir;
+
+    /// Load `RepoAwareness` from a tempdir populated with an optional `.gitignore`.
+    fn load_with_gitignore(contents: Option<&str>) -> (TempDir, RepoAwareness) {
+        let dir = TempDir::new().unwrap();
+        if let Some(text) = contents {
+            std::fs::write(dir.path().join(".gitignore"), text).unwrap();
+        }
+        let awareness = RepoAwareness::load(dir.path().to_str().unwrap());
+        (dir, awareness)
+    }
+
+    #[test]
+    fn hardcoded_defaults_still_apply_without_gitignore() {
+        let (_dir, aw) = load_with_gitignore(None);
+        for prefix in ["dist/", "node_modules/", "target/", "build/", ".next/"] {
+            let sample = format!("{}sample.txt", prefix);
+            assert!(aw.is_excluded(&sample),
+                "hardcoded default {} must exclude {}", prefix, sample);
+        }
+    }
+
+    #[test]
+    fn bare_gitignore_name_excludes_root_file() {
+        let (_dir, aw) = load_with_gitignore(Some("atlas.db\n"));
+        assert!(aw.is_excluded("atlas.db"),
+            "bare `atlas.db` in .gitignore must exclude root file `atlas.db`");
+    }
+
+    #[test]
+    fn bare_gitignore_name_still_excludes_directory_and_contents() {
+        let (_dir, aw) = load_with_gitignore(Some("cache\n"));
+        assert!(aw.is_excluded("cache/anything.log"),
+            "bare name must still exclude paths beneath a directory of that name");
+        assert!(aw.is_excluded("cache"),
+            "bare name must also exclude the exact root path (file or dir called `cache`)");
+    }
+
+    #[test]
+    fn bare_gitignore_name_does_not_match_partial_prefix() {
+        let (_dir, aw) = load_with_gitignore(Some("foo\n"));
+        assert!(!aw.is_excluded("foobar"),
+            "bare name `foo` must NOT match `foobar` (word-boundary at path separator)");
+        assert!(!aw.is_excluded("foo.txt"),
+            "bare name `foo` must NOT match `foo.txt` (word-boundary at path separator)");
+    }
+
+    #[test]
+    fn bare_gitignore_name_is_root_anchored() {
+        let (_dir, aw) = load_with_gitignore(Some("atlas.db\n"));
+        assert!(!aw.is_excluded("packages/foo/atlas.db"),
+            "bare name is root-anchored per existing RepoAwareness semantics — \
+             expanding to any depth would silently change gitignore behaviour");
+        assert!(!aw.is_excluded("nested/atlas.db"),
+            "same — no unrooted matching");
+    }
+
+    #[test]
+    fn trailing_slash_gitignore_pattern_unchanged() {
+        let (_dir, aw) = load_with_gitignore(Some("target/\n"));
+        assert!(aw.is_excluded("target/debug/foo"),
+            "explicit trailing-slash pattern must exclude contents (unchanged behaviour)");
+        assert!(!aw.is_excluded("target"),
+            "explicit trailing-slash pattern must NOT match a bare string with no slash \
+             (unchanged behaviour — callers pass `target/` when probing a directory)");
+    }
+
+    #[test]
+    fn glob_and_negation_lines_are_still_ignored() {
+        let (_dir, aw) = load_with_gitignore(Some("*.log\n!keep.log\nfoo/**/bar\n"));
+        assert!(!aw.is_excluded("app.log"),
+            "glob patterns are silently unsupported (documented limitation)");
+        assert!(!aw.is_excluded("keep.log"), "negation is silently unsupported");
+    }
+
+    #[test]
+    fn anchored_pattern_line_is_skipped() {
+        // Leading-slash patterns are skipped rather than silently reinterpreted.
+        let (_dir, aw) = load_with_gitignore(Some("/only-root\n"));
+        assert!(!aw.is_excluded("only-root"),
+            "anchored `/name` patterns are intentionally skipped — supporting them \
+             requires a separate decision about nested-match semantics");
+    }
+
+    #[test]
+    fn empty_and_comment_lines_are_skipped() {
+        let (_dir, aw) = load_with_gitignore(Some("\n# comment\n   \nnode_modules\n"));
+        assert!(aw.is_excluded("node_modules/pkg/index.js"),
+            "bare `node_modules` from .gitignore must exclude (already covered by hardcoded, \
+             but confirms comment/empty-line filtering did not eat the entry)");
+    }
+}
+
+/// Hard cap on commits ingested per stage.  If the repository has more
+/// commits than this, the excess is silently dropped by git itself — Atlas
+/// records the applied cap and the actual repo commit count in
+/// `ingest_runs.stages_json` so downstream queries can detect truncation.
+pub const INGEST_COMMIT_CAP: usize = 10_000;
+
+/// Backward-compatible entry point.  Defaults to HEAD-only scope (the
+/// historical semantics before P1-1).
 pub fn ingest_git(repo_path: &str, store: &Store) -> Result<usize> {
+    ingest_git_scoped(repo_path, store, atlas_git::GitScope::HeadOnly)
+}
+
+/// Ingest git history at an explicit scope.  Every commit inserted also
+/// records its parent hashes into `commit_parents` (P1-2).
+pub fn ingest_git_scoped(
+    repo_path: &str,
+    store:     &Store,
+    scope:     atlas_git::GitScope,
+) -> Result<usize> {
     let awareness = RepoAwareness::load(repo_path);
     let connector = GitRepo::open(repo_path)?;
-    let payload   = connector.fetch_raw()?;
-    let commits   = git_log::parse(&payload.data)?;
+    let payload   = connector.log_raw_scoped(scope, INGEST_COMMIT_CAP)?;
+    let commits   = git_log::parse(&payload)?;
     let count     = commits.len();
 
     info!(
-        "connector={} capability={} parsed={} commits",
+        "connector={} capability={} scope={} parsed={} commits",
         connector.name(),
         connector.capability().name,
+        scope.as_str(),
         count,
     );
 
@@ -308,6 +549,29 @@ fn classify_artifact_role(path: &str) -> ArtifactRole {
     ArtifactRole::ProductionSource
 }
 
+/// Stopwords for issue anchor extraction — English function words only.
+/// Does NOT exclude infrastructure or domain terms (memory, cache, logging, etc.)
+/// because those terms often appear in file names and are exactly the vocabulary
+/// needed to find the relevant files from an issue description.
+const ISSUE_ANCHOR_STOPWORDS: &[&str] = &[
+    // English function words
+    "a", "an", "the", "and", "or", "but", "for", "to", "in", "of", "at",
+    "by", "with", "this", "that", "from", "into", "as", "is", "it", "its",
+    "be", "been", "has", "have", "had", "not", "no", "on", "are", "was",
+    "were", "will", "can", "all", "we", "our", "their", "which", "when",
+    "where", "how", "who", "what", "any", "each", "via", "per", "after",
+    "before", "about", "over", "up", "out", "now", "just", "some", "should",
+    "would", "could", "need", "may", "must", "make", "made", "both", "only",
+    "same", "also", "more", "other", "than", "then", "so", "if", "do",
+    "does", "did", "get", "set", "new", "add", "use", "true", "false",
+    "null", "undefined",
+    // Uninformative prose words that appear in issue descriptions but not file paths
+    "issue", "issues", "feature", "features", "summary", "overview",
+    "steps", "step", "notes", "note", "changes", "fixes", "fixed",
+    "details", "branch", "full", "first", "last", "next", "total",
+    "item", "items", "minor", "major", "small", "large", "simple",
+];
+
 /// English stopwords and framework-structural vocabulary excluded from concept expansion.
 /// Framework vocabulary matches file paths but carries no domain meaning.
 const EXPANSION_STOPWORDS: &[&str] = &[
@@ -440,9 +704,92 @@ fn extract_window(text: &str, anchor: &str, half_chars: usize) -> String {
             let total = text.chars().count();
             let start = char_pos.saturating_sub(half_chars);
             let end = (char_pos + anchor.len() + half_chars).min(total);
-            text.chars().skip(start).take(end - start).collect()
+            let window: String = text.chars().skip(start).take(end - start).collect();
+            trim_partial_edge_words(&window, start > 0, end < total)
         }
     }
+}
+
+/// Drop the leading/trailing token of a window when that edge was produced by
+/// slicing mid-word. Without this, cutting "…support…" yields the fragment
+/// "pport", which then verifies as a real expansion term because it is a
+/// substring of a genuine file path.
+fn trim_partial_edge_words(window: &str, cut_at_start: bool, cut_at_end: bool) -> String {
+    let mut s = window;
+    if cut_at_start {
+        if let Some(i) = s.find(char::is_whitespace) {
+            s = &s[i + 1..];
+        } else {
+            return String::new();
+        }
+    }
+    if cut_at_end {
+        if let Some(i) = s.rfind(char::is_whitespace) {
+            s = &s[..i];
+        } else {
+            return String::new();
+        }
+    }
+    s.trim().to_string()
+}
+
+/// Phase 0a: Lexicon expansion.
+///
+/// Only expands anchors that have few direct file-path matches (same threshold as
+/// Phase 0 concept resolution).  An anchor with ≥ MIN_FILE_PATH_MATCHES direct
+/// matches already points to the right vocabulary — expanding it adds noise.
+///
+/// Returns the list of expansions surfaced to the user and the augmented anchor list.
+fn expand_via_lexicon(
+    anchors: &[&str],
+    repo_path: &str,
+    store: &Store,
+) -> Result<(Vec<LexiconExpansion>, Vec<String>)> {
+    const MIN_CONFIDENCE: f32 = 0.65;
+    const MIN_FILE_PATH_MATCHES: usize = 3;
+
+    let mut seen: std::collections::HashSet<String> =
+        anchors.iter().map(|s| s.to_lowercase()).collect();
+    let mut expansions: Vec<LexiconExpansion> = Vec::new();
+    let mut augmented: Vec<String> = anchors.iter().map(|s| s.to_lowercase()).collect();
+
+    for &anchor in anchors {
+        // Skip if the anchor already has sufficient direct file-path coverage.
+        let all_rows = store.search_anchor(anchor, repo_path)?;
+        let file_path_hits = all_rows.iter().filter(|r| r.source_type == "file_path").count();
+        if file_path_hits >= MIN_FILE_PATH_MATCHES { continue; }
+
+        let rels = store.lexicon_expand(anchor, repo_path)?;
+        for row in rels {
+            if row.confidence < MIN_CONFIDENCE as f64 { continue; }
+            let resolved = row.to_term.to_lowercase();
+            if seen.contains(&resolved) { continue; }
+
+            let kind = LexiconRelKind::from_str(&row.kind)
+                .unwrap_or(LexiconRelKind::CommitBridge);
+
+            // Ground the expansion in a file path that contains the resolved term.
+            let grounded_in = {
+                let hits = store.search_anchor(&resolved, repo_path)?;
+                hits.into_iter()
+                    .find(|r| r.source_type == "file_path")
+                    .map(|r| r.source_id)
+                    .unwrap_or_else(|| format!("lexicon ({}x co-occur)", row.co_occurrence_count))
+            };
+
+            expansions.push(LexiconExpansion {
+                original_term: anchor.to_lowercase(),
+                kind,
+                resolved_term: resolved.clone(),
+                confidence:    row.confidence as f32,
+                grounded_in,
+            });
+            seen.insert(resolved.clone());
+            augmented.push(resolved);
+        }
+    }
+
+    Ok((expansions, augmented))
 }
 
 /// Phase 0: Concept Resolution.
@@ -461,6 +808,11 @@ fn resolve_concepts(
     store: &Store,
 ) -> Result<(Vec<ConceptExpansion>, Vec<String>)> {
     const MIN_FILE_PATH_MATCHES: usize = 5;
+    /// An anchor written across many PR/issue bodies is shared project prose
+    /// ("computed", "behaviour"), not a distinguishing domain concept. Bridging
+    /// it pulls whichever unrelated PR happens to be matched first into
+    /// retrieval. Terms that are genuinely specific are rare in the corpus.
+    const MAX_DOC_BREADTH: usize = 8;
 
     let mut existing: std::collections::HashSet<String> =
         anchors.iter().map(|s| s.to_lowercase()).collect();
@@ -478,6 +830,13 @@ fn resolve_concepts(
             .filter(|r| r.source_type == "pr_body" || r.source_type == "issue_body")
             .collect();
         if doc_rows.is_empty() { continue; }
+
+        // Generic-vocabulary guard: bridge only anchors that are rare in the
+        // documentary corpus. Breadth is counted over distinct PR/issue
+        // sources, not rows, so repeated use inside one body still counts once.
+        let breadth: std::collections::HashSet<&str> =
+            doc_rows.iter().map(|r| r.source_id.as_str()).collect();
+        if breadth.len() > MAX_DOC_BREADTH { continue; }
 
         // Use the first match as the bridge source
         let bridge     = &doc_rows[0];
@@ -500,9 +859,11 @@ fn resolve_concepts(
             }
         }
 
-        // Prefer shorter (more specific) terms; cap at 8 expansions per anchor
+        // Prefer shorter (more specific) terms; cap expansions per anchor.
+        // Each expansion is an extra retrieval anchor, so a single bridged term
+        // injecting 8 of them dominates the bag over the original question.
         verified.sort_by_key(|v| v.term.len());
-        verified.truncate(8);
+        verified.truncate(4);
 
         if !verified.is_empty() {
             expansions.push(ConceptExpansion {
@@ -545,6 +906,50 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
         model_refs:    edge_count > 0,
     };
 
+    // ── Phase 0z: Per-anchor identity redirect (Item 1) ──────────────────────
+    //
+    // If any anchor is a file-path address that FileIdentity recognises as
+    // historical, add the current canonical path as an additional anchor.
+    // The original user anchor is preserved in `anchors`; the redirect is
+    // recorded in `anchor_redirects` so consumers see both addresses.
+    //
+    // A file-path anchor is detected heuristically (contains a `/` and a `.`,
+    // OR resolves cleanly to a file via FileIdentity).  Non-file anchors
+    // ("order", "identity") are unchanged — they were never paths.
+    let mut anchor_redirects: Vec<atlas_ir::AnchorRedirect> = Vec::new();
+    let mut identity_augmented: Vec<String> = anchors.iter().map(|s| s.to_string()).collect();
+    for a in anchors {
+        let looks_like_path = a.contains('/') || a.contains('.');
+        if !looks_like_path { continue; }
+        if let Some(current) = store.current_path_if_historical(a, repo_path)? {
+            let identity_id = store
+                .resolve_path_to_identity(a, repo_path)?
+                .unwrap_or(0);
+            if !identity_augmented.iter().any(|s| s == &current) {
+                identity_augmented.push(current.clone());
+            }
+            anchor_redirects.push(atlas_ir::AnchorRedirect {
+                original_anchor: a.to_string(),
+                current_path:    current,
+                identity_id,
+            });
+        }
+    }
+    let identity_augmented_refs: Vec<&str> =
+        identity_augmented.iter().map(String::as_str).collect();
+
+    // ── Phase 0a: Lexicon expansion ───────────────────────────────────────────
+    //
+    // For each anchor, query the repository lexicon for vocabulary relationships
+    // built during ingest (abbreviations, commit bridges, compound components).
+    // Adds high-confidence resolved terms to the anchor set before concept
+    // resolution, so concept resolution can confirm and extend what the lexicon
+    // already knows.
+    let (lexicon_expansions, lexicon_augmented_anchors) =
+        expand_via_lexicon(&identity_augmented_refs, repo_path, store)?;
+    let lexicon_anchor_refs: Vec<&str> =
+        lexicon_augmented_anchors.iter().map(String::as_str).collect();
+
     // ── Phase 0: Concept Resolution ───────────────────────────────────────────
     //
     // For anchors that don't map directly to file paths, search documentary
@@ -552,7 +957,7 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
     // expansion terms against the repository before adding them.  This expands
     // the anchor set only using vocabulary the team actually used.
     let (concept_expansions, effective_anchor_strs) =
-        resolve_concepts(anchors, repo_path, store)?;
+        resolve_concepts(&lexicon_anchor_refs, repo_path, store)?;
     let effective_anchor_refs: Vec<&str> =
         effective_anchor_strs.iter().map(String::as_str).collect();
 
@@ -637,18 +1042,16 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
         }
     }
 
-    // -- Seed scoring and trimming ------------------------------------------------
+    // -- Phase 1 pre-filter -------------------------------------------------------
     //
-    // Score candidates on two axes:
-    //   1. filename_hit -- does any matched anchor appear in the file's basename stem?
-    //      Prefers deployment.service.ts over deploy/lb-setup.sh for anchor "deploy".
-    //   2. anchor_count -- how many distinct anchors matched?
-    //
-    // Sorting always runs (not just when trimming) so directory-only matches
-    // never displace filename matches in the rendered output.
-    const MAX_SEEDS: usize = 20;
+    // Cap the seed pool before structural expansion so Phase 2 queries remain
+    // bounded even on very large repositories (>1000 file-path matches).
+    // Use a lightweight lexical pre-sort: filename hit first, then anchor count.
+    // Full multi-signal ranking happens after Phase 4 when historical data is
+    // available, so this pre-filter only prevents combinatorial blowup.
+    const PREFILTER: usize = 60;
     {
-        let mut scored: Vec<(String, Vec<CandidateReason>, bool, usize)> = candidates
+        let mut pre: Vec<(String, Vec<CandidateReason>, bool, usize)> = candidates
             .into_iter()
             .map(|(file, reasons)| {
                 let matched_anchors: std::collections::HashSet<&str> = reasons.iter()
@@ -658,8 +1061,6 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
                     })
                     .collect();
                 let anchor_count = matched_anchors.len();
-                // Check whether any anchor appears in the filename stem (basename up to
-                // first dot), not just in a parent directory component.
                 let basename = file.split('/').last().unwrap_or(file.as_str());
                 let stem = if let Some(dot) = basename.find('.') { &basename[..dot] } else { basename };
                 let stem_lower = stem.to_lowercase();
@@ -668,14 +1069,9 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
                 (file, reasons, filename_hit, anchor_count)
             })
             .collect();
-        // Primary: filename hit (true > false), Secondary: anchor count (desc), Tertiary: path (asc)
-        scored.sort_by(|a, b| {
-            b.2.cmp(&a.2)
-                .then(b.3.cmp(&a.3))
-                .then(a.0.cmp(&b.0))
-        });
-        scored.truncate(MAX_SEEDS);
-        candidates = scored.into_iter()
+        pre.sort_by(|a, b| b.2.cmp(&a.2).then(b.3.cmp(&a.3)).then(a.0.cmp(&b.0)));
+        pre.truncate(PREFILTER);
+        candidates = pre.into_iter()
             .map(|(file, reasons, _, _)| (file, reasons))
             .collect();
     }
@@ -779,6 +1175,120 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
         }
     }
 
+    // ── Multi-signal ranking ──────────────────────────────────────────────────
+    //
+    // Signals and weights:
+    //   35% Lexical    — anchor match quality (count + filename vs directory)
+    //   25% Structural — edges within candidate set (normalised)
+    //   20% Historical — log-normalised touch count
+    //   15% Centrality — in-degree within candidate set (normalised)
+    //
+    // All signals are normalised to [0, 1] before weighting.
+    // After scoring, candidates are sorted by total score (desc) and
+    // truncated to MAX_OUTPUT.
+    const MAX_OUTPUT: usize = 20;
+    {
+        let total_anchors = effective_anchor_refs.len().max(1);
+
+        // Build touch count lookup from the historical vec
+        let touch_map: std::collections::HashMap<&str, i64> = historical.iter()
+            .map(|h| (h.file.as_str(), h.touch_count))
+            .collect();
+
+        // Build edge-count map and PageRank scores for the candidate subgraph.
+        // PageRank replaces raw in-degree as the centrality signal — it accounts for
+        // the "quality" of in-links, not just their count.
+        let edge_count_map: std::collections::HashMap<&str, usize> = observed_structure.iter()
+            .map(|o| (o.file.as_str(), o.outgoing.len() + o.incoming.len()))
+            .collect();
+
+        // Build node index for PageRank.
+        // Use owned Strings so `candidates` is free to be moved later.
+        let nodes: Vec<String> = candidates.keys().cloned().collect();
+        let node_idx: std::collections::HashMap<&str, usize> = nodes.iter()
+            .enumerate().map(|(i, f)| (f.as_str(), i)).collect();
+
+        // Build directed edge list from observed outgoing edges.
+        let mut pr_edges: Vec<(usize, usize)> = Vec::new();
+        for obs in &observed_structure {
+            if let Some(&from) = node_idx.get(obs.file.as_str()) {
+                for e in &obs.outgoing {
+                    if let Some(&to) = node_idx.get(e.file.as_str()) {
+                        pr_edges.push((from, to));
+                    }
+                }
+            }
+        }
+
+        let node_strs: Vec<&str> = nodes.iter().map(String::as_str).collect();
+        let pr_scores = pagerank(&node_strs, &pr_edges, 20, 0.85);
+        let max_pr = pr_scores.iter().cloned().fold(0.0_f32, f32::max);
+
+        let pagerank_map: std::collections::HashMap<&str, f32> = nodes.iter()
+            .enumerate()
+            .map(|(i, f)| (f.as_str(), pr_scores[i]))
+            .collect();
+
+        let max_touch  = touch_map.values().copied().max().unwrap_or(0);
+        let max_edges  = edge_count_map.values().copied().max().unwrap_or(0);
+
+        let score_candidate = |file: &str, reasons: &[CandidateReason]| -> ScoreBreakdown {
+            // lexical
+            let matched: std::collections::HashSet<&str> = reasons.iter()
+                .filter_map(|r| match r {
+                    CandidateReason::AnchorMatch { anchor, .. } => Some(anchor.as_str()),
+                    _ => None,
+                })
+                .collect();
+            let anchor_frac = matched.len() as f32 / total_anchors as f32;
+            let basename = file.split('/').last().unwrap_or(file);
+            let stem = if let Some(d) = basename.find('.') { &basename[..d] } else { basename };
+            let stem_lower = stem.to_lowercase();
+            let filename_hit = matched.iter().any(|a| stem_lower.contains(&a.to_lowercase()));
+            let lexical = (anchor_frac * if filename_hit { 1.3 } else { 1.0 }).min(1.0);
+
+            // structural (total edge degree within candidate set)
+            let edges = edge_count_map.get(file).copied().unwrap_or(0);
+            let structural = if max_edges > 0 { edges as f32 / max_edges as f32 } else { 0.0 };
+
+            // historical (log-normalised touch count)
+            let tc = touch_map.get(file).copied().unwrap_or(0);
+            let historical_s = if max_touch > 0 {
+                (tc as f32 + 1.0).ln() / (max_touch as f32 + 1.0).ln()
+            } else { 0.0 };
+
+            // centrality (PageRank within candidate subgraph)
+            let pr = pagerank_map.get(file).copied().unwrap_or(0.0);
+            let centrality = if max_pr > 0.0 { pr / max_pr } else { 0.0 };
+
+            let total = 0.35 * lexical + 0.25 * structural + 0.20 * historical_s + 0.15 * centrality;
+
+            ScoreBreakdown { lexical, structural, historical: historical_s, centrality, total }
+        };
+
+        let mut scored: Vec<(String, Vec<CandidateReason>, ScoreBreakdown)> = candidates
+            .into_iter()
+            .map(|(file, reasons)| {
+                let s = score_candidate(&file, &reasons);
+                (file, reasons, s)
+            })
+            .collect();
+
+        scored.sort_by(|a, b| b.2.total.partial_cmp(&a.2.total).unwrap_or(std::cmp::Ordering::Equal));
+        scored.truncate(MAX_OUTPUT);
+
+        candidates = scored.into_iter()
+            .map(|(file, reasons, _)| (file, reasons))
+            .collect();
+
+        // Re-scope observed_structure and historical to the post-ranking candidate set
+        let kept: std::collections::HashSet<&str> = candidates.keys().map(String::as_str).collect();
+        observed_structure.retain(|o| kept.contains(o.file.as_str()));
+        historical.retain(|h| kept.contains(h.file.as_str()));
+        historical.sort_by(|a, b| b.touch_count.cmp(&a.touch_count).then(a.file.cmp(&b.file)));
+
+    }
+
     // ── Phase 5: Unresolved connections ───────────────────────────────────────
     //
     // Only flag seed candidates that satisfy all three conditions:
@@ -833,20 +1343,81 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
     }
 
     // ── Assemble ──────────────────────────────────────────────────────────────
+    // Filter candidates to files that exist on disk right now.
+    // Git history records every file that ever existed; deleted files remain in
+    // the DB after the commit that removed them.  Presenting deleted files as
+    // candidates is a correctness error — the investigator would act on
+    // evidence that no longer reflects reality.
+    let repo_root = repo_path.trim_end_matches('/');
+
     let mut core_candidates: Vec<CandidateArtifact> = Vec::new();
     let mut supporting_artifacts: Vec<CandidateArtifact> = Vec::new();
+    let mut deleted_candidates: Vec<String> = Vec::new();
 
-    for (file, reasons) in candidates {
-        let role = classify_artifact_role(&file);
-        let artifact = CandidateArtifact { file, role: role.clone(), reasons };
-        if role == ArtifactRole::ProductionSource {
-            core_candidates.push(artifact);
-        } else {
-            supporting_artifacts.push(artifact);
+    // Build final scores over the post-ranking, disk-extant candidate set.
+    // Wrapped in a block so the closure's borrows are released before the sort calls below.
+    {
+        let final_touch_max = historical.iter().map(|h| h.touch_count).max().unwrap_or(0);
+        let final_edge_max  = observed_structure.iter()
+            .map(|o| o.outgoing.len() + o.incoming.len()).max().unwrap_or(0);
+        let final_indeg_max = observed_structure.iter()
+            .map(|o| o.incoming.len()).max().unwrap_or(0);
+        let total_anchors_final = effective_anchor_refs.len().max(1);
+
+        let compute_score = |file: &str, reasons: &[CandidateReason]| -> ScoreBreakdown {
+            let matched: std::collections::HashSet<&str> = reasons.iter()
+                .filter_map(|r| match r {
+                    CandidateReason::AnchorMatch { anchor, .. } => Some(anchor.as_str()),
+                    _ => None,
+                })
+                .collect();
+            let anchor_frac = matched.len() as f32 / total_anchors_final as f32;
+            let basename = file.split('/').last().unwrap_or(file);
+            let stem = if let Some(d) = basename.find('.') { &basename[..d] } else { basename };
+            let stem_lower = stem.to_lowercase();
+            let filename_hit = matched.iter().any(|a| stem_lower.contains(&a.to_lowercase()));
+            let lexical = (anchor_frac * if filename_hit { 1.3 } else { 1.0 }).min(1.0);
+
+            let obs = observed_structure.iter().find(|o| o.file == file);
+            let edges  = obs.map(|o| o.outgoing.len() + o.incoming.len()).unwrap_or(0);
+            let in_deg = obs.map(|o| o.incoming.len()).unwrap_or(0);
+            let structural = if final_edge_max > 0 { edges as f32 / final_edge_max as f32 } else { 0.0 };
+            let centrality = if final_indeg_max > 0 { in_deg as f32 / final_indeg_max as f32 } else { 0.0 };
+
+            let tc = historical.iter().find(|h| h.file == file).map(|h| h.touch_count).unwrap_or(0);
+            let historical_s = if final_touch_max > 0 {
+                (tc as f32 + 1.0).ln() / (final_touch_max as f32 + 1.0).ln()
+            } else { 0.0 };
+
+            let total = 0.35 * lexical + 0.25 * structural + 0.20 * historical_s + 0.15 * centrality;
+            ScoreBreakdown { lexical, structural, historical: historical_s, centrality, total }
+        };
+
+        for (file, reasons) in candidates {
+            let abs_path = format!("{}/{}", repo_root, file);
+            if !std::path::Path::new(&abs_path).exists() {
+                deleted_candidates.push(file);
+                continue;
+            }
+            let score = compute_score(&file, &reasons);
+            let role = classify_artifact_role(&file);
+            let artifact = CandidateArtifact { file, role: role.clone(), reasons, score };
+            if role == ArtifactRole::ProductionSource {
+                core_candidates.push(artifact);
+            } else {
+                supporting_artifacts.push(artifact);
+            }
         }
-    }
-    core_candidates.sort_by(|a, b| a.file.cmp(&b.file));
-    supporting_artifacts.sort_by(|a, b| a.file.cmp(&b.file));
+    } // compute_score and its borrows dropped here
+
+    // Sort by score descending so highest-confidence files appear first.
+    core_candidates.sort_by(|a, b|
+        b.score.total.partial_cmp(&a.score.total).unwrap_or(std::cmp::Ordering::Equal)
+        .then(a.file.cmp(&b.file)));
+    supporting_artifacts.sort_by(|a, b|
+        b.score.total.partial_cmp(&a.score.total).unwrap_or(std::cmp::Ordering::Equal)
+        .then(a.file.cmp(&b.file)));
+    deleted_candidates.sort();
 
     let mut documentary: Vec<DocumentaryEvidence> = doc_map.into_values().collect();
     documentary.sort_by_key(|d| (d.kind.clone(), d.number));
@@ -867,9 +1438,10 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
     }
 
     Ok(InvestigationDocument {
-        schema_version:    4,
+        schema_version:    6,
         anchors:           anchors.iter().map(|s| s.to_string()).collect(),
         effective_anchors,
+        lexicon_expansions,
         concept_expansions,
         core_candidates,
         supporting_artifacts,
@@ -879,12 +1451,83 @@ pub fn investigate(anchors: &[&str], repo_path: &str, store: &Store) -> Result<I
         unresolved,
         related_decisions,
         coverage,
+        deleted_candidates,
+        anchor_redirects,
     })
 }
 
+/// Run an investigation and store the result in the DB, returning the document.
+/// If the same (anchors, git HEAD) combination is already cached, returns the
+/// cached result without re-running all 5 phases.
+pub fn investigate_cached(
+    anchors:   &[&str],
+    repo_path: &str,
+    store:     &Store,
+) -> Result<InvestigationDocument> {
+    let anchors_key = {
+        let mut sorted = anchors.to_vec();
+        sorted.sort_unstable();
+        sorted.join(",")
+    };
+    let git_head = current_git_head(repo_path).unwrap_or_else(|_| "unknown".to_string());
+
+    // Cache hit?
+    if let Some(json) = store.get_investigation(repo_path, &anchors_key, &git_head)? {
+        if let Ok(doc) = serde_json::from_str::<InvestigationDocument>(&json) {
+            return Ok(doc);
+        }
+    }
+
+    let doc = investigate(anchors, repo_path, store)?;
+    let json = serde_json::to_string(&doc)
+        .context("failed to serialize investigation document")?;
+    let ran_at = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs() as i64)
+        .unwrap_or(0);
+    store.store_investigation(repo_path, &anchors_key, &git_head, ran_at, &json)?;
+    Ok(doc)
+}
+
+/// Return the current HEAD commit hash for the repo, or an error.
+fn current_git_head(repo_path: &str) -> Result<String> {
+    let output = std::process::Command::new("git")
+        .args(["-C", repo_path, "rev-parse", "--short", "HEAD"])
+        .output()
+        .context("git rev-parse")?;
+    Ok(String::from_utf8_lossy(&output.stdout).trim().to_string())
+}
+
+/// List stored investigation records for a repo (newest first).
+pub fn list_stored_investigations(
+    repo_path: &str,
+    store:     &Store,
+    limit:     i64,
+) -> Result<Vec<atlas_storage::InvestigationRecord>> {
+    store.list_investigations(repo_path, limit)
+}
+
+/// Load a stored investigation by its row ID.
+pub fn load_investigation_by_id(
+    id:    i64,
+    store: &Store,
+) -> Result<Option<InvestigationDocument>> {
+    let Some(json) = store.get_investigation_by_id(id)? else { return Ok(None) };
+    let doc = serde_json::from_str::<InvestigationDocument>(&json)
+        .context("failed to deserialize stored investigation")?;
+    Ok(Some(doc))
+}
+
+/// Parser version strings — bump when the extractor logic changes in a way
+/// that invalidates prior rows (P2-1).  Format: `<lang>-v<major>.<minor>`.
+pub const TS_EXTRACTOR_VERSION:     &str = "typescript-v1.0";
+pub const C_EXTRACTOR_VERSION:      &str = "c-v1.0";
+pub const RUST_EXTRACTOR_VERSION:   &str = "rust-v1.0";
+pub const PYTHON_EXTRACTOR_VERSION: &str = "python-v1.0";
+
 pub fn ingest_typescript(repo_path: &str, store: &Store) -> Result<usize> {
     let awareness = RepoAwareness::load(repo_path);
-    let (edges, _file_count) = ts_structural::extract_all(repo_path);
+    let (edges, outcomes) = ts_structural::extract_all_with_outcomes(repo_path);
     store.clear_structural_edges(repo_path)?;
     let mut kept = 0usize;
     let mut excluded = 0usize;
@@ -893,8 +1536,14 @@ pub fn ingest_typescript(repo_path: &str, store: &Store) -> Result<usize> {
             excluded += 1;
             continue;
         }
-        store.insert_structural_edge(edge, repo_path)?;
+        store.insert_structural_edge_versioned(edge, repo_path, TS_EXTRACTOR_VERSION)?;
         kept += 1;
+    }
+    // Authoritative per-file analysis status.  Analyzed/parser_failure here
+    // wins over the extension-based fallback in `stamp_analysis_status`.
+    for outcome in &outcomes {
+        if awareness.is_excluded(&outcome.file) { continue; }
+        write_analysis_status(store, repo_path, outcome)?;
     }
     if excluded > 0 {
         info!("repository awareness excluded {} structural edges", excluded);
@@ -903,44 +1552,2431 @@ pub fn ingest_typescript(repo_path: &str, store: &Store) -> Result<usize> {
     Ok(kept)
 }
 
-/// Ingest decision records and ADRs from `docs/decisions/` and `docs/adr/`.
-/// Each markdown file's full content (frontmatter + body) is stored verbatim
-/// so that body text is searchable via `atlas search`.
+/// Returns true if `repo_path` contains any C/C++/CUDA/ObjC source files.
+pub fn repo_has_c_files(repo_path: &str) -> bool {
+    c_structural::repo_has_c_files(repo_path)
+}
+
+/// Extract `#include` edges from all C/C++/CUDA/ObjC files and persist them.
+/// Called automatically during ingest when C-family files are detected.
+pub fn ingest_c(repo_path: &str, store: &Store) -> Result<usize> {
+    let awareness = RepoAwareness::load(repo_path);
+    let (edges, outcomes) = c_structural::extract_all_with_outcomes(repo_path);
+    let mut kept = 0usize;
+    for edge in &edges {
+        if awareness.is_excluded(&edge.source_file) || awareness.is_excluded(&edge.target_file) {
+            continue;
+        }
+        store.insert_structural_edge_versioned(edge, repo_path, C_EXTRACTOR_VERSION)?;
+        kept += 1;
+    }
+    for outcome in &outcomes {
+        if awareness.is_excluded(&outcome.file) { continue; }
+        write_analysis_status(store, repo_path, outcome)?;
+    }
+    info!("c structural edges inserted={}", kept);
+    Ok(kept)
+}
+
+pub fn repo_has_rust_files(repo_path: &str) -> bool {
+    rust_structural::repo_has_rust_files(repo_path)
+}
+
+pub fn repo_has_typescript_files(repo_path: &str) -> bool {
+    ts_structural::repo_has_ts_files(repo_path)
+}
+
+pub fn repo_has_python_files(repo_path: &str) -> bool {
+    python_structural::repo_has_python_files(repo_path)
+}
+
+/// Extract `import`/`from ... import` edges from all Python files and persist them.
+pub fn ingest_python(repo_path: &str, store: &Store) -> Result<usize> {
+    let awareness = RepoAwareness::load(repo_path);
+    let (edges, outcomes) = python_structural::extract_all_with_outcomes(repo_path);
+    let mut kept = 0usize;
+    for edge in &edges {
+        if awareness.is_excluded(&edge.source_file) || awareness.is_excluded(&edge.target_file) {
+            continue;
+        }
+        store.insert_structural_edge_versioned(edge, repo_path, PYTHON_EXTRACTOR_VERSION)?;
+        kept += 1;
+    }
+    for outcome in &outcomes {
+        if awareness.is_excluded(&outcome.file) { continue; }
+        write_analysis_status(store, repo_path, outcome)?;
+    }
+    info!("python structural edges inserted={}", kept);
+    Ok(kept)
+}
+
+/// Extract `use crate::` / `use super::` edges from all Rust files and persist them.
+/// Called automatically during ingest when Rust files are detected.
+pub fn ingest_rust(repo_path: &str, store: &Store) -> Result<usize> {
+    let awareness = RepoAwareness::load(repo_path);
+    let (edges, outcomes) = rust_structural::extract_all_with_outcomes(repo_path);
+    let mut kept = 0usize;
+    for edge in &edges {
+        if awareness.is_excluded(&edge.source_file) || awareness.is_excluded(&edge.target_file) {
+            continue;
+        }
+        store.insert_structural_edge_versioned(edge, repo_path, RUST_EXTRACTOR_VERSION)?;
+        kept += 1;
+    }
+    for outcome in &outcomes {
+        if awareness.is_excluded(&outcome.file) { continue; }
+        write_analysis_status(store, repo_path, outcome)?;
+    }
+    info!("rust structural edges inserted={}", kept);
+    Ok(kept)
+}
+
+/// Persist a per-file analysis outcome from a language extractor.
+/// Authoritative — overrides any prior status for the same file.
+fn write_analysis_status(
+    store:     &Store,
+    repo_path: &str,
+    outcome:   &atlas_parser::FileAnalysis,
+) -> Result<()> {
+    use atlas_parser::FileAnalysisStatus;
+    let (status, detail) = match &outcome.status {
+        FileAnalysisStatus::Analyzed              => ("analyzed", None),
+        FileAnalysisStatus::ParserFailure { reason } => ("parser_failure", Some(reason.as_str())),
+    };
+    if let Some(reason) = detail {
+        info!("parser_failure: {}  reason={}", outcome.file, reason);
+    }
+    store.set_analysis_status(&outcome.file, repo_path, status)?;
+    Ok(())
+}
+
+/// Recognised configuration file kinds and their identifying paths (P1-8).
+///
+/// Order matters — the first pattern that matches wins.  Extending this list
+/// is intentional: adding a kind must be a decision, not a silent side effect.
+const CONFIG_ARTIFACTS: &[(&str, &str)] = &[
+    ("package_json",         "package.json"),
+    ("package_lock",         "package-lock.json"),
+    ("yarn_lock",            "yarn.lock"),
+    ("pnpm_lock",            "pnpm-lock.yaml"),
+    ("bun_lock",             "bun.lockb"),
+    ("tsconfig",             "tsconfig.json"),
+    ("tsconfig_base",        "tsconfig.base.json"),
+    ("tsconfig_build",       "tsconfig.build.json"),
+    ("cargo_toml",           "Cargo.toml"),
+    ("cargo_lock",           "Cargo.lock"),
+    ("dockerfile",           "Dockerfile"),
+    ("docker_compose",       "docker-compose.yml"),
+    ("docker_compose_yaml",  "docker-compose.yaml"),
+    ("docker_compose_local", "docker-compose.local.yml"),
+    ("pnpm_workspace",       "pnpm-workspace.yaml"),
+    ("gitignore",            ".gitignore"),
+    ("npmrc",                ".npmrc"),
+    ("nvmrc",                ".nvmrc"),
+];
+
+/// Persist raw configuration artifact evidence for a repository.
+///
+/// Each recognised config file at the repository root is stored verbatim in
+/// `configuration_artifacts` with its SHA-256 for change-detection.  Nested
+/// configs (e.g. `packages/*/package.json`) are out of scope for this pass —
+/// they earn ingestion when a real investigation demonstrates the need.
+pub fn ingest_configuration_artifacts(repo_path: &str, store: &Store) -> Result<usize> {
+    use sha2::{Digest, Sha256};
+
+    let root = Path::new(repo_path);
+    let mut count = 0usize;
+    for (kind, filename) in CONFIG_ARTIFACTS {
+        let path = root.join(filename);
+        // .lockb is binary — try text read but skip if non-UTF-8.
+        let Ok(content) = std::fs::read_to_string(&path) else { continue };
+        let mut hasher = Sha256::new();
+        hasher.update(content.as_bytes());
+        let sha = hex_encode(&hasher.finalize());
+        store.insert_configuration_artifact(repo_path, filename, kind, &content, &sha)?;
+        count += 1;
+    }
+    info!("configuration artifacts ingested={}", count);
+    Ok(count)
+}
+
+fn hex_encode(bytes: &[u8]) -> String {
+    let mut out = String::with_capacity(bytes.len() * 2);
+    for b in bytes {
+        out.push_str(&format!("{:02x}", b));
+    }
+    out
+}
+
+/// Run `repo_inspector` during single-repo ingest and persist the resulting
+/// `ProfileClaim`s (P1-9).  When no `projects`/`repositories` row exists,
+/// a synthetic project + repository record is created keyed on `repo_path`.
+///
+/// Idempotent: repeated calls upsert claims via `replace_profile_claims`.
+pub fn ingest_profile_claims(repo_path: &str, store: &Store) -> Result<usize> {
+    // Ensure a projects row exists for the synthetic default project.
+    // Name is fixed so the synthetic project is discoverable.
+    const SYNTHETIC_PROJECT: &str = "_atlas_ingest";
+    if store.get_project_by_name(SYNTHETIC_PROJECT)?.is_none() {
+        let _ = store.create_project(SYNTHETIC_PROJECT, Some("Auto-created by single-repo ingest"))?;
+    }
+    let project = store.get_project_by_name(SYNTHETIC_PROJECT)?
+        .expect("synthetic project must exist after create");
+
+    // Ensure a repositories row exists for this repo_path.
+    let repo_row = match store.get_repository_by_path(repo_path)? {
+        Some(r) => r,
+        None => {
+            let name = std::path::Path::new(repo_path)
+                .file_name()
+                .and_then(|n| n.to_str())
+                .unwrap_or(repo_path)
+                .to_string();
+            let id = store.register_repository(
+                project.id,
+                &name,
+                None,                       // role_label
+                Some(repo_path),            // local_path
+                None,                       // remote_url
+                &atlas_ir::ExistenceSource::LocalObserved,
+                &atlas_ir::AccessState::Accessible,
+                &atlas_ir::IngestionState::Ingested,
+            )?;
+            atlas_ir::RepositoryRecord {
+                id,
+                project_id:       project.id,
+                name,
+                role_label:       None,
+                local_path:       Some(repo_path.to_string()),
+                remote_url:       None,
+                existence_source: atlas_ir::ExistenceSource::LocalObserved,
+                access_state:     atlas_ir::AccessState::Accessible,
+                ingestion_state:  atlas_ir::IngestionState::Ingested,
+            }
+        }
+    };
+
+    let claims = repo_inspector::inspect_repository(repo_path)?;
+    let count  = claims.len();
+    let now    = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_secs() as i64)
+        .unwrap_or(0);
+    store.replace_profile_claims(repo_row.id, &claims, now)?;
+    info!("profile claims ingested={}", count);
+    Ok(count)
+}
+
+/// Stamp `files.analysis_status` for every tracked file in `repo_path`.
+///
+/// Runs AFTER all language extractors so that files an extractor visited are
+/// marked `analyzed`.  Files whose extension identifies a source language
+/// Atlas has no extractor for are marked `not_analyzed_language`.  Everything
+/// else is `not_source_file`.
+///
+/// Distinct from "file appears in structural_edges": a file with zero edges
+/// after an `analyzed` status genuinely has zero imports (e.g. a leaf module).
+/// `no rows` and `not_analyzed` were previously indistinguishable.
+pub fn stamp_analysis_status(repo_path: &str, store: &Store) -> Result<usize> {
+    let paths = store.all_file_paths(repo_path)?;
+    let mut stamped = 0usize;
+    for path in &paths {
+        let status = classify_file_analysis(path);
+        // if-unset: never clobber an authoritative `analyzed` or
+        // `parser_failure` written by a language extractor upstream.
+        store.set_analysis_status_if_unset(path, repo_path, status)?;
+        stamped += 1;
+    }
+    Ok(stamped)
+}
+
+/// Deterministic per-extension classification.  Reflects the current
+/// extractor coverage — extending this must be a decision, not a silent
+/// side effect of adding a new parser.
+fn classify_file_analysis(path: &str) -> &'static str {
+    let ext = std::path::Path::new(path)
+        .extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or("");
+    let ext_lower = ext.to_lowercase();
+
+    match ext_lower.as_str() {
+        // Languages Atlas has extractors for.
+        "ts" | "tsx"                                        => "analyzed",
+        "js" | "jsx" | "mjs" | "cjs"                        => "analyzed",
+        "rs"                                                => "analyzed",
+        "py"                                                => "analyzed",
+        "c" | "h" | "cpp" | "cc" | "hpp" | "cu" | "m"       => "analyzed",
+        // Recognisable source languages Atlas has no extractor for.
+        "go" | "java" | "kt" | "kts" | "swift" | "rb"
+        | "php" | "cs" | "scala" | "clj" | "hs" | "ml"
+        | "lua" | "sh" | "bash" | "zsh" | "fish" | "dart"
+        | "elm" | "erl" | "ex" | "exs" | "fs" | "fsi"
+        | "vue" | "svelte" | "sol"                          => "not_analyzed_language",
+        // Documentation / config / assets.
+        _                                                   => "not_source_file",
+    }
+}
+
+/// Ingest markdown documentation.
+///
+/// Sources, in deterministic precedence order:
+///   1. `docs/decisions/*.md`  (top-level only) → doc_type = "decision"
+///   2. `docs/adr/*.md`        (top-level only) → doc_type = "adr"
+///   3. Root `README.md`                        → doc_type = "readme"
+///   4. Any other `*.md` under `docs/` (recursive) → doc_type = "doc"
+///
+/// The recursive pass skips anything under `docs/decisions/` or `docs/adr/` so
+/// files claimed by (1) or (2) are never re-classified as generic docs.  This
+/// keeps precedence explicit rather than relying on `INSERT OR REPLACE` order.
+///
+/// Each file's full content (frontmatter + body) is stored verbatim so body
+/// text is searchable via `atlas search`.
 pub fn ingest_documents(repo_path: &str, store: &Store) -> Result<usize> {
     let mut count = 0;
-    let scan_dirs = [("docs/decisions", "decision"), ("docs/adr", "adr")];
-    for (subdir, doc_type) in &scan_dirs {
-        let dir = Path::new(repo_path).join(subdir);
+    let root = Path::new(repo_path);
+
+    // (1) and (2): flat scans — unchanged behaviour.
+    let flat_scans = [("docs/decisions", "decision"), ("docs/adr", "adr")];
+    for (subdir, doc_type) in &flat_scans {
+        let dir = root.join(subdir);
         let entries = match std::fs::read_dir(&dir) {
             Ok(e) => e,
             Err(_) => continue,
         };
         for entry in entries.flatten() {
             let path = entry.path();
-            if path.extension().map(|e| e == "md").unwrap_or(false) {
-                let content = std::fs::read_to_string(&path)?;
-                let title = extract_frontmatter_title(&content)
-                    .unwrap_or_else(|| {
-                        path.file_name()
-                            .and_then(|n| n.to_str())
-                            .unwrap_or("unknown")
-                            .to_string()
-                    });
-                let rel_path = path
-                    .strip_prefix(repo_path)
-                    .map(|p| p.to_string_lossy().into_owned())
-                    .unwrap_or_else(|_| path.to_string_lossy().into_owned());
-                store.insert_document(&rel_path, doc_type, &title, &content, repo_path)?;
+            if path.is_file() && path.extension().map(|e| e == "md").unwrap_or(false) {
+                ingest_one_doc(&path, doc_type, repo_path, store)?;
                 count += 1;
             }
         }
     }
+
+    // (3): root README.md.
+    let readme = root.join("README.md");
+    if readme.is_file() {
+        ingest_one_doc(&readme, "readme", repo_path, store)?;
+        count += 1;
+    }
+
+    // (3b): nested README.md files (e.g. crates/*/README.md, packages/*/README.md).
+    // Respects RepoAwareness so `node_modules/**/README.md` and `target/**/README.md`
+    // do not leak in.  Skips the root README (already handled above).
+    let awareness = RepoAwareness::load(repo_path);
+    let mut nested_readmes: Vec<std::path::PathBuf> = Vec::new();
+    collect_readmes_recursive(root, root, &awareness, &mut nested_readmes);
+    for path in nested_readmes {
+        // Skip the root README — already ingested above.
+        if path == readme { continue; }
+        ingest_one_doc(&path, "readme", repo_path, store)?;
+        count += 1;
+    }
+
+    // (4): every other .md under docs/, recursively.
+    let docs_dir = root.join("docs");
+    if docs_dir.is_dir() {
+        let decisions_dir = docs_dir.join("decisions");
+        let adr_dir       = docs_dir.join("adr");
+        let mut found: Vec<std::path::PathBuf> = Vec::new();
+        collect_markdown_recursive(&docs_dir, &mut found);
+        for path in found {
+            if path.starts_with(&decisions_dir) || path.starts_with(&adr_dir) {
+                continue;
+            }
+            ingest_one_doc(&path, "doc", repo_path, store)?;
+            count += 1;
+        }
+    }
+
     info!("documents ingested={}", count);
     Ok(count)
 }
 
+/// Recursively walk `dir` collecting every `README.md` (case-sensitive).
+/// Applies `RepoAwareness` to prune excluded subtrees (`node_modules/`,
+/// `target/`, `.git/`, etc.) so third-party READMEs cannot leak into
+/// Atlas's evidence surface.  Also skips `.git` unconditionally.
+fn collect_readmes_recursive(
+    root:      &Path,
+    dir:       &Path,
+    awareness: &RepoAwareness,
+    out:       &mut Vec<std::path::PathBuf>,
+) {
+    let Ok(entries) = std::fs::read_dir(dir) else { return };
+    let mut sorted: Vec<_> = entries.flatten().collect();
+    sorted.sort_by_key(|e| e.file_name());
+    for entry in sorted {
+        let Ok(ft) = entry.file_type() else { continue };
+        let path = entry.path();
+        let name = entry.file_name().to_string_lossy().into_owned();
+        let rel_path_owned: String = path
+            .strip_prefix(root)
+            .map(|p| p.to_string_lossy().into_owned())
+            .unwrap_or_else(|_| path.to_string_lossy().into_owned());
+
+        if ft.is_dir() {
+            if name == ".git" { continue; }
+            let probe = format!("{}/", rel_path_owned);
+            if awareness.is_excluded(&probe) { continue; }
+            collect_readmes_recursive(root, &path, awareness, out);
+        } else if ft.is_file() && name == "README.md" {
+            out.push(path);
+        }
+    }
+}
+
+fn ingest_one_doc(
+    path:      &Path,
+    doc_type:  &str,
+    repo_path: &str,
+    store:     &Store,
+) -> Result<()> {
+    let content = std::fs::read_to_string(path)?;
+    let title = extract_frontmatter_title(&content).unwrap_or_else(|| {
+        path.file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("unknown")
+            .to_string()
+    });
+    let rel_path = path
+        .strip_prefix(repo_path)
+        .map(|p| p.to_string_lossy().into_owned())
+        .unwrap_or_else(|_| path.to_string_lossy().into_owned());
+    store.insert_document(&rel_path, doc_type, &title, &content, repo_path)?;
+    Ok(())
+}
+
+fn collect_markdown_recursive(dir: &Path, out: &mut Vec<std::path::PathBuf>) {
+    let Ok(entries) = std::fs::read_dir(dir) else { return };
+    // Sort for deterministic iteration order.
+    let mut sorted: Vec<_> = entries.flatten().collect();
+    sorted.sort_by_key(|e| e.file_name());
+    for entry in sorted {
+        let Ok(ft) = entry.file_type() else { continue };
+        let path = entry.path();
+        if ft.is_dir() {
+            collect_markdown_recursive(&path, out);
+        } else if ft.is_file()
+            && path.extension().map(|e| e == "md").unwrap_or(false)
+        {
+            out.push(path);
+        }
+    }
+}
+
 fn extract_frontmatter_title(content: &str) -> Option<String> {
     parse_frontmatter(content).remove("title")
+}
+
+// ─── Repository Tree (v0.7c) ─────────────────────────────────────────────────
+//
+// Transient spatial view over the working tree.  Not persisted, not joined
+// against ingestion evidence.  The RepoAwareness exclusion rules used
+// elsewhere in this crate are reused as-is; nothing here weakens or extends
+// them.  Purpose: give downstream commands a stable navigation coordinate
+// system.  See docs/decisions/2026-08-08-repository-tree-view.md.
+
+const REPOSITORY_TREE_SCHEMA_VERSION: u32 = 1;
+
+/// Walk the working tree at `repo_path` from disk and produce a
+/// `RepositoryTree`.  Every directory is visited in alphabetical order of its
+/// entry basenames for deterministic output.  Excluded prefixes (build
+/// artifacts, `.gitignore` simple names, plus `.git` itself) are pruned
+/// during the walk and reported in `RepositoryTree.excluded`.
+///
+/// `depth_limit`:
+///   * `None`      — walk to every leaf (unbounded).
+///   * `Some(0)`   — root node only, no children.
+///   * `Some(N>0)` — root plus N levels of descendants.  Directories reached
+///                   at exactly depth N appear with `children: []`.
+pub fn build_repository_tree(
+    repo_path:   &str,
+    depth_limit: Option<u32>,
+) -> Result<RepositoryTree> {
+    let awareness = RepoAwareness::load(repo_path);
+    let root_path = Path::new(repo_path);
+    let root_name = root_path
+        .file_name()
+        .map(|s| s.to_string_lossy().into_owned())
+        .unwrap_or_else(|| repo_path.to_string());
+
+    let mut excluded: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
+    let root = walk_tree(
+        root_path,
+        String::new(),
+        root_name,
+        &awareness,
+        depth_limit,
+        0,
+        &mut excluded,
+    );
+
+    Ok(RepositoryTree {
+        schema_version: REPOSITORY_TREE_SCHEMA_VERSION,
+        repo_path:      repo_path.to_string(),
+        root,
+        depth_limit,
+        excluded:       excluded.into_iter().collect(),
+    })
+}
+
+fn walk_tree(
+    dir:            &Path,
+    relative_path:  String,
+    name:           String,
+    awareness:      &RepoAwareness,
+    depth_limit:    Option<u32>,
+    current_depth:  u32,
+    excluded:       &mut std::collections::BTreeSet<String>,
+) -> TreeNode {
+    let is_dir = dir.is_dir();
+    let kind = if is_dir { TreeNodeKind::Directory } else { TreeNodeKind::File };
+
+    let mut children: Vec<TreeNode> = Vec::new();
+    if is_dir {
+        let can_recurse = depth_limit.map(|d| current_depth < d).unwrap_or(true);
+        if can_recurse {
+            if let Ok(entries) = std::fs::read_dir(dir) {
+                let mut sorted: Vec<_> = entries.flatten().collect();
+                sorted.sort_by_key(|e| e.file_name());
+                for entry in sorted {
+                    let Ok(ft) = entry.file_type() else { continue };
+                    let child_name = entry.file_name().to_string_lossy().into_owned();
+                    let child_rel = if relative_path.is_empty() {
+                        child_name.clone()
+                    } else {
+                        format!("{}/{}", relative_path, child_name)
+                    };
+
+                    // RepoAwareness stores prefixes with a trailing '/'; probe with the
+                    // matching shape so the same prefix matches a directory and any
+                    // file beneath it.
+                    let probe = if ft.is_dir() {
+                        format!("{}/", child_rel)
+                    } else {
+                        child_rel.clone()
+                    };
+                    if awareness.is_excluded(&probe) {
+                        excluded.insert(child_rel);
+                        continue;
+                    }
+                    // Additionally skip the `.git` directory unconditionally.  Git
+                    // internals are never useful in a spatial view; adding this to
+                    // RepoAwareness would change ingestion behaviour elsewhere, so
+                    // the filter is scoped to this walker.
+                    if ft.is_dir() && child_name == ".git" {
+                        excluded.insert(child_rel);
+                        continue;
+                    }
+
+                    children.push(walk_tree(
+                        &entry.path(),
+                        child_rel,
+                        child_name,
+                        awareness,
+                        depth_limit,
+                        current_depth + 1,
+                        excluded,
+                    ));
+                }
+            }
+        }
+    }
+
+    TreeNode { name, relative_path, kind, children }
+}
+
+// ─── Peer Structure (v0.8a — B1) ─────────────────────────────────────────────
+//
+// Aggregation over the `files` table.  No new storage, no new extractor.
+//
+// Algorithm reuses the *shape* of the peer-observation logic already in
+// `apps/cli/src/commands/structural.rs` (peer enumeration → element
+// counting → prevalence threshold → deviation reporting), but the data
+// source is file-existence rather than structural edges, and the peer
+// unit is a directory rather than a compound-suffix file family.
+
+const PEER_STRUCTURE_SCHEMA_VERSION: u32 = 1;
+
+/// Default deviation threshold: strict majority of peers.
+/// Consumers can override via a caller-supplied fraction.
+const DEFAULT_DEVIATION_THRESHOLD: (usize, usize) = (1, 2); // strict majority = num*den > den*num_supplied when num=1,den=2
+
+/// Default "low-complexity peer" file-count cutoff.  Reported SEPARATELY
+/// from the prevalence denominator; peers below this are still counted
+/// as peers.
+const DEFAULT_LOW_COMPLEXITY_FILE_THRESHOLD: usize = 5;
+
+/// Detect repeated structural patterns across the immediate directory
+/// peers of `subject`.
+///
+/// Peer resolution:
+///   * If `subject` itself contains ≥ 1 immediate child directory in the
+///     `files` table, `subject` IS the peer parent; peers are its immediate
+///     child directories.
+///   * Otherwise, `subject`'s parent is used as the peer parent and
+///     `subject` becomes one of the peers.
+///
+/// Everything derived from `store.all_file_paths(repo_path)` — no schema
+/// change, no new extractor.
+pub fn detect_peer_structure(
+    subject:   &str,
+    repo_path: &str,
+    store:     &Store,
+) -> Result<PeerStructureReport> {
+    let normalized = subject
+        .trim()
+        .trim_start_matches('/')
+        .trim_end_matches('/')
+        .to_string();
+
+    let all_paths = store.all_file_paths(repo_path)?;
+
+    // Enumerate immediate child directories of a given prefix by looking
+    // for path segments after that prefix.  If prefix is empty, the
+    // "immediate children" are top-level names.
+    let immediate_child_dirs = |prefix: &str| -> Vec<String> {
+        let prefix_with_slash = if prefix.is_empty() {
+            String::new()
+        } else {
+            format!("{}/", prefix)
+        };
+        let mut set: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
+        for p in &all_paths {
+            if !p.starts_with(&prefix_with_slash) { continue; }
+            let rest = &p[prefix_with_slash.len()..];
+            // Only immediate CHILDREN — must have a slash after the first segment
+            // (i.e. the segment is a directory, not a file at this level).
+            if let Some(slash) = rest.find('/') {
+                let seg = &rest[..slash];
+                if !seg.is_empty() { set.insert(seg.to_string()); }
+            }
+        }
+        set.into_iter().collect()
+    };
+
+    // Determine peer_parent + peers.
+    let children_of_subject = immediate_child_dirs(&normalized);
+    let (peer_parent, peers) = if !children_of_subject.is_empty() {
+        (normalized.clone(), children_of_subject)
+    } else if let Some(idx) = normalized.rfind('/') {
+        let parent = normalized[..idx].to_string();
+        let siblings = immediate_child_dirs(&parent);
+        (parent, siblings)
+    } else {
+        // Subject is at repo root with no children AND no parent.
+        // Return an empty report (still schema-valid).
+        return Ok(PeerStructureReport {
+            schema_version:          PEER_STRUCTURE_SCHEMA_VERSION,
+            subject:                 subject.to_string(),
+            peer_parent:             normalized,
+            peers:                   Vec::new(),
+            patterns:                Vec::new(),
+            singletons:              Vec::new(),
+            deviations:              Vec::new(),
+            deviation_threshold_num: DEFAULT_DEVIATION_THRESHOLD.0,
+            deviation_threshold_den: DEFAULT_DEVIATION_THRESHOLD.1,
+            low_complexity_note:     None,
+        });
+    };
+
+    // Prefer peers that exist on disk when the working tree is available
+    // (drops historical/ghost module directories that only live in `files`).
+    let peers: Vec<String> = {
+        let root = std::path::Path::new(repo_path);
+        if root.is_dir() {
+            peers
+                .into_iter()
+                .filter(|p| root.join(&peer_parent).join(p).is_dir())
+                .collect()
+        } else {
+            peers
+        }
+    };
+
+    let peer_count = peers.len();
+
+    // For each peer, enumerate its structural elements from the files table.
+    // Element vocabulary is deliberately small and deterministic:
+    //   1. Immediate subdirectory names → "<name>/"
+    //   2. Specific well-known file identities within subdirs:
+    //         graphql/permissions.ts       (exact file)
+    //         graphql/*.typeDefs.ts        (suffix under graphql/)
+    //         graphql/*.resolvers.ts       (same)
+    //         services/*.service.ts        (suffix under services/)
+    //         models/*.model.ts            (suffix under models/)
+    //         validation/*.validation.ts   (either 'validation' or 'validations')
+    //         validations/*.validation.ts
+    //         providers/*.provider.ts
+    //         tests/                       (at parent level — mirrored test dir)
+    //
+    // This list is intentionally small.  Anything else the caller wants to
+    // check across peers can be added by extending the pattern set.
+    let elements_of = |peer_name: &str| -> std::collections::BTreeSet<String> {
+        let peer_prefix = format!("{}/{}/", peer_parent, peer_name);
+        let mut elems: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
+
+        for p in &all_paths {
+            if !p.starts_with(&peer_prefix) { continue; }
+            let rest = &p[peer_prefix.len()..];
+            if rest.is_empty() { continue; }
+
+            // (1) Immediate subdirectory.
+            if let Some(slash) = rest.find('/') {
+                let dir = &rest[..slash];
+                if !dir.is_empty() { elems.insert(format!("{}/", dir)); }
+            }
+
+            // (2) Specific well-known file identities.
+            //
+            // Two shapes:
+            //   * `label = None`     → EXACT filename match (`permissions.ts`).
+            //   * `label = Some(_)`  → SUFFIX pattern (`*.service.ts`) at depth 1.
+            //
+            // Splitting the two prevents `blockchain.permissions.ts` from being
+            // silently counted as `permissions.ts` — that's a genuine naming
+            // deviation the report should surface, not merge.
+            for (subdir, pat, label) in [
+                ("graphql",     "permissions.ts", None::<&str>),
+                ("graphql",     ".typeDefs.ts",   Some("graphql/*.typeDefs.ts")),
+                ("graphql",     ".resolvers.ts",  Some("graphql/*.resolvers.ts")),
+                ("services",    ".service.ts",    Some("services/*.service.ts")),
+                ("models",      ".model.ts",      Some("models/*.model.ts")),
+                ("validation",  ".validation.ts", Some("validation/*.validation.ts")),
+                ("validations", ".validation.ts", Some("validations/*.validation.ts")),
+                ("providers",   ".provider.ts",   Some("providers/*.provider.ts")),
+            ] {
+                let sub_prefix = format!("{}/", subdir);
+                let Some(rest_after_sub) = rest.strip_prefix(&sub_prefix) else { continue };
+                if rest_after_sub.contains('/') { continue; }  // only depth 1 under subdir
+                let matched = match label {
+                    None    => rest_after_sub == pat,                    // exact filename
+                    Some(_) => rest_after_sub.ends_with(pat),             // suffix pattern
+                };
+                if matched {
+                    let elem = match label {
+                        Some(l) => l.to_string(),
+                        None    => format!("{}/{}", subdir, pat),
+                    };
+                    elems.insert(elem);
+                }
+            }
+        }
+        elems
+    };
+
+    // Enumerate elements per peer once, then aggregate.
+    let mut per_peer_elements: Vec<(String, std::collections::BTreeSet<String>)> =
+        peers.iter().map(|p| (p.clone(), elements_of(p))).collect();
+
+    // Union all elements observed anywhere → count occurrences.
+    let mut element_presence: std::collections::BTreeMap<String, Vec<String>> =
+        std::collections::BTreeMap::new();
+    for (peer, elems) in &per_peer_elements {
+        for e in elems {
+            element_presence.entry(e.clone()).or_default().push(peer.clone());
+        }
+    }
+    // sort each present_in list alphabetically (BTreeSet iteration is
+    // already sorted but we collected from a vec — sort defensively).
+    for v in element_presence.values_mut() { v.sort(); }
+
+    // Split into patterns (prevalence ≥ 2) and singletons (prevalence == 1).
+    let mut patterns:   Vec<PeerStructurePattern> = Vec::new();
+    let mut singletons: Vec<PeerStructurePattern> = Vec::new();
+    for (element, present_in) in element_presence {
+        let n = present_in.len();
+        let record = PeerStructurePattern {
+            element,
+            present_in,
+            prevalence_num: n,
+            prevalence_den: peer_count,
+        };
+        if n >= 2 { patterns.push(record); }
+        else       { singletons.push(record); }
+    }
+    // Patterns sorted by prevalence descending, then element name.
+    patterns.sort_by(|a, b| b.prevalence_num.cmp(&a.prevalence_num).then(a.element.cmp(&b.element)));
+    singletons.sort_by(|a, b| a.element.cmp(&b.element));
+
+    // Deviations: for each peer, list elements the peer LACKS that
+    // >= threshold of the (full) peer set have.
+    // Threshold interpretation: `num * peer_count >= den * present_count`
+    //   default (num=1, den=2) → strict majority: `present * 2 > peer_count`.
+    // We use `present * threshold_den >= threshold_num * peer_count` for the
+    // half-way case (>= threshold rather than > threshold).
+    let (thr_num, thr_den) = DEFAULT_DEVIATION_THRESHOLD;
+    let meets_threshold = |present: usize| -> bool {
+        // Strict majority: present * 2 > peer_count for default (1,2).
+        // Generic form: present * thr_den > thr_num * peer_count.
+        present * thr_den > thr_num * peer_count
+    };
+    let mut deviations: Vec<PeerStructureDeviation> = Vec::new();
+    for (peer, elems) in &per_peer_elements {
+        for pat in &patterns {
+            if !elems.contains(&pat.element) && meets_threshold(pat.prevalence_num) {
+                deviations.push(PeerStructureDeviation {
+                    peer:                 peer.clone(),
+                    element:              pat.element.clone(),
+                    peer_prevalence_num:  pat.prevalence_num,
+                    peer_prevalence_den:  peer_count,
+                });
+            }
+        }
+    }
+    // Sort deviations for stable output.
+    deviations.sort_by(|a, b| a.peer.cmp(&b.peer).then(a.element.cmp(&b.element)));
+
+    // Low-complexity note (derived observation, reported separately).
+    let low_complexity_note = {
+        let threshold = DEFAULT_LOW_COMPLEXITY_FILE_THRESHOLD;
+        let mut low: Vec<(String, usize)> = Vec::new();
+        for peer in &peers {
+            let peer_prefix = format!("{}/{}/", peer_parent, peer);
+            let n = all_paths.iter().filter(|p| p.starts_with(&peer_prefix)).count();
+            if n < threshold {
+                low.push((peer.clone(), n));
+            }
+        }
+        if low.is_empty() {
+            None
+        } else {
+            low.sort();
+            Some(LowComplexityNote { file_count_threshold: threshold, low_complexity_peers: low })
+        }
+    };
+
+    // Discard the per_peer_elements moves — nothing further needed.
+    let _ = &mut per_peer_elements;
+
+    Ok(PeerStructureReport {
+        schema_version:          PEER_STRUCTURE_SCHEMA_VERSION,
+        subject:                 subject.to_string(),
+        peer_parent,
+        peers,
+        patterns,
+        singletons,
+        deviations,
+        deviation_threshold_num: thr_num,
+        deviation_threshold_den: thr_den,
+        low_complexity_note,
+    })
+}
+
+// ─── Show — drill-down (v0.8c — B3) ──────────────────────────────────────────
+//
+// Resolves a subject to one concrete Atlas record and returns its
+// immediate provenance + linked records.  Every linked row carries a
+// `token` the caller passes back to `atlas show`.
+
+const SHOW_SCHEMA_VERSION: u32 = 1;
+const DEFAULT_SECTION_LIMIT: usize = 10;
+const DEFAULT_BODY_EXCERPT_BYTES: usize = 1200;
+
+/// The set of subject kinds `atlas show` knows how to resolve.
+/// A caller-supplied `--kind` flag forces this; otherwise `show` infers it
+/// from the subject string.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ShowSubjectKind {
+    Auto, Commit, Pr, Issue, File, Identity, Document, Config, Run,
+}
+
+/// Options controlling drill-down output shape.  Defaults match the CLI
+/// defaults; `Default::default()` is the invocation used by tests.
+#[derive(Debug, Clone, Copy)]
+pub struct ShowOptions {
+    pub kind:              ShowSubjectKind,
+    pub full:              bool,
+    pub section_limit:     usize,
+    pub body_excerpt_bytes: usize,
+}
+
+impl Default for ShowOptions {
+    fn default() -> Self {
+        Self {
+            kind:              ShowSubjectKind::Auto,
+            full:              false,
+            section_limit:     DEFAULT_SECTION_LIMIT,
+            body_excerpt_bytes: DEFAULT_BODY_EXCERPT_BYTES,
+        }
+    }
+}
+
+/// Resolve `subject` into a concrete Atlas record and gather its linked
+/// evidence.  Every returned link is a token a caller can pass back to
+/// `atlas show`.
+pub fn show(
+    subject_input: &str,
+    repo_path:     &str,
+    store:         &Store,
+    opts:          ShowOptions,
+) -> Result<ShowRecord> {
+    let latest_run_id = store.latest_ingest_run(repo_path)?.map(|r| r.id);
+    let provenance = ShowProvenance {
+        repo_path:     repo_path.to_string(),
+        ingested_at:   None, // filled per-subject where applicable
+        latest_run_id,
+    };
+
+    // Resolve subject.
+    let (subject, redirect_note, sections_and_links, ingested_at) =
+        resolve_subject(subject_input, repo_path, store, opts)?;
+
+    let (sections, mut links) = sections_and_links;
+    // Dedup + sort links.
+    let mut seen: std::collections::HashSet<(String, String)> = std::collections::HashSet::new();
+    links.retain(|l| seen.insert((l.kind.clone(), l.token.clone())));
+    links.sort_by(|a, b| a.kind.cmp(&b.kind).then(a.label.cmp(&b.label)));
+
+    let mut provenance = provenance;
+    provenance.ingested_at = ingested_at;
+
+    Ok(ShowRecord {
+        schema_version: SHOW_SCHEMA_VERSION,
+        subject_input:  subject_input.to_string(),
+        subject,
+        redirect_note,
+        sections,
+        links,
+        provenance,
+    })
+}
+
+/// Subject-resolution dispatcher.  Returns:
+///   * the concrete `ShowSubject`,
+///   * an optional historical-path redirect note,
+///   * the ordered sections + all links referenced anywhere in the record,
+///   * the subject's `ingested_at` (when available on the source row).
+fn resolve_subject(
+    input:     &str,
+    repo_path: &str,
+    store:     &Store,
+    opts:      ShowOptions,
+) -> Result<(
+    ShowSubject,
+    Option<HistoricalRedirect>,
+    (Vec<ShowSection>, Vec<ShowLink>),
+    Option<i64>,
+)> {
+    let s = input.trim();
+
+    // Explicit-kind fast paths.  Order matters — try prefixes before
+    // ambiguous auto-detection.
+    if opts.kind == ShowSubjectKind::Run || s.starts_with("run:") {
+        return build_run_view(strip_prefix(s, "run:"), repo_path, store, opts);
+    }
+    if opts.kind == ShowSubjectKind::Config || s.starts_with("config:") {
+        return build_config_view(strip_prefix(s, "config:"), repo_path, store, opts);
+    }
+    if opts.kind == ShowSubjectKind::Document || s.starts_with("doc:") {
+        return build_document_view(strip_prefix(s, "doc:"), repo_path, store, opts);
+    }
+    if opts.kind == ShowSubjectKind::Identity || s.starts_with("id:") {
+        let n: i64 = strip_prefix(s, "id:").parse().with_context(|| format!("expected `id:<n>`, got `{}`", s))?;
+        return build_identity_view(n, repo_path, store, opts);
+    }
+    if opts.kind == ShowSubjectKind::Pr || s.starts_with("pr:") || s.starts_with("pr#") || s.starts_with('#') {
+        let raw = s.trim_start_matches("pr:").trim_start_matches("pr#").trim_start_matches('#');
+        let n: i64 = raw.parse().with_context(|| format!("expected PR number, got `{}`", raw))?;
+        return build_pr_view(n, repo_path, store, opts);
+    }
+    if opts.kind == ShowSubjectKind::Issue || s.starts_with("issue:") || s.starts_with("issue#") {
+        let raw = s.trim_start_matches("issue:").trim_start_matches("issue#");
+        let n: i64 = raw.parse().with_context(|| format!("expected issue number, got `{}`", raw))?;
+        return build_issue_view(n, repo_path, store, opts);
+    }
+
+    // Auto-detection.
+    if opts.kind == ShowSubjectKind::Auto || opts.kind == ShowSubjectKind::Commit {
+        // Commit hash: 7–40 hex chars.
+        if looks_like_commit_hash(s) {
+            let matches = store.resolve_commit_prefix(s, repo_path)?;
+            match matches.len() {
+                0 if opts.kind == ShowSubjectKind::Commit =>
+                    anyhow::bail!("no commit found with hash prefix `{}`", s),
+                0 => {}, // fall through to other auto detections
+                1 => return build_commit_view(&matches[0], repo_path, store, opts),
+                _ => {
+                    let list: Vec<String> = matches.iter().take(10).map(|h| h[..16.min(h.len())].to_string()).collect();
+                    anyhow::bail!(
+                        "commit hash prefix `{}` is ambiguous — matches {} commits:\n  {}",
+                        s, matches.len(), list.join("\n  ")
+                    );
+                }
+            }
+        }
+    }
+
+    // Auto: document by exact path.
+    if opts.kind == ShowSubjectKind::Auto {
+        if store.document_by_path(s, repo_path)?.is_some() {
+            return build_document_view(s, repo_path, store, opts);
+        }
+    }
+
+    // Auto: config artifact by exact path.
+    if opts.kind == ShowSubjectKind::Auto {
+        if store.configuration_artifact(s, repo_path)?.is_some() {
+            return build_config_view(s, repo_path, store, opts);
+        }
+    }
+
+    // Auto: file by path.  Also handles the historical-path redirect.
+    if opts.kind == ShowSubjectKind::Auto || opts.kind == ShowSubjectKind::File {
+        return build_file_view(s, repo_path, store, opts);
+    }
+
+    anyhow::bail!(
+        "could not resolve subject `{}` — supported forms:\n  \
+         commit hash (7-40 hex)\n  \
+         #<n> | pr:<n> | pr#<n>\n  \
+         issue:<n> | issue#<n>\n  \
+         id:<n>            (file identity)\n  \
+         config:<path>     (configuration artifact)\n  \
+         doc:<path>        (document)\n  \
+         run:<id> | run:latest\n  \
+         <path>            (file, auto-detected)",
+        s
+    );
+}
+
+fn strip_prefix<'a>(s: &'a str, prefix: &str) -> &'a str {
+    s.strip_prefix(prefix).unwrap_or(s)
+}
+
+fn looks_like_commit_hash(s: &str) -> bool {
+    s.len() >= 7
+        && s.len() <= 40
+        && s.chars().all(|c| c.is_ascii_hexdigit())
+}
+
+// ─── Per-subject builders ────────────────────────────────────────────────────
+
+fn build_commit_view(
+    hash:      &str,
+    repo_path: &str,
+    store:     &Store,
+    opts:      ShowOptions,
+) -> Result<(ShowSubject, Option<HistoricalRedirect>, (Vec<ShowSection>, Vec<ShowLink>), Option<i64>)> {
+    let commit = store.commit_by_hash(hash, repo_path)?
+        .ok_or_else(|| anyhow::anyhow!("commit {} not found", hash))?;
+
+    let mut sections = Vec::new();
+    let mut all_links = Vec::new();
+
+    // PARENTS
+    let parents = store.commit_parents(&commit.hash, repo_path)?;
+    let parent_rows: Vec<ShowRow> = parents.iter().map(|p| {
+        let link = ShowLink {
+            label: format!("commit {}", &p[..7.min(p.len())]),
+            token: p.clone(),
+            kind:  "commit".to_string(),
+        };
+        all_links.push(link.clone());
+        ShowRow { display: p.clone(), link: Some(link) }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "PARENTS".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "commit_parents".to_string(),
+        rows:             parent_rows,
+        truncated_count:  None,
+    });
+
+    // CHANGED FILES  (repo-scoped: joins through `commits` so a shared
+    // SHA under a different repository cannot leak files into this query).
+    let files = store.commit_changed_files(&commit.hash, repo_path)?;
+    let (shown_files, truncated) = truncate(&files, opts);
+    let file_rows: Vec<ShowRow> = shown_files.iter().map(|p| {
+        let link = ShowLink {
+            label: format!("file {}", p),
+            token: p.clone(),
+            kind:  "file".to_string(),
+        };
+        all_links.push(link.clone());
+        ShowRow { display: p.clone(), link: Some(link) }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "CHANGED FILES".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "commit_files".to_string(),
+        rows:             file_rows,
+        truncated_count:  truncated,
+    });
+
+    // LINKED PULL REQUESTS (via merge_commit_sha + C4-B message refs like (#N))
+    let mut prs = store.prs_for_merge_commit(&commit.hash, repo_path)?;
+    let mut seen_pr: HashSet<i64> = prs.iter().map(|p| p.number).collect();
+    let mut pr_link_sources: Vec<(i64, &'static str)> = prs
+        .iter()
+        .map(|p| (p.number, "merge_commit_sha"))
+        .collect();
+    // C4-B: parse (#123) / #123 from commit message and resolve to ingested PRs/issues.
+    let msg_nums = crate::evidence_reasoning::parse_github_numbers(&commit.message);
+    let mut message_issue_rows: Vec<ShowRow> = Vec::new();
+    for n in msg_nums {
+        if let Ok(Some(pr)) = store.pr_by_number(n, repo_path) {
+            if seen_pr.insert(pr.number) {
+                prs.push(pr);
+                pr_link_sources.push((n, "commit_message"));
+            }
+        } else if let Ok(Some(issue)) = store.issue_by_number(n, repo_path) {
+            let link = ShowLink {
+                label: format!("issue #{}", issue.number),
+                token: format!("issue#{}", issue.number),
+                kind:  "issue".to_string(),
+            };
+            all_links.push(link.clone());
+            message_issue_rows.push(ShowRow {
+                display: format!(
+                    "Issue #{}  {}  [{}]  (via commit message)",
+                    issue.number,
+                    issue.title,
+                    issue.state.to_uppercase()
+                ),
+                link: Some(link),
+            });
+        }
+    }
+    let pr_rows: Vec<ShowRow> = prs
+        .iter()
+        .map(|pr| {
+            let via = pr_link_sources
+                .iter()
+                .find(|(num, _)| *num == pr.number)
+                .map(|(_, s)| *s)
+                .unwrap_or("merge_commit_sha");
+            let link = ShowLink {
+                label: format!("PR #{}", pr.number),
+                token: format!("pr#{}", pr.number),
+                kind:  "pr".to_string(),
+            };
+            all_links.push(link.clone());
+            ShowRow {
+                display: format!(
+                    "PR #{}  {}  [{}]  (via {})",
+                    pr.number,
+                    pr.title,
+                    pr.state.to_uppercase(),
+                    via
+                ),
+                link: Some(link),
+            }
+        })
+        .collect();
+    sections.push(ShowSection {
+        title:            "LINKED PULL REQUESTS".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "pull_requests.merge_commit_sha|commit.message_refs".to_string(),
+        rows:             pr_rows,
+        truncated_count:  None,
+    });
+    if !message_issue_rows.is_empty() {
+        sections.push(ShowSection {
+            title:            "LINKED ISSUES (from commit message)".to_string(),
+            kind:             ShowSectionKind::Deterministic,
+            provenance_table: "commit.message_refs|issues".to_string(),
+            rows:             message_issue_rows,
+            truncated_count:  None,
+        });
+    }
+
+    let subject = ShowSubject::Commit(CommitSubject {
+        hash:         commit.hash,
+        short_hash:   commit.short_hash,
+        author_name:  commit.author_name,
+        author_email: commit.author_email,
+        timestamp:    commit.timestamp,
+        message:      commit.message,
+    });
+    Ok((subject, None, (sections, all_links), None))
+}
+
+fn build_pr_view(
+    number:    i64,
+    repo_path: &str,
+    store:     &Store,
+    opts:      ShowOptions,
+) -> Result<(ShowSubject, Option<HistoricalRedirect>, (Vec<ShowSection>, Vec<ShowLink>), Option<i64>)> {
+    let pr = store.pr_by_number(number, repo_path)?
+        .ok_or_else(|| anyhow::anyhow!("PR #{} not found", number))?;
+    let body = store.pr_body(number, repo_path)?.unwrap_or_default();
+
+    let mut sections = Vec::new();
+    let mut all_links = Vec::new();
+
+    // Merge commit (if any) — followable.
+    let mut merge_rows: Vec<ShowRow> = Vec::new();
+    if let Some(sha) = &pr.merge_commit_sha {
+        let link = ShowLink {
+            label: format!("commit {}", &sha[..7.min(sha.len())]),
+            token: sha.clone(),
+            kind:  "commit".to_string(),
+        };
+        all_links.push(link.clone());
+        merge_rows.push(ShowRow { display: sha.clone(), link: Some(link) });
+    }
+    sections.push(ShowSection {
+        title:            "MERGE COMMIT".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "pull_requests.merge_commit_sha".to_string(),
+        rows:             merge_rows,
+        truncated_count:  None,
+    });
+
+    // Linked issues: `pr_issues` supplies the numbers; each title is
+    // separately fetched from `issues`.  Two tables → this section is
+    // `Derived` per the ShowSectionKind contract.
+    let issue_nums = store.issue_numbers_for_pr(number, repo_path)?;
+    let issue_rows: Vec<ShowRow> = issue_nums.iter().map(|n| {
+        let title = store.get_issue(*n, repo_path).ok().flatten()
+            .map(|(t, _)| t)
+            .unwrap_or_else(|| String::new());
+        let link = ShowLink {
+            label: format!("issue #{}", n),
+            token: format!("issue#{}", n),
+            kind:  "issue".to_string(),
+        };
+        all_links.push(link.clone());
+        let display = if title.is_empty() {
+            format!("issue #{}", n)
+        } else {
+            format!("issue #{}  {}", n, title)
+        };
+        ShowRow { display, link: Some(link) }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "LINKED ISSUES".to_string(),
+        kind:             ShowSectionKind::Derived,
+        provenance_table: "pr_issues + issues".to_string(),
+        rows:             issue_rows,
+        truncated_count:  None,
+    });
+
+    let subject = ShowSubject::Pr(PrSubject {
+        number:           pr.number,
+        title:            pr.title,
+        state:            pr.state,
+        author:           pr.author,
+        merge_commit_sha: pr.merge_commit_sha,
+        created_at:       pr.created_at,
+        merged_at:        pr.merged_at,
+        body_excerpt:     excerpt_or_full(&body, opts),
+    });
+    Ok((subject, None, (sections, all_links), None))
+}
+
+fn build_issue_view(
+    number:    i64,
+    repo_path: &str,
+    store:     &Store,
+    opts:      ShowOptions,
+) -> Result<(ShowSubject, Option<HistoricalRedirect>, (Vec<ShowSection>, Vec<ShowLink>), Option<i64>)> {
+    // Fetch the full issue row (author + created_at + state + title from
+    // one SELECT).  `get_issue` returns only (title, state); this variant
+    // exists specifically so `atlas show` doesn't fabricate empty fields.
+    let issue = store.issue_by_number(number, repo_path)?
+        .ok_or_else(|| anyhow::anyhow!("issue #{} not found", number))?;
+    let body = store.issue_body(number, repo_path)?.unwrap_or_default();
+
+    let mut sections = Vec::new();
+    let mut all_links = Vec::new();
+
+    // Closing PRs — single-table SELECT over `pr_issues`.
+    let pr_nums = store.prs_closing_issue(number, repo_path)?;
+    let pr_rows: Vec<ShowRow> = pr_nums.iter().map(|n| {
+        let link = ShowLink {
+            label: format!("PR #{}", n),
+            token: format!("pr#{}", n),
+            kind:  "pr".to_string(),
+        };
+        all_links.push(link.clone());
+        ShowRow { display: format!("PR #{}", n), link: Some(link) }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "CLOSING PULL REQUESTS".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "pr_issues".to_string(),
+        rows:             pr_rows,
+        truncated_count:  None,
+    });
+
+    let subject = ShowSubject::Issue(IssueSubject {
+        number:       issue.number,
+        title:        issue.title,
+        state:        issue.state,
+        author:       issue.author,
+        created_at:   issue.created_at,
+        body_excerpt: excerpt_or_full(&body, opts),
+    });
+    Ok((subject, None, (sections, all_links), None))
+}
+
+fn build_file_view(
+    input:     &str,
+    repo_path: &str,
+    store:     &Store,
+    opts:      ShowOptions,
+) -> Result<(ShowSubject, Option<HistoricalRedirect>, (Vec<ShowSection>, Vec<ShowLink>), Option<i64>)> {
+    // Historical-path redirect.
+    let (relative_path, redirect_note) = match store.current_path_if_historical(input, repo_path)? {
+        Some(current) => {
+            let id = store.resolve_path_to_identity(input, repo_path)?.unwrap_or(0);
+            (current.clone(), Some(HistoricalRedirect {
+                original_subject: input.to_string(),
+                current_path:     current,
+                identity_id:      id,
+            }))
+        }
+        None => (input.to_string(), None),
+    };
+
+    let analysis_status = store.analysis_status(&relative_path, repo_path)?;
+    let identity_id     = store.resolve_path_to_identity(&relative_path, repo_path)?;
+    let role            = if !relative_path.is_empty() { Some(classify_artifact_role(&relative_path)) } else { None };
+
+    let mut sections = Vec::new();
+    let mut all_links = Vec::new();
+
+    // IDENTITY LINEAGE (if applicable)
+    if let Some(id) = identity_id {
+        let history = store.path_history_for_identity(id, repo_path)?;
+        let rows: Vec<ShowRow> = history.iter().map(|obs| {
+            let mut display = format!("{}  (intro {}", obs.path, &obs.introduced_by_commit[..7.min(obs.introduced_by_commit.len())]);
+            if let Some(sup) = &obs.superseded_by_commit {
+                display.push_str(&format!(" → superseded {}", &sup[..7.min(sup.len())]));
+            } else {
+                display.push_str(" → current");
+            }
+            display.push(')');
+            // Link the introducing commit.
+            let link = ShowLink {
+                label: format!("commit {}", &obs.introduced_by_commit[..7.min(obs.introduced_by_commit.len())]),
+                token: obs.introduced_by_commit.clone(),
+                kind:  "commit".to_string(),
+            };
+            all_links.push(link.clone());
+            if let Some(sup) = &obs.superseded_by_commit {
+                all_links.push(ShowLink {
+                    label: format!("commit {}", &sup[..7.min(sup.len())]),
+                    token: sup.clone(),
+                    kind:  "commit".to_string(),
+                });
+            }
+            ShowRow { display, link: Some(link) }
+        }).collect();
+        sections.push(ShowSection {
+            title:            "IDENTITY LINEAGE".to_string(),
+            kind:             ShowSectionKind::Deterministic,
+            provenance_table: "file_path_observations".to_string(),
+            rows,
+            truncated_count:  None,
+        });
+
+        // COMMITS TOUCHING THIS IDENTITY
+        let commits = store.commits_for_identity(id, repo_path)?;
+        let (shown, trunc) = truncate(&commits, opts);
+        let rows: Vec<ShowRow> = shown.iter().map(|c| {
+            let link = ShowLink {
+                label: format!("commit {}", &c.short_hash),
+                token: c.hash.clone(),
+                kind:  "commit".to_string(),
+            };
+            all_links.push(link.clone());
+            ShowRow {
+                display: format!("{}  {}", c.short_hash, c.message),
+                link:    Some(link),
+            }
+        }).collect();
+        sections.push(ShowSection {
+            title:            "COMMITS TOUCHING THIS IDENTITY".to_string(),
+            kind:             ShowSectionKind::Deterministic,
+            provenance_table: "file_identity_commits".to_string(),
+            rows,
+            truncated_count:  trunc,
+        });
+    } else {
+        // Fall back to path-scoped commits.
+        let commits = store.commits_for_file(&relative_path, repo_path)?;
+        let (shown, trunc) = truncate(&commits, opts);
+        let rows: Vec<ShowRow> = shown.iter().map(|c| {
+            let link = ShowLink {
+                label: format!("commit {}", &c.short_hash),
+                token: c.hash.clone(),
+                kind:  "commit".to_string(),
+            };
+            all_links.push(link.clone());
+            ShowRow {
+                display: format!("{}  {}", c.short_hash, c.message),
+                link:    Some(link),
+            }
+        }).collect();
+        sections.push(ShowSection {
+            title:            "COMMITS TOUCHING THIS PATH".to_string(),
+            kind:             ShowSectionKind::Deterministic,
+            provenance_table: "commit_files".to_string(),
+            rows,
+            truncated_count:  trunc,
+        });
+    }
+
+    // STRUCTURAL EDGES — outgoing
+    let out = store.structural_edges_for_file(&relative_path, repo_path)?;
+    let (shown, trunc) = truncate(&out, opts);
+    let out_rows: Vec<ShowRow> = shown.iter().map(|e| {
+        let is_external = e.target_file.starts_with("UNRESOLVED:external:");
+        let display = format!("{}  → {}{}",
+            e.kind, e.target_file,
+            e.target_symbol.as_deref().map(|s| format!("::{}", s)).unwrap_or_default());
+        let link = if !is_external {
+            let l = ShowLink {
+                label: format!("file {}", e.target_file),
+                token: e.target_file.clone(),
+                kind:  "file".to_string(),
+            };
+            all_links.push(l.clone());
+            Some(l)
+        } else { None };
+        ShowRow { display, link }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "STRUCTURAL EDGES (outgoing)".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "structural_edges".to_string(),
+        rows:             out_rows,
+        truncated_count:  trunc,
+    });
+
+    // STRUCTURAL EDGES — incoming
+    let in_edges = store.structural_edges_targeting(&relative_path, repo_path)?;
+    let (shown, trunc) = truncate(&in_edges, opts);
+    let in_rows: Vec<ShowRow> = shown.iter().map(|e| {
+        let display = format!("← {}  ({}{})",
+            e.source_file, e.kind,
+            e.target_symbol.as_deref().map(|s| format!(", {}", s)).unwrap_or_default());
+        let link = ShowLink {
+            label: format!("file {}", e.source_file),
+            token: e.source_file.clone(),
+            kind:  "file".to_string(),
+        };
+        all_links.push(link.clone());
+        ShowRow { display, link: Some(link) }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "STRUCTURAL EDGES (incoming)".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "structural_edges".to_string(),
+        rows:             in_rows,
+        truncated_count:  trunc,
+    });
+
+    let subject = ShowSubject::File(FileSubject {
+        relative_path,
+        analysis_status,
+        identity_id,
+        role,
+    });
+    Ok((subject, redirect_note, (sections, all_links), None))
+}
+
+fn build_identity_view(
+    identity_id: i64,
+    repo_path:   &str,
+    store:       &Store,
+    opts:        ShowOptions,
+) -> Result<(ShowSubject, Option<HistoricalRedirect>, (Vec<ShowSection>, Vec<ShowLink>), Option<i64>)> {
+    let summary = store.identity_summary(identity_id, repo_path)?
+        .ok_or_else(|| anyhow::anyhow!("identity {} not found", identity_id))?;
+
+    let mut sections = Vec::new();
+    let mut all_links = Vec::new();
+
+    // Path history.
+    let history = store.path_history_for_identity(identity_id, repo_path)?;
+    let hist_rows: Vec<ShowRow> = history.iter().map(|obs| {
+        let mut display = format!("{}  (intro {}", obs.path, &obs.introduced_by_commit[..7.min(obs.introduced_by_commit.len())]);
+        if let Some(sup) = &obs.superseded_by_commit {
+            display.push_str(&format!(" → superseded {}", &sup[..7.min(sup.len())]));
+        } else {
+            display.push_str(" → current");
+        }
+        display.push(')');
+        let link = ShowLink {
+            label: format!("file {}", obs.path),
+            token: obs.path.clone(),
+            kind:  "file".to_string(),
+        };
+        all_links.push(link.clone());
+        ShowRow { display, link: Some(link) }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "PATH HISTORY".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "file_path_observations".to_string(),
+        rows:             hist_rows,
+        truncated_count:  None,
+    });
+
+    // Commits touching this identity.
+    let commits = store.commits_for_identity(identity_id, repo_path)?;
+    let (shown, trunc) = truncate(&commits, opts);
+    let commit_rows: Vec<ShowRow> = shown.iter().map(|c| {
+        let link = ShowLink {
+            label: format!("commit {}", &c.short_hash),
+            token: c.hash.clone(),
+            kind:  "commit".to_string(),
+        };
+        all_links.push(link.clone());
+        ShowRow {
+            display: format!("{}  {}", c.short_hash, c.message),
+            link:    Some(link),
+        }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "COMMITS".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "file_identity_commits".to_string(),
+        rows:             commit_rows,
+        truncated_count:  trunc,
+    });
+
+    let (_, current_path, hist_count, commit_count) = summary;
+    let subject = ShowSubject::Identity(IdentitySubject {
+        identity_id,
+        current_path,
+        path_history_count: hist_count as usize,
+        commit_count:       commit_count as usize,
+    });
+    Ok((subject, None, (sections, all_links), None))
+}
+
+fn build_document_view(
+    file_path: &str,
+    repo_path: &str,
+    store:     &Store,
+    opts:      ShowOptions,
+) -> Result<(ShowSubject, Option<HistoricalRedirect>, (Vec<ShowSection>, Vec<ShowLink>), Option<i64>)> {
+    let (doc_type, title, body) = store.document_full_by_path(file_path, repo_path)?
+        .ok_or_else(|| anyhow::anyhow!("document `{}` not found", file_path))?;
+
+    let mut sections = Vec::new();
+    let mut all_links = Vec::new();
+
+    // Underlying file link.
+    let file_link = ShowLink {
+        label: format!("file {}", file_path),
+        token: file_path.to_string(),
+        kind:  "file".to_string(),
+    };
+    all_links.push(file_link.clone());
+    sections.push(ShowSection {
+        title:            "UNDERLYING FILE".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "files".to_string(),
+        rows:             vec![ShowRow { display: file_path.to_string(), link: Some(file_link) }],
+        truncated_count:  None,
+    });
+
+    // Commits touching this document.
+    let commits = store.commits_for_file(file_path, repo_path)?;
+    let (shown, trunc) = truncate(&commits, opts);
+    let commit_rows: Vec<ShowRow> = shown.iter().map(|c| {
+        let link = ShowLink {
+            label: format!("commit {}", &c.short_hash),
+            token: c.hash.clone(),
+            kind:  "commit".to_string(),
+        };
+        all_links.push(link.clone());
+        ShowRow {
+            display: format!("{}  {}", c.short_hash, c.message),
+            link:    Some(link),
+        }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "COMMITS TOUCHING THIS DOCUMENT".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "commit_files".to_string(),
+        rows:             commit_rows,
+        truncated_count:  trunc,
+    });
+
+    let body_bytes = body.as_bytes().len();
+    let excerpt = if opts.full { body.clone() } else { truncate_body(&body, opts.body_excerpt_bytes) };
+    let subject = ShowSubject::Document(DocumentSubject {
+        file_path:    file_path.to_string(),
+        doc_type,
+        title,
+        body_excerpt: excerpt,
+        body_bytes,
+    });
+    Ok((subject, None, (sections, all_links), None))
+}
+
+fn build_config_view(
+    file_path: &str,
+    repo_path: &str,
+    store:     &Store,
+    opts:      ShowOptions,
+) -> Result<(ShowSubject, Option<HistoricalRedirect>, (Vec<ShowSection>, Vec<ShowLink>), Option<i64>)> {
+    let art = store.configuration_artifact(file_path, repo_path)?
+        .ok_or_else(|| anyhow::anyhow!("configuration artifact `{}` not found", file_path))?;
+
+    let mut sections = Vec::new();
+    let mut all_links = Vec::new();
+
+    // Commits touching this artifact.
+    let commits = store.commits_for_file(file_path, repo_path)?;
+    let (shown, trunc) = truncate(&commits, opts);
+    let commit_rows: Vec<ShowRow> = shown.iter().map(|c| {
+        let link = ShowLink {
+            label: format!("commit {}", &c.short_hash),
+            token: c.hash.clone(),
+            kind:  "commit".to_string(),
+        };
+        all_links.push(link.clone());
+        ShowRow {
+            display: format!("{}  {}", c.short_hash, c.message),
+            link:    Some(link),
+        }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "COMMITS TOUCHING THIS ARTIFACT".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "commit_files".to_string(),
+        rows:             commit_rows,
+        truncated_count:  trunc,
+    });
+
+    let raw_bytes = art.raw_content.as_bytes().len();
+    let excerpt = if opts.full { art.raw_content.clone() } else { truncate_body(&art.raw_content, opts.body_excerpt_bytes) };
+    let ingested_at = art.ingested_at;
+    let subject = ShowSubject::ConfigArtifact(ConfigArtifactSubject {
+        file_path:     art.file_path,
+        artifact_kind: art.artifact_kind,
+        sha256:        art.sha256,
+        raw_bytes,
+        body_excerpt:  excerpt,
+        ingested_at:   art.ingested_at,
+    });
+    Ok((subject, None, (sections, all_links), Some(ingested_at)))
+}
+
+fn build_run_view(
+    id_str:    &str,
+    repo_path: &str,
+    store:     &Store,
+    _opts:     ShowOptions,
+) -> Result<(ShowSubject, Option<HistoricalRedirect>, (Vec<ShowSection>, Vec<ShowLink>), Option<i64>)> {
+    let run = if id_str == "latest" {
+        store.latest_ingest_run(repo_path)?
+            .ok_or_else(|| anyhow::anyhow!("no ingest runs recorded for this repo"))?
+    } else {
+        let id: i64 = id_str.parse().with_context(|| format!("expected `run:<id>` or `run:latest`, got `run:{}`", id_str))?;
+        // Repo-scoped lookup: a run id belonging to a different registered
+        // repository must not be returned even when the id is a valid rowid
+        // globally.  Preserves the repository-isolation invariant.
+        store.ingest_run_by_id(id, repo_path)?
+            .ok_or_else(|| anyhow::anyhow!("ingest run {} not found in this repository", id))?
+    };
+
+    let mut sections = Vec::new();
+    let mut all_links = Vec::new();
+
+    // Git head at ingest.
+    if let Some(head) = &run.git_head {
+        let link = ShowLink {
+            label: format!("commit {}", &head[..7.min(head.len())]),
+            token: head.clone(),
+            kind:  "commit".to_string(),
+        };
+        all_links.push(link.clone());
+        sections.push(ShowSection {
+            title:            "GIT HEAD AT INGEST".to_string(),
+            kind:             ShowSectionKind::Deterministic,
+            provenance_table: "ingest_runs".to_string(),
+            rows:             vec![ShowRow { display: head.clone(), link: Some(link) }],
+            truncated_count:  None,
+        });
+    }
+
+    // Stage results.
+    let stages: Vec<serde_json::Value> = serde_json::from_str(&run.stages_json).unwrap_or_default();
+    let stage_rows: Vec<ShowRow> = stages.iter().map(|s| {
+        let name = s.get("stage").and_then(|v| v.as_str()).unwrap_or("?");
+        let status = s.get("status").and_then(|v| v.as_str()).unwrap_or("?");
+        let detail = s.get("detail").and_then(|v| v.as_str()).unwrap_or("");
+        ShowRow { display: format!("{:<24}  {:<8}  {}", name, status, detail), link: None }
+    }).collect();
+    sections.push(ShowSection {
+        title:            "STAGES".to_string(),
+        kind:             ShowSectionKind::Deterministic,
+        provenance_table: "ingest_runs.stages_json".to_string(),
+        rows:             stage_rows,
+        truncated_count:  None,
+    });
+
+    let subject = ShowSubject::IngestRun(IngestRunSubject {
+        id:              run.id,
+        started_at:      run.started_at,
+        ended_at:        run.ended_at,
+        atlas_version:   run.atlas_version,
+        git_head:        run.git_head,
+        git_branch:      run.git_branch,
+        requested_scope: run.requested_scope,
+        exit_status:     run.exit_status,
+    });
+    Ok((subject, None, (sections, all_links), None))
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+fn truncate<'a, T>(items: &'a [T], opts: ShowOptions) -> (&'a [T], Option<usize>) {
+    if opts.full || items.len() <= opts.section_limit {
+        (items, None)
+    } else {
+        (&items[..opts.section_limit], Some(items.len() - opts.section_limit))
+    }
+}
+
+fn truncate_body(body: &str, max_bytes: usize) -> String {
+    if body.as_bytes().len() <= max_bytes { return body.to_string(); }
+    // Truncate at a char boundary.
+    let mut end = max_bytes;
+    while end > 0 && !body.is_char_boundary(end) { end -= 1; }
+    format!("{}\n… [truncated; use --full for the full body]", &body[..end])
+}
+
+/// Body-excerpt policy: return the full body when `opts.full` is set,
+/// otherwise truncate to `opts.body_excerpt_bytes`.  Centralised so every
+/// per-subject builder honours the CLI flags uniformly (the previous
+/// per-builder implementations ignored `opts` — see B3 repair note).
+fn excerpt_or_full(body: &str, opts: ShowOptions) -> String {
+    if opts.full {
+        body.to_string()
+    } else {
+        truncate_body(body, opts.body_excerpt_bytes)
+    }
+}
+
+// ─── Module Coupling (v0.8b — B2 aggregation) ────────────────────────────────
+//
+// Aggregates the existing `structural_edges` table into module-to-module
+// coupling records.  Modules are the immediate child directories of
+// `subject` (default `src/modules`).
+//
+// Reuses `store.all_file_paths(repo)` for module enumeration and
+// `store.structural_edges_from_prefix("", repo)` (empty-prefix → LIKE '%'
+// → all edges) for the edge scan.  No new storage method.
+//
+// Canonical representation is the SPARSE `cells: Vec<ModuleCouplingCell>`
+// list — only non-zero cells are stored.  The dense matrix is a
+// render-time convenience produced by the CLI when the module count is
+// small enough to display.
+
+const MODULE_COUPLING_SCHEMA_VERSION: u32 = 1;
+
+/// Build a module coupling report for `subject`'s immediate child
+/// directories.  For each ordered pair of distinct modules (A, B) with
+/// ≥1 structural edge from A to B, emit one `ModuleCouplingCell`.
+///
+/// Edges wholly within one module (source and target both in the same
+/// module) are NOT included — they are internal cohesion, not coupling.
+///
+/// Edges whose target is `UNRESOLVED:external:*` are reported in
+/// `external_dependencies`.  Edges whose target is a repository file
+/// outside `subject/*` (e.g. `src/common/…`) are reported in
+/// `platform_usage`, aggregated by the target's first path segment.
+pub fn compute_module_coupling(
+    subject:   &str,
+    repo_path: &str,
+    store:     &Store,
+) -> Result<ModuleCouplingReport> {
+    let normalized = subject
+        .trim()
+        .trim_start_matches('/')
+        .trim_end_matches('/')
+        .to_string();
+
+    let all_paths = store.all_file_paths(repo_path)?;
+
+    // Enumerate modules = immediate child directories of `normalized`.
+    let modules: Vec<String> = {
+        let prefix_with_slash = if normalized.is_empty() {
+            String::new()
+        } else {
+            format!("{}/", normalized)
+        };
+        let mut set: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
+        for p in &all_paths {
+            if !p.starts_with(&prefix_with_slash) { continue; }
+            let rest = &p[prefix_with_slash.len()..];
+            if let Some(slash) = rest.find('/') {
+                let seg = &rest[..slash];
+                if !seg.is_empty() { set.insert(seg.to_string()); }
+            }
+        }
+        set.into_iter().collect()
+    };
+
+    // Prefix → module name lookup.  Kept as a Vec so lookups are
+    // stable-ordered and easy to iterate.
+    let module_prefixes: Vec<(String, String)> = modules.iter()
+        .map(|m| (format!("{}/{}/", normalized, m), m.clone()))
+        .collect();
+
+    // Classify a path: which module (if any) does it belong to?
+    let module_of = |path: &str| -> Option<&str> {
+        module_prefixes.iter()
+            .find(|(p, _)| path.starts_with(p))
+            .map(|(_, m)| m.as_str())
+    };
+
+    // Pull every structural edge for the repo in one query.  Empty prefix
+    // → `LIKE '%'` matches every row.  For RWATP that's ~3,000 rows —
+    // trivially small for in-memory aggregation.
+    let all_edges = store.structural_edges_from_prefix("", repo_path)?;
+
+    // Aggregation state.
+    let mut cell_agg:     std::collections::HashMap<(String, String), CellAcc> = std::collections::HashMap::new();
+    let mut external_agg: std::collections::HashMap<(String, String), ExtAcc>  = std::collections::HashMap::new();
+    let mut platform_agg: std::collections::HashMap<(String, String), PlatAcc> = std::collections::HashMap::new();
+
+    for e in &all_edges {
+        let src_mod = match module_of(&e.source_file) { Some(m) => m.to_string(), None => continue };
+
+        // Case A — external target.
+        if e.target_file.starts_with("UNRESOLVED:external:") {
+            let key = (src_mod, e.target_file.clone());
+            let acc = external_agg.entry(key).or_default();
+            acc.edge_count += 1;
+            acc.distinct_source_files.insert(e.source_file.clone());
+            continue;
+        }
+
+        // Case B — target belongs to a module.
+        if let Some(tgt_mod) = module_of(&e.target_file) {
+            if tgt_mod == src_mod {
+                // Internal cohesion, not coupling.
+                continue;
+            }
+            let key = (src_mod, tgt_mod.to_string());
+            let acc = cell_agg.entry(key).or_default();
+            acc.edge_count += 1;
+            acc.distinct_sources.insert(e.source_file.clone());
+            acc.distinct_targets.insert(e.target_file.clone());
+            *acc.kind_counts.entry(e.kind.clone()).or_insert(0) += 1;
+            continue;
+        }
+
+        // Case C — target is in the repo but outside any module.
+        // Aggregate by the first path segment (e.g. `src/common`).
+        let plat_target = first_two_segments(&e.target_file);
+        if plat_target.is_empty() { continue; }
+        let key = (src_mod, plat_target);
+        let acc = platform_agg.entry(key).or_default();
+        acc.edge_count += 1;
+        acc.distinct_sources.insert(e.source_file.clone());
+        acc.distinct_targets.insert(e.target_file.clone());
+    }
+
+    // Build the sparse cells list.
+    let mut cells: Vec<ModuleCouplingCell> = cell_agg.into_iter()
+        .map(|((src, tgt), acc)| {
+            let mut kinds: Vec<ModuleCouplingKindBreakdown> = acc.kind_counts.into_iter()
+                .map(|(kind, edge_count)| ModuleCouplingKindBreakdown { kind, edge_count })
+                .collect();
+            kinds.sort_by(|a, b| b.edge_count.cmp(&a.edge_count).then(a.kind.cmp(&b.kind)));
+            ModuleCouplingCell {
+                source_module:         src,
+                target_module:         tgt,
+                edge_count:            acc.edge_count,
+                distinct_source_files: acc.distinct_sources.len(),
+                distinct_target_files: acc.distinct_targets.len(),
+                kinds,
+            }
+        })
+        .collect();
+    cells.sort_by(|a, b| b.edge_count.cmp(&a.edge_count)
+        .then(a.source_module.cmp(&b.source_module))
+        .then(a.target_module.cmp(&b.target_module)));
+
+    // Derived fan-out / fan-in.
+    let mut fan_out_map: std::collections::HashMap<String, (usize, std::collections::HashSet<String>)> = std::collections::HashMap::new();
+    let mut fan_in_map:  std::collections::HashMap<String, (usize, std::collections::HashSet<String>)> = std::collections::HashMap::new();
+    for cell in &cells {
+        let e = fan_out_map.entry(cell.source_module.clone()).or_default();
+        e.0 += cell.edge_count;
+        e.1.insert(cell.target_module.clone());
+        let e = fan_in_map.entry(cell.target_module.clone()).or_default();
+        e.0 += cell.edge_count;
+        e.1.insert(cell.source_module.clone());
+    }
+    let mut fan_out: Vec<ModuleFanIndicator> = fan_out_map.into_iter()
+        .map(|(m, (edges, partners))| ModuleFanIndicator { module: m, edges, fan: partners.len() })
+        .collect();
+    fan_out.sort_by(|a, b| b.edges.cmp(&a.edges).then(a.module.cmp(&b.module)));
+    let mut fan_in: Vec<ModuleFanIndicator> = fan_in_map.into_iter()
+        .map(|(m, (edges, partners))| ModuleFanIndicator { module: m, edges, fan: partners.len() })
+        .collect();
+    fan_in.sort_by(|a, b| b.edges.cmp(&a.edges).then(a.module.cmp(&b.module)));
+
+    let mut external_dependencies: Vec<ExternalDependencyRow> = external_agg.into_iter()
+        .map(|((src, tgt), acc)| ExternalDependencyRow {
+            source_module:         src,
+            external_target:       tgt,
+            edge_count:            acc.edge_count,
+            distinct_source_files: acc.distinct_source_files.len(),
+        })
+        .collect();
+    external_dependencies.sort_by(|a, b| b.edge_count.cmp(&a.edge_count)
+        .then(a.source_module.cmp(&b.source_module))
+        .then(a.external_target.cmp(&b.external_target)));
+
+    let mut platform_usage: Vec<PlatformUsageRow> = platform_agg.into_iter()
+        .map(|((src, tgt), acc)| PlatformUsageRow {
+            source_module:         src,
+            platform_target:       tgt,
+            edge_count:            acc.edge_count,
+            distinct_source_files: acc.distinct_sources.len(),
+            distinct_target_files: acc.distinct_targets.len(),
+        })
+        .collect();
+    platform_usage.sort_by(|a, b| b.edge_count.cmp(&a.edge_count)
+        .then(a.source_module.cmp(&b.source_module))
+        .then(a.platform_target.cmp(&b.platform_target)));
+
+    Ok(ModuleCouplingReport {
+        schema_version: MODULE_COUPLING_SCHEMA_VERSION,
+        subject:        subject.to_string(),
+        modules,
+        cells,
+        fan_out,
+        fan_in,
+        external_dependencies,
+        platform_usage,
+    })
+}
+
+#[derive(Default)]
+struct CellAcc {
+    edge_count:       usize,
+    distinct_sources: std::collections::HashSet<String>,
+    distinct_targets: std::collections::HashSet<String>,
+    kind_counts:      std::collections::HashMap<String, usize>,
+}
+
+#[derive(Default)]
+struct ExtAcc {
+    edge_count:            usize,
+    distinct_source_files: std::collections::HashSet<String>,
+}
+
+#[derive(Default)]
+struct PlatAcc {
+    edge_count:       usize,
+    distinct_sources: std::collections::HashSet<String>,
+    distinct_targets: std::collections::HashSet<String>,
+}
+
+// ─── Authors Aggregation (v0.8a — B4) ───────────────────────────────────────
+//
+// Aggregates `commits.author_name` + `commits.author_email` for a subject
+// (repo root, directory, or file).  Purely a projection over existing
+// evidence — no new schema, no new ontology.
+//
+// Repo-isolation invariant: every SQL path is scoped by
+// `commits.repo_path = ?`.  See the storage docstrings on
+// `authors_for_prefix`, `authors_for_file`, `authors_for_identity`.
+//
+// Subject-resolution rules (documented on `AuthorScope`):
+//   - Empty subject or "." or "/"           → Prefix with empty pattern
+//   - Directory (subject ends "/" or resolves to no file rows)
+//                                           → Prefix with `subject/`
+//   - File with materialised FileIdentity   → Identity (rename-safe)
+//   - File without FileIdentity             → ExactFile
+//   - Historical file path (was renamed away) → resolve current path
+//     via `current_path_if_historical`, populate `redirect_note`, and
+//     then apply the file-subject rules to the current path
+//
+// Callers may override the file-vs-directory heuristic with an explicit
+// `subject_kind`; this is used by the CLI's `--kind` flag when the path
+// doesn't exist on disk (e.g. querying a deleted file).
+
+const AUTHORS_SCHEMA_VERSION: u32 = 1;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum AuthorsSubjectKind {
+    /// Let `compute_authors` decide (repo root / directory / file) based
+    /// on the shape of the subject and what Atlas has ingested.
+    Auto,
+    /// Force directory-prefix aggregation.  Trailing `/` is added if
+    /// absent.  Empty subject is treated as the repo root.
+    Directory,
+    /// Force file-scoped aggregation.  Uses the identity chain when
+    /// available, exact-file otherwise.
+    File,
+}
+
+/// Assemble an `AuthorsReport` for `subject` in `repo_path`.
+///
+/// See the module-level notes on `AuthorScope` and the subject-resolution
+/// rules for how the scope is chosen.
+pub fn compute_authors(
+    subject:      &str,
+    subject_kind: AuthorsSubjectKind,
+    repo_path:    &str,
+    store:        &Store,
+) -> Result<AuthorsReport> {
+    // Normalise the input: trim whitespace only.  Preserve trailing `/`
+    // because it disambiguates directory-vs-file when the path doesn't
+    // exist on disk.  `.` and `./` and `/` collapse to the repo root.
+    let raw = subject.trim();
+    let is_repo_root = raw.is_empty() || raw == "." || raw == "./" || raw == "/";
+
+    // Repo root — always Prefix scope with empty pattern.
+    if is_repo_root {
+        return build_report(
+            subject,
+            AuthorScope::Prefix,
+            "whole repo (LIKE '%')".to_string(),
+            store.authors_for_prefix("", repo_path)?,
+            None,
+        );
+    }
+
+    let trailing_slash = raw.ends_with('/');
+    let normalized = raw.trim_end_matches('/').to_string();
+
+    // Historical-path redirect — applies only when the caller wants file
+    // resolution (or the path resolves to a file identity even when auto).
+    // Directory subjects have no identity concept.
+    let (working_path, redirect_note) = match subject_kind {
+        AuthorsSubjectKind::Directory => (normalized.clone(), None),
+        _ => match store.current_path_if_historical(&normalized, repo_path)? {
+            Some(current) => {
+                let identity_id = store
+                    .resolve_path_to_identity(&current, repo_path)?
+                    .unwrap_or(-1);
+                (
+                    current.clone(),
+                    Some(HistoricalRedirect {
+                        original_subject: normalized.clone(),
+                        current_path:     current,
+                        identity_id,
+                    }),
+                )
+            }
+            None => (normalized.clone(), None),
+        },
+    };
+
+    // Force directory scope when requested, or when the caller added a
+    // trailing slash.
+    let force_dir = matches!(subject_kind, AuthorsSubjectKind::Directory) || trailing_slash;
+
+    // Force file scope when requested (skip the auto directory-detection).
+    let force_file = matches!(subject_kind, AuthorsSubjectKind::File);
+
+    if force_dir {
+        let pattern = format!("{}/", working_path);
+        return build_report(
+            subject,
+            AuthorScope::Prefix,
+            format!("prefix ('{}%')", pattern),
+            store.authors_for_prefix(&pattern, repo_path)?,
+            redirect_note,
+        );
+    }
+
+    // Auto or forced-file: try file-scoped resolution.
+    if let Some(identity_id) = store.resolve_path_to_identity(&working_path, repo_path)? {
+        let n_paths = store.identity_path_observation_count(identity_id, repo_path)?;
+        return build_report(
+            subject,
+            AuthorScope::Identity,
+            format!("identity {} (spans {} path observation{})",
+                identity_id,
+                n_paths,
+                if n_paths == 1 { "" } else { "s" },
+            ),
+            store.authors_for_identity(identity_id, repo_path)?,
+            redirect_note,
+        );
+    }
+
+    // Auto mode with no identity — decide file vs. directory by looking
+    // for any file-path rows that start with `working_path/`.  If we find
+    // any, treat as a directory prefix; otherwise fall back to exact-file.
+    // Force-file skips this check and goes straight to exact-file scope.
+    if !force_file {
+        let subtree_pattern = format!("{}/", working_path);
+        let subtree_rows = store.authors_for_prefix(&subtree_pattern, repo_path)?;
+        if !subtree_rows.is_empty() {
+            return build_report(
+                subject,
+                AuthorScope::Prefix,
+                format!("prefix ('{}%')", subtree_pattern),
+                subtree_rows,
+                None, // directory subject → never a historical redirect
+            );
+        }
+    }
+
+    // Exact-file scope (either force_file or auto-with-no-subtree-rows).
+    build_report(
+        subject,
+        AuthorScope::ExactFile,
+        format!("exact file ('{}')", working_path),
+        store.authors_for_file(&working_path, repo_path)?,
+        redirect_note,
+    )
+}
+
+/// Convert a repo-scoped Vec<AuthorAggregateRow> into an AuthorsReport.
+/// Rows arrive already sorted (commits DESC, name ASC) from the SQL layer.
+fn build_report(
+    subject:      &str,
+    scope:        AuthorScope,
+    scope_detail: String,
+    rows:         Vec<AuthorAggregateRow>,
+    redirect:     Option<HistoricalRedirect>,
+) -> Result<AuthorsReport> {
+    let total_commits = rows.iter().map(|r| r.commit_count).sum();
+    let total_authors = rows.len();
+    let authors = rows.into_iter()
+        .map(|r| AuthorAggregate {
+            author_name:  r.author_name,
+            author_email: r.author_email,
+            commit_count: r.commit_count,
+            first_touch:  r.first_touch,
+            last_touch:   r.last_touch,
+        })
+        .collect();
+    Ok(AuthorsReport {
+        schema_version: AUTHORS_SCHEMA_VERSION,
+        subject:        subject.to_string(),
+        scope,
+        scope_detail,
+        authors,
+        total_commits,
+        total_authors,
+        redirect_note:  redirect,
+    })
+}
+
+/// Return the first TWO path segments of `path` joined by `/`, or the
+/// first segment if the path has no second.  Empty string if the path
+/// has no segments (shouldn't happen for a valid file_path).
+///
+/// Used to aggregate platform-layer usage: `src/common/enum/foo.ts` →
+/// `src/common`, so hundreds of individual imports collapse into a
+/// small set of platform destinations.
+fn first_two_segments(path: &str) -> String {
+    let mut it = path.split('/');
+    let first = it.next().unwrap_or("");
+    if first.is_empty() { return String::new(); }
+    match it.next() {
+        Some(second) if !second.is_empty() => format!("{}/{}", first, second),
+        _ => first.to_string(),
+    }
+}
+
+// ─── Inspect (v0.7d) ─────────────────────────────────────────────────────────
+//
+// Attaches existing Atlas evidence to a single spatial subject (file or
+// directory subtree).  Read-only, transient — no schema changes, no
+// persistence.  See docs/decisions/2026-08-08-atlas-inspect.md.
+
+const INSPECT_SCHEMA_VERSION: u32 = 1;
+
+/// Assemble an `InspectionDocument` for `subject` in `repo_path`.
+///
+/// `subject` is interpreted repo-relative.  Leading and trailing slashes are
+/// stripped.  The kind is auto-detected from disk: a directory that exists
+/// becomes `Directory`; a file that exists becomes `File`; a path that does
+/// not exist defaults to `Directory` (aggregation-as-prefix, with
+/// `exists_on_disk = false` making the situation explicit to the consumer).
+pub fn inspect(subject: &str, repo_path: &str, store: &Store) -> Result<InspectionDocument> {
+    let requested = normalize_inspect_subject(subject);
+
+    // File-subject identity redirect (Item 1).
+    //
+    // If the caller supplied a historical file path that FileIdentity knows
+    // has moved, transparently query under the current path AND record the
+    // redirect in the output so the caller can see both addresses.
+    //
+    // Directory subjects deliberately do NOT redirect: Atlas has no
+    // directory identity concept.  Subtree aggregation uses the current
+    // tree's path prefix — files that used to live under this subtree but
+    // have been moved out are NOT included, and files that were once
+    // outside and have been moved in ARE included.  This subtree semantic
+    // is documented on the `structural_depends_on` field of
+    // `InspectionDocument` and on `commits_under_prefix` in storage.
+    let (relative_path, historical_redirect) = {
+        // A historical file path no longer exists on disk (it was renamed
+        // away), so we cannot use `.is_file()` as the trigger.  Instead ask
+        // FileIdentity directly: does this path resolve to an identity whose
+        // current occupant lives at a different path?  Only files have
+        // identities in Atlas, so a positive answer implies "file subject".
+        match store.current_path_if_historical(&requested, repo_path)? {
+            Some(current) => {
+                let identity_id = store
+                    .resolve_path_to_identity(&requested, repo_path)?
+                    .unwrap_or(0);
+                let redirect = atlas_ir::HistoricalRedirect {
+                    original_subject: requested.clone(),
+                    current_path:     current.clone(),
+                    identity_id,
+                };
+                (current, Some(redirect))
+            }
+            None => (requested, None),
+        }
+    };
+
+    let abs = if relative_path.is_empty() {
+        Path::new(repo_path).to_path_buf()
+    } else {
+        Path::new(repo_path).join(&relative_path)
+    };
+    let exists_on_disk = abs.exists();
+    let kind = if exists_on_disk && abs.is_file() {
+        InspectionSubjectKind::File
+    } else {
+        InspectionSubjectKind::Directory
+    };
+
+    // Prefix used for every subtree query.
+    //   Directory subject → path ending in '/' (or "" for repo root).
+    //   File subject      → exact file path, no trailing slash.
+    let prefix = match kind {
+        InspectionSubjectKind::File => relative_path.clone(),
+        InspectionSubjectKind::Directory => {
+            if relative_path.is_empty() { String::new() } else { format!("{}/", relative_path) }
+        }
+    };
+
+    // ── Coverage (measured, not asserted) ────────────────────────────────
+    let commit_count = store.commit_count(repo_path).unwrap_or(0);
+    let pr_count     = store.pr_count(repo_path).unwrap_or(0);
+    let issue_count  = store.issue_count(repo_path).unwrap_or(0);
+    let edge_count   = store.structural_edge_count(repo_path).unwrap_or(0);
+    let doc_count    = store.document_count(repo_path).unwrap_or(0);
+    let profile_seen = Path::new(repo_path).join("package.json").exists()
+        || Path::new(repo_path).join("Cargo.toml").exists();
+    let coverage = InspectionCoverage {
+        git_history:      commit_count > 0,
+        github_prs:       pr_count > 0,
+        github_issues:    issue_count > 0,
+        structural_edges: edge_count > 0,
+        documentation:    doc_count > 0,
+        profile_claims:   profile_seen,
+        working_tree:     exists_on_disk,
+    };
+
+    // ── File-only fields (delegate to build_context) ─────────────────────
+    let mut role: Option<ArtifactRole> = None;
+    let mut identity: Option<FileIdentity> = None;
+    let mut coupling: Vec<CouplingEntry> = Vec::new();
+
+    let mut recent_activity: Vec<CommitSummary> = Vec::new();
+    let mut touch_count: i64 = 0;
+    let mut related_history = RelatedHistory { pull_requests: vec![], issues: vec![] };
+    let mut children: Vec<InspectionChild> = Vec::new();
+    let mut hot_files_within: Vec<CouplingEntry> = Vec::new();
+
+    match kind {
+        InspectionSubjectKind::File => {
+            role = Some(classify_artifact_role(&relative_path));
+            if let Ok(ctx) = build_context(&relative_path, repo_path, store) {
+                // Reuse `ctx.identity.touch_count`, which is identity-scoped
+                // when a chain exists (spans pre- and post-rename commits) and
+                // falls back to path-scoped otherwise.  Prior code called
+                // `store.touch_count(current_path)` — path-scoped only — which
+                // silently dropped the identity's earlier commits.
+                touch_count     = ctx.identity.touch_count;
+                identity        = Some(ctx.identity);
+                coupling        = ctx.coupling;
+                recent_activity = ctx.recent_activity;
+                related_history = ctx.related_history;
+            }
+        }
+        InspectionSubjectKind::Directory => {
+            children = list_inspect_children(&abs);
+
+            let commits = store.commits_under_prefix(&prefix, repo_path).unwrap_or_default();
+            touch_count = commits.len() as i64;
+            recent_activity = commits.iter().take(10).map(|c| CommitSummary {
+                short_hash: c.short_hash.clone(),
+                message:    c.message.clone(),
+                author:     c.author_name.clone(),
+                timestamp:  c.timestamp,
+            }).collect();
+
+            let prs = store.prs_under_prefix(&prefix, repo_path).unwrap_or_default();
+            let issues = store.issues_under_prefix(&prefix, repo_path).unwrap_or_default();
+            related_history = RelatedHistory {
+                pull_requests: prs.into_iter().map(|p| PrSummary {
+                    number:           p.number,
+                    title:            p.title,
+                    state:            p.state,
+                    merge_commit_sha: p.merge_commit_sha,
+                    linked_issues:    store
+                        .issue_numbers_for_pr(p.number, repo_path)
+                        .unwrap_or_default(),
+                }).collect(),
+                issues: issues.into_iter().map(|i| IssueSummary {
+                    number: i.number,
+                    title:  i.title,
+                    state:  i.state,
+                }).collect(),
+            };
+
+            // Hot files within — filter existing hot_files rather than a new SQL query.
+            let all_hot = store.hot_files(repo_path, 1000).unwrap_or_default();
+            hot_files_within = all_hot.into_iter()
+                .filter(|hf| inspect_path_is_inside(&hf.file_path, &prefix, kind))
+                .take(10)
+                .map(|hf| CouplingEntry { file_path: hf.file_path, change_count: hf.touch_count })
+                .collect();
+        }
+    }
+
+    // ── Structural edges — partitioned into internal / depends_on / used_by ──
+    let (structural_depends_on, structural_used_by, structural_internal) = {
+        let out_rows = store.structural_edges_from_prefix(&prefix, repo_path).unwrap_or_default();
+        let in_rows  = store.structural_edges_to_prefix(&prefix, repo_path).unwrap_or_default();
+
+        let mut internal:    Vec<InspectionEdge> = Vec::new();
+        let mut depends_on:  Vec<InspectionEdge> = Vec::new();
+        let mut used_by:     Vec<InspectionEdge> = Vec::new();
+
+        for e in out_rows {
+            let target_inside = inspect_path_is_inside(&e.target_file, &prefix, kind);
+            let edge = InspectionEdge {
+                source_file:   e.source_file,
+                target_file:   e.target_file,
+                kind:          e.kind,
+                source_symbol: e.source_symbol,
+                target_symbol: e.target_symbol,
+            };
+            if target_inside { internal.push(edge); } else { depends_on.push(edge); }
+        }
+        for e in in_rows {
+            // Skip edges whose source is also inside — those were already
+            // recorded as `internal` via the from-prefix query.
+            if inspect_path_is_inside(&e.source_file, &prefix, kind) { continue; }
+            used_by.push(InspectionEdge {
+                source_file:   e.source_file,
+                target_file:   e.target_file,
+                kind:          e.kind,
+                source_symbol: e.source_symbol,
+                target_symbol: e.target_symbol,
+            });
+        }
+        (depends_on, used_by, internal)
+    };
+
+    // ── Documents inside the subject ────────────────────────────────────
+    let documents = store
+        .documents_under_prefix(&prefix, repo_path)
+        .unwrap_or_default()
+        .into_iter()
+        .map(|(fp, dt, ti)| InspectionDocumentRef { file_path: fp, doc_type: dt, title: ti })
+        .collect();
+
+    // ── Profile claims — ambient plus subject-matching Module ────────────
+    let all_claims = inspect_repository(repo_path).unwrap_or_default();
+    let subject_module = subject_module_name(&relative_path, kind);
+    let profile_claims: Vec<ProfileClaim> = all_claims.into_iter()
+        .filter(|c| {
+            matches!(
+                c.kind,
+                ProfileClaimKind::Runtime | ProfileClaimKind::Language | ProfileClaimKind::PackageManager
+            ) || (
+                matches!(c.kind, ProfileClaimKind::Module)
+                && subject_module.as_ref().map(|n| &c.value == n).unwrap_or(false)
+            )
+        })
+        .collect();
+
+    Ok(InspectionDocument {
+        schema_version: INSPECT_SCHEMA_VERSION,
+        subject: subject.to_string(),
+        relative_path,
+        kind,
+        exists_on_disk,
+        role,
+        identity,
+        coupling,
+        children,
+        hot_files_within,
+        recent_activity,
+        touch_count,
+        related_history,
+        structural_depends_on,
+        structural_used_by,
+        structural_internal,
+        documents,
+        profile_claims,
+        historical_redirect,
+        coverage,
+    })
+}
+
+/// Normalise a caller-supplied subject to a repo-relative path with no
+/// leading or trailing slash.  Empty string means "the repository root".
+fn normalize_inspect_subject(subject: &str) -> String {
+    let trimmed = subject.trim();
+    let stripped = trimmed
+        .trim_start_matches('/')
+        .trim_end_matches('/');
+    // Preserve normal path separators; do not attempt to resolve `..`.
+    stripped.to_string()
+}
+
+/// True iff `path` lies inside the subject subtree.
+///   File subject:  exact equality with prefix.
+///   Directory subject: repository root (empty prefix) or path starts with `prefix`.
+fn inspect_path_is_inside(path: &str, prefix: &str, kind: InspectionSubjectKind) -> bool {
+    match kind {
+        InspectionSubjectKind::File => path == prefix,
+        InspectionSubjectKind::Directory => prefix.is_empty() || path.starts_with(prefix),
+    }
+}
+
+fn list_inspect_children(dir: &Path) -> Vec<InspectionChild> {
+    let Ok(entries) = std::fs::read_dir(dir) else { return Vec::new() };
+    let mut sorted: Vec<_> = entries.flatten().collect();
+    sorted.sort_by_key(|e| e.file_name());
+    let mut out = Vec::with_capacity(sorted.len());
+    for entry in sorted {
+        let Ok(ft) = entry.file_type() else { continue };
+        // Skip `.git` inside inspect output for the same reason `walk_tree` does.
+        let name = entry.file_name().to_string_lossy().into_owned();
+        if ft.is_dir() && name == ".git" { continue; }
+        let kind = if ft.is_dir() {
+            TreeNodeKind::Directory
+        } else if ft.is_file() {
+            TreeNodeKind::File
+        } else {
+            continue; // symlinks and others skipped
+        };
+        out.push(InspectionChild { name, kind });
+    }
+    out
+}
+
+/// Extract the module name for `Module` ProfileClaim matching.  Only the
+/// first path segment under `src/` is considered — the inspector only
+/// records top-level `src/` subdirectories as `Module` claims, so a subject
+/// like `src/modules/identity/` maps to module name `modules`.
+fn subject_module_name(relative_path: &str, kind: InspectionSubjectKind) -> Option<String> {
+    if !matches!(kind, InspectionSubjectKind::Directory) { return None; }
+    let rest = relative_path.strip_prefix("src/")?;
+    let first = rest.split('/').next()?;
+    if first.is_empty() { None } else { Some(first.to_string()) }
 }
 
 pub fn build_context(file: &str, repo_path: &str, store: &Store) -> Result<ContextDocument> {
@@ -1192,6 +4228,45 @@ fn extract_snippet(text: &str, anchor: &str, window: usize) -> String {
     // Strip surrounding whitespace/newlines from the window.
     let inner = text[start_b..end_b].trim().replace('\n', " ").replace('\r', "");
     format!("{}{}{}", prefix, inner, suffix)
+}
+
+/// PageRank over a small directed graph (≤100 nodes, investigation subgraph).
+///
+/// `edges`: (from_index, to_index) pairs — an edge from A to B means A imports/calls B.
+/// For investigation ranking, high PageRank ≈ "many important files depend on this file".
+fn pagerank(nodes: &[&str], edges: &[(usize, usize)], iterations: usize, damping: f32) -> Vec<f32> {
+    let n = nodes.len();
+    if n == 0 { return vec![]; }
+    if n == 1 { return vec![1.0]; }
+
+    let mut scores = vec![1.0_f32 / n as f32; n];
+
+    // Out-degree per node (number of outgoing edges).
+    let mut out_deg = vec![0usize; n];
+    for &(from, _) in edges { out_deg[from] += 1; }
+
+    let teleport = (1.0 - damping) / n as f32;
+
+    for _ in 0..iterations {
+        let mut new_scores = vec![teleport; n];
+        for &(from, to) in edges {
+            if out_deg[from] > 0 {
+                new_scores[to] += damping * scores[from] / out_deg[from] as f32;
+            }
+        }
+        // Dangling nodes (out_deg == 0) distribute their rank uniformly.
+        let dangling_sum: f32 = (0..n)
+            .filter(|&i| out_deg[i] == 0)
+            .map(|i| scores[i])
+            .sum();
+        if dangling_sum > 0.0 {
+            let spread = damping * dangling_sum / n as f32;
+            for s in &mut new_scores { *s += spread; }
+        }
+        scores = new_scores;
+    }
+
+    scores
 }
 
 fn row_to_summary(c: CommitRow) -> CommitSummary {
@@ -1918,4 +4993,80 @@ pub fn campaign_next(repo_path: &str) -> Result<CampaignBrief> {
     };
 
     Ok(CampaignBrief { outcome, all_gaps: gaps })
+}
+
+// ── Issue-driven implementation planning ──────────────────────────────────────
+
+/// Context assembled from a GitHub issue + Atlas investigation.
+/// Returned from plan_from_issue; consumed by the CLI's AI synthesis layer.
+pub struct IssuePlanContext {
+    pub issue_number: i64,
+    pub title:        String,
+    pub body:         String,
+    pub anchors_used: Vec<String>,
+    pub doc:          InvestigationDocument,
+}
+
+/// Extract investigation anchors from an issue title and body.
+///
+/// Strategy:
+///   - Issue title words are primary (most signal-dense).
+///   - Technical words from the body (length >= 5, not stopwords) supplement.
+///   - Deduped, max 8 total to keep the investigation focused.
+pub fn extract_issue_anchors(title: &str, body: &str) -> Vec<String> {
+    let mut seen: std::collections::HashSet<String> = std::collections::HashSet::new();
+    let mut anchors: Vec<String> = Vec::new();
+
+    let add = |word: &str, seen: &mut std::collections::HashSet<String>, anchors: &mut Vec<String>| {
+        if anchors.len() >= 12 { return; }
+        let w = word.to_lowercase();
+        if w.len() < 3 { return; }
+        if ISSUE_ANCHOR_STOPWORDS.contains(&w.as_str()) { return; }
+        if seen.insert(w.clone()) {
+            anchors.push(w);
+        }
+    };
+
+    // Title first — split on non-alphanumeric
+    for word in title.split(|c: char| !c.is_alphanumeric()) {
+        add(word, &mut seen, &mut anchors);
+    }
+
+    // Body supplement — only technical words (length >= 5)
+    if anchors.len() < 12 {
+        for word in body.split(|c: char| !c.is_alphanumeric()) {
+            if word.len() >= 5 {
+                add(word, &mut seen, &mut anchors);
+            }
+            if anchors.len() >= 12 { break; }
+        }
+    }
+
+    anchors
+}
+
+/// Look up an issue by number, run an investigation anchored on the issue's
+/// vocabulary, and return the combined context for AI synthesis.
+///
+/// Returns None when the issue is not in the DB (caller should try GitHub fallback).
+pub fn plan_from_issue(
+    issue_number: i64,
+    repo_path:    &str,
+    store:        &Store,
+) -> Result<Option<IssuePlanContext>> {
+    let Some((title, body)) = store.get_issue(issue_number, repo_path)? else {
+        return Ok(None);
+    };
+
+    let anchors = extract_issue_anchors(&title, &body);
+    let anchor_refs: Vec<&str> = anchors.iter().map(String::as_str).collect();
+    let doc = investigate(&anchor_refs, repo_path, store)?;
+
+    Ok(Some(IssuePlanContext {
+        issue_number,
+        title,
+        body,
+        anchors_used: anchors,
+        doc,
+    }))
 }

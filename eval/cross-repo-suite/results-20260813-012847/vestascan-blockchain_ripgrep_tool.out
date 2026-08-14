@@ -1,0 +1,25 @@
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-6- */
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-7-
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts:8:export enum IndexedTransferType {
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-9-  MINT = "MINT",
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-10-  BURN = "BURN",
+--
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-13-}
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-14-
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts:15:export enum IndexedWhitelistAction {
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-16-  ADDED = "ADDED",
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-17-  REMOVED = "REMOVED",
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-18-}
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-19-
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts:20:export enum IndexedTokenEventType {
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-21-  PAUSED = "PAUSED",
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-22-  UNPAUSED = "UNPAUSED",
+--
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-27-}
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-28-
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts:29:export enum IndexerCursorStatus {
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-30-  ACTIVE = "ACTIVE",
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-31-  PAUSED = "PAUSED",
+--
+/home/sanoy/Vesta/vestascan-blockchain/src/enums.ts-33-}
+/home/sanoy/Vesta/v

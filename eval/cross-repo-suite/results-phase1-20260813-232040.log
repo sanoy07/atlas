@@ -1,0 +1,121 @@
+=== Cross-repo suite start 2026-08-13T23:20:40+05:30 ===
+ATLAS=/home/sanoy/projects/atlas/target/debug/atlas
+OUT=/home/sanoy/projects/atlas/eval/cross-repo-suite/results-phase1-20260813-232040
+PYTHON=/run/current-system/sw/bin/python3
+=== Ingest rwatp (typescript) ===
+ingest rwatp rc=0 ms=119289
+=== Ingest vestascan (typescript) ===
+ingest vestascan rc=0 ms=85566
+=== Ingest research (git only) ===
+ingest research rc=0 ms=168725
+=== REPO rwatp-core (rwatp) ===
+  OK   rwatp-core/map (145ms)
+  OK   rwatp-core/modules (87ms)
+  OK   rwatp-core/investigate_noai (972ms)
+  OK   rwatp-core/agent_fast (1079ms)
+  OK   rwatp-core/ripgrep_tool (154ms)
+=== REPO rwatp-notifier (rwatp) ===
+  OK   rwatp-notifier/map (35ms)
+  OK   rwatp-notifier/modules (30ms)
+  OK   rwatp-notifier/investigate_noai (149ms)
+  OK   rwatp-notifier/agent_fast (219ms)
+  OK   rwatp-notifier/ripgrep_tool (96ms)
+=== REPO rwatp-console (rwatp) ===
+  OK   rwatp-console/map (142ms)
+  OK   rwatp-console/modules (95ms)
+  OK   rwatp-console/investigate_noai (702ms)
+  OK   rwatp-console/agent_fast (712ms)
+  OK   rwatp-console/ripgrep_tool (138ms)
+=== REPO rwatp-user-frontend (rwatp) ===
+  OK   rwatp-user-frontend/map (81ms)
+  OK   rwatp-user-frontend/modules (58ms)
+  OK   rwatp-user-frontend/investigate_noai (400ms)
+  OK   rwatp-user-frontend/agent_fast (441ms)
+  OK   rwatp-user-frontend/ripgrep_tool (119ms)
+=== REPO vestascan-api (vestascan) ===
+  OK   vestascan-api/map (85ms)
+  OK   vestascan-api/modules (45ms)
+  OK   vestascan-api/investigate_noai (338ms)
+  OK   vestascan-api/agent_fast (392ms)
+  OK   vestascan-api/ripgrep_tool (108ms)
+=== REPO vestascan-notifier (vestascan) ===
+  OK   vestascan-notifier/map (30ms)
+  OK   vestascan-notifier/modules (37ms)
+  OK   vestascan-notifier/investigate_noai (168ms)
+  OK   vestascan-notifier/agent_fast (237ms)
+  OK   vestascan-notifier/ripgrep_tool (82ms)
+=== REPO vestascan-blockchain (vestascan) ===
+  OK   vestascan-blockchain/map (42ms)
+  OK   vestascan-blockchain/modules (31ms)
+  OK   vestascan-blockchain/investigate_noai (150ms)
+  OK   vestascan-blockchain/agent_fast (242ms)
+  OK   vestascan-blockchain/ripgrep_tool (101ms)
+=== REPO vestascan-user-fe (vestascan) ===
+  OK   vestascan-user-fe/map (154ms)
+  OK   vestascan-user-fe/modules (108ms)
+  OK   vestascan-user-fe/investigate_noai (744ms)
+  OK   vestascan-user-fe/agent_fast (811ms)
+  OK   vestascan-user-fe/ripgrep_tool (132ms)
+=== REPO vestascan-console (vestascan) ===
+  OK   vestascan-console/map (62ms)
+  OK   vestascan-console/modules (45ms)
+  OK   vestascan-console/investigate_noai (374ms)
+  OK   vestascan-console/agent_fast (407ms)
+  OK   vestascan-console/ripgrep_tool (101ms)
+=== REPO jj (research) ===
+  OK   jj/map (519ms)
+  OK   jj/modules (465ms)
+  OK   jj/investigate_noai (3729ms)
+  OK   jj/agent_fast (3781ms)
+  OK   jj/ripgrep_tool (92ms)
+=== REPO gigatoken (research) ===
+  OK   gigatoken/map (113ms)
+  OK   gigatoken/modules (84ms)
+  OK   gigatoken/investigate_noai (1009ms)
+  OK   gigatoken/agent_fast (1101ms)
+  OK   gigatoken/ripgrep_tool (82ms)
+=== Full agent samples ===
+  OK   rwatp-core/agent_full (80537ms)
+  OK   jj/agent_full (48393ms)
+=== DONE ok=57 fail=0 skip=0 ===
+Summary: /home/sanoy/projects/atlas/eval/cross-repo-suite/results-phase1-20260813-232040/SUMMARY.md
+# Cross-repo suite summary
+
+- Finished: 2026-08-13T23:29:28+05:30
+- Results dir: `/home/sanoy/projects/atlas/eval/cross-repo-suite/results-phase1-20260813-232040`
+- Proof log: `/home/sanoy/projects/atlas/eval/cross-repo-suite/results-phase1-20260813-232040/proof.jsonl`
+- OK: 57  FAIL: 0  SKIP: 0
+
+## Cases by status
+
+```
+ok=60 fail=0 skip=0
+```
+
+### Failures
+```
+```
+
+### Slowest cases (ms)
+```
+168725 ingest_research
+119289 ingest_rwatp
+85566 ingest_vestascan
+80537 rwatp-core/agent_full
+48393 jj/agent_full
+3781 jj/agent_fast
+3729 jj/investigate_noai
+1101 gigatoken/agent_fast
+1079 rwatp-core/agent_fast
+1009 gigatoken/investigate_noai
+972 rwatp-core/investigate_noai
+811 vestascan-user-fe/agent_fast
+744 vestascan-user-fe/investigate_noai
+712 rwatp-console/agent_fast
+702 rwatp-console/investigate_noai
+519 jj/map
+465 jj/modules
+441 rwatp-user-frontend/agent_fast
+407 vestascan-console/agent_fast
+400 rwatp-user-frontend/investigate_noai
+```

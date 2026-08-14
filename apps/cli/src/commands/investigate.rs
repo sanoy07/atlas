@@ -1,36 +1,68 @@
-use anyhow::Result;
-use atlas_core::investigate;
-use atlas_ir::{ArtifactRole, CandidateReason, ConceptExpansion, InvestigationDocument, InvestigationCoverage};
+use anyhow::{anyhow, Result};
+use atlas_core::{
+    investigate_cached, options_from_file, options_from_issue, options_from_question,
+    run_reasoning_investigation, OllamaProvider, ReasoningOptions,
+};
+use atlas_ir::{
+    ArtifactRole, CandidateReason, ClaimStatus, ConceptExpansion, InvestigationCoverage,
+    InvestigationDocument, ReasoningInvestigationResult,
+};
 use atlas_storage::Store;
 use serde_json;
 
-pub fn run(anchors: &[String], json: bool, raw: bool) -> Result<()> {
-    let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
-    let store   = Store::open(&db_path)?;
-    let repo    = super::discover_repo_root()?;
+/// `atlas investigate` entry.
+///
+/// - Anchor mode (default): short terms → InvestigationDocument (+ optional prose AI).
+/// - Reasoning mode: quoted question / `--issue` / `--file` → evidence packet + verified claims.
+pub fn run(
+    anchors: &[String],
+    json: bool,
+    raw: bool,
+    repo_override: Option<&str>,
+    issue: Option<i64>,
+    file: Option<&str>,
+    no_ai: bool,
+    max_rounds: u32,
+) -> Result<()> {
+    let db_path = super::resolve_db_path();
+    let store = Store::open(&db_path)?;
+    let repo = match repo_override {
+        Some(r) => super::canonical_repo_path(r),
+        None => super::discover_repo_root()?,
+    };
+
+    let reasoning_mode = issue.is_some()
+        || file.is_some()
+        || (anchors.len() == 1 && anchors[0].contains(' '))
+        || anchors.iter().any(|a| a.contains(' '));
+
+    if reasoning_mode {
+        return run_reasoning(anchors, json, raw, &repo, &store, issue, file, no_ai, max_rounds);
+    }
 
     let anchor_strs: Vec<&str> = anchors.iter().map(String::as_str).collect();
-    let doc = investigate(&anchor_strs, &repo, &store)?;
+    let doc = investigate_cached(&anchor_strs, &repo, &store)?;
 
     if json {
         println!("{}", serde_json::to_string_pretty(&doc)?);
         return Ok(());
     }
 
-    if raw {
+    if raw || no_ai {
         render(&doc);
         return Ok(());
     }
 
-    // Default: AI synthesis.
-    // Skip synthesis if there are no candidates — nothing useful to synthesize.
     let has_candidates = !doc.core_candidates.is_empty() || !doc.supporting_artifacts.is_empty();
     if !has_candidates {
         render(&doc);
         return Ok(());
     }
 
-    eprintln!("Synthesizing with qwen2.5-coder:7b-instruct …");
+    eprintln!(
+        "Synthesizing with {} (prose mode) …",
+        crate::ai::synthesis_model_name()
+    );
     let synthesis = crate::ai::synthesize(&doc);
 
     println!("INVESTIGATION");
@@ -44,6 +76,8 @@ pub fn run(anchors: &[String], json: bool, raw: bool) -> Result<()> {
             render_coverage(&doc.coverage);
             println!();
             println!("Run --raw for full evidence · --json for machine-readable output.");
+            println!("Tip: quoted questions use structured reasoning:");
+            println!("  atlas investigate \"orders timeout under concurrency\"");
         }
         None => {
             eprintln!("(Ollama unavailable — showing raw evidence. Run `ollama serve` to enable synthesis.)");
@@ -53,6 +87,231 @@ pub fn run(anchors: &[String], json: bool, raw: bool) -> Result<()> {
     }
 
     Ok(())
+}
+
+fn run_reasoning(
+    anchors: &[String],
+    json: bool,
+    raw: bool,
+    repo: &str,
+    store: &Store,
+    issue: Option<i64>,
+    file: Option<&str>,
+    no_ai: bool,
+    max_rounds: u32,
+) -> Result<()> {
+    let mut opts: ReasoningOptions = if let Some(n) = issue {
+        options_from_issue(n, repo, store)?.ok_or_else(|| {
+            anyhow!(
+                "issue #{} not found in DB — run `atlas ingest . --github` if needed",
+                n
+            )
+        })?
+    } else if let Some(f) = file {
+        let q = if anchors.is_empty() {
+            None
+        } else {
+            Some(anchors.join(" "))
+        };
+        options_from_file(f, q.as_deref())
+    } else {
+        options_from_question(&anchors.join(" "))
+    };
+    opts.no_ai = no_ai || raw;
+    opts.max_rounds = max_rounds.clamp(1, 3);
+
+    let provider;
+    let provider_ref = if opts.no_ai {
+        None
+    } else {
+        provider = OllamaProvider::default();
+        Some(&provider as &dyn atlas_core::ReasoningProvider)
+    };
+
+    if provider_ref.is_some() {
+        eprintln!(
+            "Reasoning investigation with {} (max {} round{}) …",
+            crate::ai::reasoning_model_name(),
+            opts.max_rounds,
+            if opts.max_rounds == 1 { "" } else { "s" }
+        );
+    } else {
+        eprintln!("Deterministic evidence packet only …");
+    }
+
+    let result = run_reasoning_investigation(opts, repo, store, provider_ref)?;
+
+    if json {
+        println!("{}", serde_json::to_string_pretty(&result)?);
+        return Ok(());
+    }
+
+    render_reasoning(&result);
+    Ok(())
+}
+
+fn render_reasoning(r: &ReasoningInvestigationResult) {
+    println!("ATLAS INVESTIGATION");
+    println!();
+    println!("Question:");
+    println!("  {}", r.question);
+    println!();
+    println!(
+        "Mode: {}{}",
+        r.mode,
+        r.model
+            .as_ref()
+            .map(|m| format!("  model={m}"))
+            .unwrap_or_default()
+    );
+    println!();
+
+    if !r.likely_area.is_empty() {
+        println!("LIKELY AREA");
+        for a in &r.likely_area {
+            println!("  · {}", a);
+        }
+        println!();
+    }
+
+    // C4-ER: ranked evidence drives conclusions; bag dumps do not.
+    if !r.packet.ranked_evidence.is_empty() {
+        println!("RANKED EVIDENCE  (weight · semantics · ref)");
+        for item in r.packet.ranked_evidence.iter().take(12) {
+            println!(
+                "  #{:<2} {:>4.2}  {:<14}  [{}] {} — {}",
+                item.rank,
+                item.weight,
+                item.event_semantics,
+                item.ref_.kind,
+                item.ref_.id,
+                item.ref_.summary
+            );
+        }
+        if r.packet.ranked_evidence.len() > 12 {
+            println!("  … {} more", r.packet.ranked_evidence.len() - 12);
+        }
+        println!();
+    }
+    if !r.packet.supersession.is_empty() {
+        println!("SUPERSESSION  (not mere recency)");
+        for s in r.packet.supersession.iter().take(6) {
+            println!(
+                "  {} → {}  ({})",
+                s.earlier_id, s.later_id, s.relationship
+            );
+        }
+        if r.packet.supersession.len() > 6 {
+            println!("  … {} more", r.packet.supersession.len() - 6);
+        }
+        println!();
+    }
+
+    for (i, h) in r.hypotheses.iter().enumerate() {
+        println!("HYPOTHESIS {}", i + 1);
+        println!("  {}", h.statement);
+        println!("  STATUS: {}", status_label(&h.status));
+        if !h.supporting.is_empty() {
+            println!("  Supporting evidence:");
+            for e in &h.supporting {
+                println!("    - [{}] {} — {}", e.kind, e.id, e.summary);
+            }
+        }
+        if !h.contradicting.is_empty() {
+            println!("  Contradicting evidence:");
+            for e in &h.contradicting {
+                println!("    - [{}] {} — {}", e.kind, e.id, e.summary);
+            }
+        }
+        println!();
+    }
+
+    if !r.claims.is_empty() {
+        println!("VERIFIED CLAIMS");
+        for c in &r.claims {
+            println!("  [{}] {} — {}", status_label(&c.status), c.id, c.statement);
+            for e in &c.evidence_refs {
+                println!("    evidence: [{}] {}", e.kind, e.id);
+            }
+        }
+        println!();
+    }
+
+    if !r.chronology.is_empty() {
+        println!("CHRONOLOGY  (intent vs implementation)");
+        for ev in r.chronology.iter().take(20) {
+            println!("  {:>10}  {:<14}  {}  {}", ev.timestamp, ev.role, ev.id, ev.summary);
+        }
+        if r.chronology.len() > 20 {
+            println!("  … {} more", r.chronology.len() - 20);
+        }
+        println!();
+    }
+
+    if !r.affected_components.is_empty() {
+        println!("AFFECTED COMPONENTS  (retrieval neighborhood)");
+        for c in &r.affected_components {
+            println!("  · {}", c);
+        }
+        println!();
+    }
+
+    if !r.relevant_issues_prs.is_empty() {
+        println!("RELEVANT ISSUES / PRS");
+        for d in &r.relevant_issues_prs {
+            println!("  · {}", d);
+        }
+        println!();
+    }
+
+    if let Some(ex) = &r.explanation {
+        if !ex.is_empty() {
+            println!("EXPLANATION  (local AI — not repository fact)");
+            println!("{ex}");
+            println!();
+        }
+    }
+
+    println!("WHAT ATLAS KNOWS");
+    for k in &r.what_atlas_knows {
+        println!("  · {k}");
+    }
+    println!();
+    println!("WHAT ATLAS DOES NOT KNOW");
+    for k in &r.what_atlas_does_not_know {
+        println!("  · {k}");
+    }
+    println!();
+    if !r.packet.verification_policy.is_empty() {
+        println!("VERIFICATION POLICY  (C4-ER)");
+        for v in &r.packet.verification_policy {
+            println!("  · {v}");
+        }
+        println!();
+    }
+    if !r.next_investigation.is_empty() {
+        println!("NEXT INVESTIGATION");
+        for n in &r.next_investigation {
+            println!("  · {n}");
+        }
+        println!();
+    }
+    println!("Use --json for the full evidence packet and claim structures.");
+}
+
+fn status_label(s: &ClaimStatus) -> &'static str {
+    match s {
+        ClaimStatus::Supported => "SUPPORTED",
+        ClaimStatus::Contradicted => "CONTRADICTED",
+        ClaimStatus::Plausible => "PLAUSIBLE",
+        ClaimStatus::Unresolved => "UNRESOLVED",
+    }
+}
+
+// ── Public for investigations show ───────────────────────────────────────────
+
+pub fn render_stored(doc: &InvestigationDocument) {
+    render(doc);
 }
 
 // ── Raw render (--raw flag or Ollama fallback) ────────────────────────────────
@@ -274,3 +533,4 @@ fn render_coverage(cov: &InvestigationCoverage) {
 fn tick(b: bool) -> &'static str {
     if b { "✓" } else { "✗ not ingested" }
 }
+

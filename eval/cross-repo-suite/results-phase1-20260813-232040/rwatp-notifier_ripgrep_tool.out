@@ -1,0 +1,18 @@
+RIPGREP symbol='TODO|FIXME|export'  (definition beats import)
+NOTE: TypeScript often imports `foo.js` while the source file is `foo.ts` — prefer [DEFINITION] paths ending in .ts/.tsx over .js import strings.
+
+IMPORTS / requires (17) — not definitions:
+  [IMPORT]     src/common/errors/index.ts:12:export { ApplicationError } from "./ApplicationError.js";
+  [IMPORT]     src/common/errors/index.ts:13:export { createApplicationError } from "./createApplicationError.js";
+  [IMPORT]     src/contracts/commands/notify/index.ts:1:export * from "./constants.js";
+  [IMPORT]     src/contracts/commands/notify/index.ts:2:export * from "./contracts.js";
+  [IMPORT]     src/enum/index.ts:1:export * from "./integration.enums.js";
+  [IMPORT]     src/enum/index.ts:2:export * from "./notification.enums.js";
+  [IMPORT]     src/infrastructure/secret-manager/index.ts:8:export * from "./secret-manager.interface.js";
+  [IMPORT]     src/infrastructure/secret-manager/index.ts:9:export * from "./google-secret-manager.adapter.js";
+  [IMPORT]     src/infrastructure/secret-manager/index.ts:10:export * from "./secret-manager.factory.js";
+  [IMPORT]     src/infrastructure/logger/index.ts:8:export * from "./types.js";
+  [IMPORT]     src/infrastructure/logger/index.ts:9:export * from "./logger.interface.js";
+  [IMPORT]     src/infrastructure/logger/index.ts:10:export * from "./console.adapter.js";
+  [IMPORT]     src/infrastructure/logger/index.ts:11:export * from "./google-cloud-logging.adapter.js";
+  [IMPORT]  

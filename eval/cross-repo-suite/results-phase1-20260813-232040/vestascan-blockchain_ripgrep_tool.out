@@ -1,0 +1,16 @@
+RIPGREP symbol='TODO|FIXME|export'  (definition beats import)
+NOTE: TypeScript often imports `foo.js` while the source file is `foo.ts` — prefer [DEFINITION] paths ending in .ts/.tsx over .js import strings.
+
+IMPORTS / requires (12) — not definitions:
+  [IMPORT]     src/common/enums.ts:2:export { ChainId } from "@/config/chains";
+  [IMPORT]     src/infrastructure/secret-manager/index.ts:1:export type { ISecretManagerService } from "./secret-manager.interface";
+  [IMPORT]     src/infrastructure/secret-manager/index.ts:2:export { getSecretManagerService } from "./secret-manager.factory";
+  [IMPORT]     src/infrastructure/caching/index.ts:1:export type { ICacheService } from "./cache.interface";
+  [IMPORT]     src/infrastructure/caching/index.ts:2:export { getCacheService, resetCacheService } from "./cache.factory";
+  [IMPORT]     src/infrastructure/caching/index.ts:3:export { k, p } from "./cache-keys";
+  [IMPORT]     src/infrastructure/caching/index.ts:4:export type { CacheKey, CachePattern } from "./cache-keys";
+  [IMPORT]     src/infrastructure/logger/index.ts:1:export type { ILogger } from "./logger.interface";
+  [IMPORT]     src/infrastructure/logger/index.ts:2:export { LogLevel } from "./types";
+  [IMPORT]     src/infrastructure/logger/index.ts:3:export type { LogEntry } from "./types";
+  [IMPORT]     src/infrastructure/logger/index.ts:4:export { getLogger, resetLogger } from "./logger.factory";
+  [IMPORT]     src/infrastructure/telemetry/instrumentation.ts:27:import { Tr

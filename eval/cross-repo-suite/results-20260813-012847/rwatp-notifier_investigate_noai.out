@@ -1,0 +1,94 @@
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  ORDER_CREATED notify
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · src/handlers
+  · src/contracts/commands/notify
+  · src/services
+  · contracts
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  0.91  implementation  [file] src/handlers/notify.handler.ts — candidate score≈0.90
+  #2  0.84  implementation  [file] src/contracts/commands/notify/constants.ts — candidate score≈0.90
+  #3  0.71  implementation  [file] src/contracts/commands/notify/contracts.ts — candidate score≈0.90
+  #4  0.67  implementation  [file] src/contracts/commands/notify/index.ts — candidate score≈0.90
+  #5  0.63  implementation  [file] src/services/notification.service.ts — candidate score≈0.90
+  #6  0.62  implementation  [commit] 655f88ba2aed707c63b1b7689083e11806e5c168 — 655f88b — Sync notification contract with rwatp-core and add signing/order/payment events (src/contracts/commands/notify/constants.ts)
+  #7  0.56  implementation  [file] src/routes/commands.ts — candidate score≈0.90
+  #8  0.52  implementation  [file] src/email/template-configs.ts — candidate score≈0.90
+  #9  0.49  implementation  [commit] 6770ea8e0d72102ad72fc37268e7c5b782252b77 — 6770ea8 — implemented handlers for email verification and password reset (#12) (src/handlers/notify.handler.ts)
+  #10 0.46  implementation  [file] src/models/notification-template.model.ts — candidate score≈0.82
+  #11 0.43  implementation  [file] src/contracts/commands/registry.ts — candidate score≈0.90
+  #12 0.43  implementation  [file] src/scripts/test-smtp-e2e.ts — candidate score≈0.90
+  … 7 more
+
+SUPERSESSION  (not mere recency)
+  85c91470a97327f3f9e3c1956ee875ab42439478 → 9de7e8c9b9c57be61dddd4965373b5cca2138b08  (implementation_supersedes_implementation)
+  85c91470a97327f3f9e3c1956ee875ab42439478 → d8f0d5a3e3abc0e1fc0a667777edd633eaf1cbb9  (implementation_supersedes_implementation)
+  85c91470a97327f3f9e3c1956ee875ab42439478 → 5646abca0ed51123a7fa2dea8bfcc371a3b0fd24  (implementation_supersedes_implementation)
+  85c91470a97327f3f9e3c1956ee875ab42439478 → 6770ea8e0d72102ad72fc37268e7c5b782252b77  (implementation_supersedes_implementation)
+  85c91470a97327f3f9e3c1956ee875ab42439478 → 655f88ba2aed707c63b1b7689083e11806e5c168  (implementation_supersedes_implementation)
+  9de7e8c9b9c57be61dddd4965373b5cca2138b08 → d8f0d5a3e3abc0e1fc0a667777edd633eaf1cbb9  (implementation_supersedes_implementation)
+  … 9 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/handlers/notify.handler.ts` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/handlers/notify.handler.ts — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1766764096  implementation  85c91470a97327f3f9e3c1956ee875ab42439478  85c9147 — feat: industrial refactor of command handler system (src/contracts/commands/notify/constants.ts)
+  1767705073  implementation  9de7e8c9b9c57be61dddd4965373b5cca2138b08  9de7e8c — Feat/3-idempotent-notifications-and-zombie-worker-fix (#9) (src/handlers/notify.handler.ts)
+  1767705423  implementation  d8f0d5a3e3abc0e1fc0a667777edd633eaf1cbb9  d8f0d5a — Feat/5 add new notification events (#8) (src/contracts/commands/notify/constants.ts)
+  1767781885  implementation  5646abca0ed51123a7fa2dea8bfcc371a3b0fd24  5646abc — Bugfix: added back implementation of notification event handlers and other miss… (src/handlers/notify.handler.ts)
+  1785350331  implementation  6770ea8e0d72102ad72fc37268e7c5b782252b77  6770ea8 — implemented handlers for email verification and password reset (#12) (src/handlers/notify.handler.ts)
+  1785828488  implementation  655f88ba2aed707c63b1b7689083e11806e5c168  655f88b — Sync notification contract with rwatp-core and add signing/order/payment events (src/contracts/commands/notify/constants.ts)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/handlers/notify.handler.ts
+  · src/contracts/commands/notify/constants.ts
+  · src/contracts/commands/notify/contracts.ts
+  · src/contracts/commands/notify/index.ts
+  · src/services/notification.service.ts
+  · src/routes/commands.ts
+  · src/email/template-configs.ts
+  · src/models/notification-template.model.ts
+  · src/contracts/commands/registry.ts
+  · src/scripts/test-smtp-e2e.ts
+  · src/scripts/seed-templates.ts
+  · src/models/notification-message.model.ts
+  · src/infrastructure/email/factory.ts
+
+WHAT ATLAS KNOWS
+  · 13 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 6 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=9 top=src/contracts/commands/notify/constants.ts
+  · c5.1e_concept_fragments domain=Order flow=false n=23
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

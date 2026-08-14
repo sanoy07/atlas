@@ -1,0 +1,22 @@
+ATLAS CODE-SEARCH  (definition-ranked structural)
+  query: ListingAsset
+
+  bucket        kind        path / symbol
+  DEFINITION    references_model  src/modules/core/models/listing-asset.model.ts:18  (ListingAsset.findById)
+  DEFINITION    references_model  src/modules/core/models/listing-asset.model.ts:174  (ListingAsset.countDocuments)
+  DEFINITION    references_model  src/modules/core/models/listing-asset.model.ts:261  (ListingAsset.deleteMany)
+  DEFINITION    references_model  src/modules/core/models/listing-asset.model.ts:287  (ListingAsset.create)
+  DEFINITION    references_model  src/modules/core/models/listing-asset.model.ts:503  (ListingAsset.deleteOne)
+  DEFINITION    calls_static  src/modules/core/services/listing-asset.service.ts:36  (ListingAssetService.sweepAbandonedUploads)
+  DEFINITION    calls_static  src/modules/core/services/listing-asset.service.ts:63  (ListingAssetService.requestUploadUrl)
+  DEFINITION    calls_static  src/modules/core/services/listing-asset.service.ts:86  (ListingAssetService.confirmUpload)
+  DEFINITION    calls_static  src/modules/core/services/listing-asset.service.ts:182  (ListingAssetService.setFeatured)
+  DEFINITION    calls_static  src/modules/core/services/listing-asset.service.ts:255  (ListingAssetService.listAssets)
+  DEFINITION    calls_static  src/modules/core/services/listing-asset.service.ts:322  (ListingAssetService.reorder)
+  DEFINITION    calls_static  src/modules/core/services/listing-asset.service.ts:374  (ListingAssetService.canAccess)
+  DEFINITION    calls_static  src/modules/core/services/listing-asset.service.ts:434  (ListingAssetService.deleteAsset)
+
+LIMITATIONS
+  · Ranked over structural_edges only — not a full-text code search.
+  · DEFINITION bucket is path/symbol heuristic, not a language-server definition.
+  · Use atlas callers / implementations for relationship questions.

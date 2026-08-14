@@ -1,0 +1,5 @@
+MODULES  (subject: src/modules)
+  discovery: DETERMINISTIC: immediate child directories of `src/modules` that appear in the `files` table (a path segment after the subject prefix with a further `/`)
+  total: 0 module directories
+
+(no immediate child directories under `src/modules` in the files table)

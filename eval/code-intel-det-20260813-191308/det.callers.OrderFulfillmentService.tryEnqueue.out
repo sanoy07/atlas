@@ -1,0 +1,17 @@
+ATLAS CALLERS
+  subject: OrderFulfillmentService.tryEnqueue
+  resolved_as: symbol
+
+PRODUCTION CALLERS  (2)
+  ← src/modules/payment/services/payment-settlement.service.ts  calls OrderFulfillmentService.tryEnqueue  (src/modules/core/services/order-fulfillment.service.ts:253)  [calls_static]
+  ← src/modules/signing/services/signing.service.ts  calls OrderFulfillmentService.tryEnqueue  (src/modules/core/services/order-fulfillment.service.ts:1254)  [calls_static]
+
+TEST CALLERS  (0)
+
+CALLEES  (0)
+  (none observed from subject)
+
+LIMITATIONS
+  · Call edges are static snapshot from last typescript ingest (CALLS_STATIC/INSTANCE).
+  · Dynamic import, DI, and string-based dispatch are not observed.
+  · Symbol match is string equality / Class.method suffix — not type-checked.

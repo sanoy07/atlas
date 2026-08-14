@@ -1,0 +1,1223 @@
+{
+  "case_id": "content-block-001",
+  "task": "What enforces required content blocks on a listing before it goes live?",
+  "repo": "RWATP",
+  "repo_commit": "b21260594c0e8d66be01d6a24b7b79e428fcc947",
+  "generated_by": "atlas atlas 0.1.0",
+  "evidence": [
+    {
+      "id": "E1",
+      "type": "source_signal",
+      "summary": "src/common/constants/block-registry.constants.ts",
+      "detail": "anchor \"block\" via file_path; anchor \"registry\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/constants/block-registry.constants.ts"
+      }
+    },
+    {
+      "id": "E2",
+      "type": "source_signal",
+      "summary": "src/common/constants/block-rules.constants.ts",
+      "detail": "anchor \"block\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/constants/block-rules.constants.ts"
+      }
+    },
+    {
+      "id": "E3",
+      "type": "source_signal",
+      "summary": "src/common/constants/validation.constants.ts",
+      "detail": "anchor \"validation\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/constants/validation.constants.ts"
+      }
+    },
+    {
+      "id": "E4",
+      "type": "source_signal",
+      "summary": "src/common/enum/block-context.enums.ts",
+      "detail": "anchor \"block\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/enum/block-context.enums.ts"
+      }
+    },
+    {
+      "id": "E5",
+      "type": "source_signal",
+      "summary": "src/contracts/commands/registry.ts",
+      "detail": "anchor \"contract\" via file_path; anchor \"registry\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/contracts/commands/registry.ts"
+      }
+    },
+    {
+      "id": "E6",
+      "type": "source_signal",
+      "summary": "src/contracts/events/registry.ts",
+      "detail": "anchor \"contract\" via file_path; anchor \"registry\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/contracts/events/registry.ts"
+      }
+    },
+    {
+      "id": "E7",
+      "type": "source_signal",
+      "summary": "src/modules/blockchain/models/smart-contract.model.ts",
+      "detail": "anchor \"block\" via file_path; anchor \"contract\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/blockchain/models/smart-contract.model.ts"
+      }
+    },
+    {
+      "id": "E8",
+      "type": "source_signal",
+      "summary": "src/modules/core/graphql/content-block-permissions.ts",
+      "detail": "anchor \"block\" via file_path; anchor \"content\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E9",
+      "type": "source_signal",
+      "summary": "src/modules/core/graphql/content-block.resolvers.ts",
+      "detail": "anchor \"block\" via file_path; anchor \"content\" via file_path; calls_static neighbor from src/modules/core/services/content-block.service.ts; calls_static neighbor from src/modules/core/services/content-block.service.ts; calls_static neighbor from src/modules/core/services/content-block.service.ts; calls_static neighbor from src/modules/core/services/content-block.service.ts; calls_static neighbor from src/modules/core/services/content-block.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/graphql/content-block.resolvers.ts"
+      }
+    },
+    {
+      "id": "E10",
+      "type": "source_signal",
+      "summary": "src/modules/core/graphql/content-block.typeDefs.ts",
+      "detail": "anchor \"block\" via file_path; anchor \"content\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/graphql/content-block.typeDefs.ts"
+      }
+    },
+    {
+      "id": "E11",
+      "type": "source_signal",
+      "summary": "src/modules/core/models/content-block.model.ts",
+      "detail": "anchor \"block\" via file_path; anchor \"content\" via file_path; references_model neighbor from src/modules/core/services/content-block.service.ts; references_model neighbor from src/modules/core/services/content-block.service.ts; references_model neighbor from src/modules/core/services/content-block.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/models/content-block.model.ts"
+      }
+    },
+    {
+      "id": "E12",
+      "type": "source_signal",
+      "summary": "src/modules/core/models/currency.model.ts",
+      "detail": "references_model neighbor from scripts/migrations/migrate-currency-blockchain-to-chainid.ts; references_model neighbor from scripts/migrations/migrate-currency-blockchain-to-chainid.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/models/currency.model.ts"
+      }
+    },
+    {
+      "id": "E13",
+      "type": "source_signal",
+      "summary": "src/modules/core/models/listing.model.ts",
+      "detail": "references_model neighbor from src/modules/core/services/content-block.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/models/listing.model.ts"
+      }
+    },
+    {
+      "id": "E14",
+      "type": "source_signal",
+      "summary": "src/modules/core/models/share-class.model.ts",
+      "detail": "references_model neighbor from src/modules/core/graphql/content-block-permissions.ts; references_model neighbor from src/modules/core/services/content-block.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/models/share-class.model.ts"
+      }
+    },
+    {
+      "id": "E15",
+      "type": "source_signal",
+      "summary": "src/modules/core/services/content-block.service.ts",
+      "detail": "anchor \"block\" via file_path; anchor \"content\" via file_path; calls_static neighbor from src/modules/core/graphql/content-block.resolvers.ts; calls_static neighbor from src/modules/core/graphql/content-block.resolvers.ts; calls_static neighbor from src/modules/core/graphql/content-block.resolvers.ts; calls_static neighbor from src/modules/core/graphql/content-block.resolvers.ts; calls_static neighbor from src/modules/core/graphql/content-block.resolvers.ts; references_model neighbor from src/modules/core/models/content-block.model.ts; references_model neighbor from src/modules/core/models/content-block.model.ts; references_model neighbor from src/modules/core/models/content-block.model.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E16",
+      "type": "source_signal",
+      "summary": "[migration] scripts/migrations/migrate-currency-blockchain-to-chainid.ts",
+      "detail": "anchor \"block\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts"
+      }
+    },
+    {
+      "id": "E17",
+      "type": "source_signal",
+      "summary": "[script] scripts/rbac/add-listing-member.js",
+      "detail": "anchor \"listing\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "scripts/rbac/add-listing-member.js"
+      }
+    },
+    {
+      "id": "E18",
+      "type": "source_signal",
+      "summary": "[validation] src/modules/compliance/validation/compliance.validation.ts",
+      "detail": "anchor \"compliance\" via file_path; anchor \"validation\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/validation/compliance.validation.ts"
+      }
+    },
+    {
+      "id": "E19",
+      "type": "source_signal",
+      "summary": "[validation] src/modules/core/validations/listing.validation.ts",
+      "detail": "anchor \"listing\" via file_path; anchor \"validation\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/validations/listing.validation.ts"
+      }
+    },
+    {
+      "id": "E20",
+      "type": "observed_import",
+      "summary": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts → src/modules/core/models/currency.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts"
+      }
+    },
+    {
+      "id": "E21",
+      "type": "model_reference",
+      "summary": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts → src/modules/core/models/currency.model.ts [Currency.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts"
+      }
+    },
+    {
+      "id": "E22",
+      "type": "model_reference",
+      "summary": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts → src/modules/core/models/currency.model.ts [Currency.updateOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts"
+      }
+    },
+    {
+      "id": "E23",
+      "type": "observed_import",
+      "summary": "src/modules/core/graphql/content-block-permissions.ts → src/modules/core/models/share-class.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E24",
+      "type": "model_reference",
+      "summary": "src/modules/core/graphql/content-block-permissions.ts → src/modules/core/models/share-class.model.ts [ShareClass.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E25",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/content-block.resolvers.ts → src/modules/core/services/content-block.service.ts [ContentBlockService.getContentBlocks]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block.resolvers.ts"
+      }
+    },
+    {
+      "id": "E26",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/content-block.resolvers.ts → src/modules/core/services/content-block.service.ts [ContentBlockService.validateRequiredBlocks]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block.resolvers.ts"
+      }
+    },
+    {
+      "id": "E27",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/content-block.resolvers.ts → src/modules/core/services/content-block.service.ts [ContentBlockService.saveBlock]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block.resolvers.ts"
+      }
+    },
+    {
+      "id": "E28",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/content-block.resolvers.ts → src/modules/core/services/content-block.service.ts [ContentBlockService.deleteContentBlock]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block.resolvers.ts"
+      }
+    },
+    {
+      "id": "E29",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/content-block.resolvers.ts → src/modules/core/services/content-block.service.ts [ContentBlockService.toggleBlockVisibility]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block.resolvers.ts"
+      }
+    },
+    {
+      "id": "E30",
+      "type": "observed_import",
+      "summary": "src/modules/core/graphql/content-block.resolvers.ts → src/modules/core/services/content-block.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block.resolvers.ts"
+      }
+    },
+    {
+      "id": "E31",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/content-block.service.ts → src/common/constants/block-rules.constants.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E32",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/content-block.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E33",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/listing.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E34",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/share-class.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E35",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/content-block.model.ts [ContentBlock.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E36",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/content-block.model.ts [ContentBlock.findOneAndUpdate]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E37",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/content-block.model.ts [ContentBlock.deleteOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E38",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/listing.model.ts [Listing.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E39",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/share-class.model.ts [ShareClass.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E40",
+      "type": "documentary",
+      "summary": "Issue #1: ",
+      "detail": "…form handling sensitive operations like KYC verification, document uploads, and blockchain transactions, we need robust rate limiting to: 1. **Security**: Prevent b…",
+      "source": {
+        "kind": "Issue",
+        "number": 1
+      }
+    },
+    {
+      "id": "E41",
+      "type": "documentary",
+      "summary": "Issue #4: ",
+      "detail": "…s, preventing application crashes. ### Developer Experience - **Type-Safe Key Registry**: `CacheKeys` registry using Branded Types (`CacheKey`) to enforce strict usag…",
+      "source": {
+        "kind": "Issue",
+        "number": 4
+      }
+    },
+    {
+      "id": "E42",
+      "type": "documentary",
+      "summary": "Issue #10: feat(core): implement listing management (create & update)",
+      "detail": "…heroImageUrl: String # Compliance allowedInvestorTypes: [InvestorType!] blockedCountries: [String!] } input UpdateListingInput { id: ID! name: String…",
+      "source": {
+        "kind": "Issue",
+        "number": 10
+      }
+    },
+    {
+      "id": "E43",
+      "type": "documentary",
+      "summary": "Issue #12: ",
+      "detail": "…g` (and `updateListing` if standard changes):** 1. **Check Input**: Does the `blockchainConfig.tokenStandard` exist? 2. **Condition**: If Standard != `ERC1400` AN…",
+      "source": {
+        "kind": "Issue",
+        "number": 12
+      }
+    },
+    {
+      "id": "E44",
+      "type": "documentary",
+      "summary": "Issue #14: ",
+      "detail": "…1400 listings. Maximum 5 share classes per listing. Only allowed if listing.blockchainConfig.tokenStandard === ERC1400. \"\"\" createShareClass(input: CreateSha…",
+      "source": {
+        "kind": "Issue",
+        "number": 14
+      }
+    },
+    {
+      "id": "E45",
+      "type": "documentary",
+      "summary": "Issue #17: ",
+      "detail": "…PermissionCacheService` using our existing infrastructure. 2. Implement O(1) invalidation using a Versioning Strategy. 3. Migrate `User.prototype.can()` to use Redis.…",
+      "source": {
+        "kind": "Issue",
+        "number": 17
+      }
+    },
+    {
+      "id": "E46",
+      "type": "documentary",
+      "summary": "Issue #18: ",
+      "detail": "…ata Model Updates - **ResourceRole Model**: Add `version` (Number, default 0). Required for O(1) invalidation when a resource role definition changes. - **ResourceMem…",
+      "source": {
+        "kind": "Issue",
+        "number": 18
+      }
+    },
+    {
+      "id": "E47",
+      "type": "documentary",
+      "summary": "Issue #23: ",
+      "detail": "…fy `src/modules/identity/graphql/permissions.ts` uses `hasPermission(PERMISSION_REGISTRY.IAM_ROLES_VIEW.key)` for these queries. --- ## Add Self-Service Queries Add…",
+      "source": {
+        "kind": "Issue",
+        "number": 23
+      }
+    },
+    {
+      "id": "E48",
+      "type": "documentary",
+      "summary": "Issue #29: Asset Taxonomy Update and Block Registry Foundation Setup",
+      "detail": "> Branch Name : feat/rwa-block-registry ## Objective This issue establishes the foundational setup for the a…",
+      "source": {
+        "kind": "Issue",
+        "number": 29
+      }
+    },
+    {
+      "id": "E49",
+      "type": "documentary",
+      "summary": "Issue #30: Content Block Logic Layer & API Implementation",
+      "detail": "## Objective Implement the dynamic \"Brain\" of the Content Block system. This involves creating the service layer, data models, and GraphQL API…",
+      "source": {
+        "kind": "Issue",
+        "number": 30
+      }
+    },
+    {
+      "id": "E50",
+      "type": "documentary",
+      "summary": "Issue #33: ",
+      "detail": "…ice accounts 4. Test permission checks for service accounts 5. Test isUser rule blocking service accounts from KYC/profile 6. Verify backward compatibility of all ex…",
+      "source": {
+        "kind": "Issue",
+        "number": 33
+      }
+    },
+    {
+      "id": "E51",
+      "type": "documentary",
+      "summary": "Issue #34: ",
+      "detail": "…tionService.getActiveIntegration()` 3. **Enhancement**: Add caching for `ContentBlockService.getContentBlocks()` --- ## Part 1: Bug Fix - testSMTPConnection Uses S…",
+      "source": {
+        "kind": "Issue",
+        "number": 34
+      }
+    },
+    {
+      "id": "E52",
+      "type": "documentary",
+      "summary": "Issue #35: ",
+      "detail": "…uthUser`, not entire query failure - Cache eviction works when calling manual invalidation",
+      "source": {
+        "kind": "Issue",
+        "number": 35
+      }
+    },
+    {
+      "id": "E53",
+      "type": "documentary",
+      "summary": "Issue #36: ",
+      "detail": "…el **File**: `src/modules/core/models/currency.model.ts` **Change**: Replace `blockchain: ObjectId` with `chainId: number` in `CurrencyChainDeployment`: ```typesc…",
+      "source": {
+        "kind": "Issue",
+        "number": 36
+      }
+    },
+    {
+      "id": "E54",
+      "type": "documentary",
+      "summary": "Issue #37: ",
+      "detail": "…missions**: ```typescript Query: { getIntegrations: hasPermission(PERMISSION_REGISTRY.SETTINGS_INTEGRATIONS_MANAGE.key), getIntegration: hasPermission(PERMISSION_R…",
+      "source": {
+        "kind": "Issue",
+        "number": 37
+      }
+    },
+    {
+      "id": "E55",
+      "type": "documentary",
+      "summary": "Issue #43: ",
+      "detail": "…plicable | | Unauthenticated request | GraphQL Shield blocks with auth error | | Missing `authUid`…",
+      "source": {
+        "kind": "Issue",
+        "number": 43
+      }
+    },
+    {
+      "id": "E56",
+      "type": "documentary",
+      "summary": "Issue #44: ",
+      "detail": "…tring) => k(`v1:identity:user:${authUid}`), // ADD THIS }, ``` ### 6. Create Invalidation Helper Add helper method to `UserService` in `src/modules/identity/services/us…",
+      "source": {
+        "kind": "Issue",
+        "number": 44
+      }
+    },
+    {
+      "id": "E57",
+      "type": "documentary",
+      "summary": "Issue #46: ",
+      "detail": "## Overview Implement an **email availability validation step** within the registration flow of the **Identity module** to provide real-…",
+      "source": {
+        "kind": "Issue",
+        "number": 46
+      }
+    },
+    {
+      "id": "E58",
+      "type": "documentary",
+      "summary": "Issue #48: ",
+      "detail": "…ring()` to `id` Currently missing for: **Currency, Listing, ShareClass, ContentBlock, Integration, Role** ## Current State ### ✅ Already Working (Have Both Mapper…",
+      "source": {
+        "kind": "Issue",
+        "number": 48
+      }
+    },
+    {
+      "id": "E59",
+      "type": "documentary",
+      "summary": "Issue #49: ",
+      "detail": "…id code name type } } } ``` ## Impact This error blocks all currency-related queries and prevents the currency management feature from…",
+      "source": {
+        "kind": "Issue",
+        "number": 49
+      }
+    },
+    {
+      "id": "E60",
+      "type": "documentary",
+      "summary": "Issue #54: Fix critical data integrity issues in share class and listing services",
+      "detail": "## Summary There are three data integrity issues across the share class and listing services that need to be addressed before any investor-facing operations go liv…",
+      "source": {
+        "kind": "Issue",
+        "number": 54
+      }
+    },
+    {
+      "id": "E61",
+      "type": "documentary",
+      "summary": "Issue #55: ",
+      "detail": "…rictions - Follow the same error patterns used in `share-class.service.ts` and `listing.service.ts` --- ## 2. Currency audit trail is broken (empty `createdBy`) **F…",
+      "source": {
+        "kind": "Issue",
+        "number": 55
+      }
+    },
+    {
+      "id": "E62",
+      "type": "documentary",
+      "summary": "Issue #56: ",
+      "detail": "…# 2. Wire KYC status changes to publish notify commands **File:** `src/modules/compliance/services/compliance.service.ts` When KYC is approved or rejected, the complian…",
+      "source": {
+        "kind": "Issue",
+        "number": 56
+      }
+    },
+    {
+      "id": "E63",
+      "type": "documentary",
+      "summary": "Issue #57: ",
+      "detail": "…t changing the cache interface. --- ## 3. Add subscription date validation to listing readiness **File:** `src/modules/core/validations/listing.validation.ts` A li…",
+      "source": {
+        "kind": "Issue",
+        "number": 57
+      }
+    },
+    {
+      "id": "E64",
+      "type": "documentary",
+      "summary": "Issue #62: Record Smart Contract Deployment — solid ShareClass + Listing linking with DEPLOYED status",
+      "detail": "## Context The `SmartContract` collection/model exists (`src/modules/blockchain/models/smart-contract.model.ts`) but the entire blockchain GraphQL layer i…",
+      "source": {
+        "kind": "Issue",
+        "number": 62
+      }
+    },
+    {
+      "id": "E65",
+      "type": "documentary",
+      "summary": "PR #2: ",
+      "detail": "…rated `GraphQLRateLimitPlugin` to enforce limits on `didResolveOperation`. - **Registry**: Created type-safe limit configurations (`base-limits.ts`, `field-limits.ts`)…",
+      "source": {
+        "kind": "PR",
+        "number": 2
+      }
+    },
+    {
+      "id": "E66",
+      "type": "documentary",
+      "summary": "PR #9: ",
+      "detail": "**Description:** This PR addresses critical deployment blockers: - **ESM Fixes:** Systematically added `.js` extensions and `index.js` refe…",
+      "source": {
+        "kind": "PR",
+        "number": 9
+      }
+    },
+    {
+      "id": "E67",
+      "type": "documentary",
+      "summary": "PR #11: Implemented listing management (create/update)",
+      "detail": "…/rwatp-core/src/modules/core/services/listing.service.ts:145:2-247:3)) ### ✅ BlockchainConfig Support - **GraphQL Input**: [BlockchainConfigInput](cci:2://file:/…",
+      "source": {
+        "kind": "PR",
+        "number": 11
+      }
+    },
+    {
+      "id": "E68",
+      "type": "documentary",
+      "summary": "PR #13: ",
+      "detail": "…uto-creation trigger | | `src/modules/core/models/share-class.model.ts` | Made blockchain fields conditionally required for drafts | | `src/modules/core/graphql/in…",
+      "source": {
+        "kind": "PR",
+        "number": 13
+      }
+    },
+    {
+      "id": "E69",
+      "type": "documentary",
+      "summary": "PR #15: ",
+      "detail": "…vior. --- ### Why This Is Needed - Share Class auto-creation depends on `blockchainConfig.tokenStandard` - Token standard must be immutable to preserve listi…",
+      "source": {
+        "kind": "PR",
+        "number": 15
+      }
+    },
+    {
+      "id": "E70",
+      "type": "documentary",
+      "summary": "PR #16: ",
+      "detail": "…to manage share classes post-creation. It includes manual creation for ERC-1400 listings, precise supply management (linked to a new immutable [SupplyLedger](cci:2://f…",
+      "source": {
+        "kind": "PR",
+        "number": 16
+      }
+    },
+    {
+      "id": "E71",
+      "type": "documentary",
+      "summary": "PR #20: ",
+      "detail": "…on hot paths (middleware/guards). 2. **Write Amplification**: Updating a Role required re-calculating and writing permissions for *all* assigned users immediately.…",
+      "source": {
+        "kind": "PR",
+        "number": 20
+      }
+    },
+    {
+      "id": "E72",
+      "type": "documentary",
+      "summary": "PR #21: ",
+      "detail": "…)**, enabling granular permissions for specific resources (e.g., Organizations, Listings). It introduces a dedicated [ResourceMemberService](cci:2://file:///home/sanoy…",
+      "source": {
+        "kind": "PR",
+        "number": 21
+      }
+    },
+    {
+      "id": "E73",
+      "type": "documentary",
+      "summary": "PR #22: ",
+      "detail": "…out requiring the init script - Scripts are available in the container but not required for server startup ### Benefits ✅ Server startup no longer hangs on Cloud R…",
+      "source": {
+        "kind": "PR",
+        "number": 22
+      }
+    },
+    {
+      "id": "E74",
+      "type": "documentary",
+      "summary": "PR #25: Bug fix/update listing mutation and redis fix",
+      "detail": "listing",
+      "source": {
+        "kind": "PR",
+        "number": 25
+      }
+    },
+    {
+      "id": "E75",
+      "type": "documentary",
+      "summary": "PR #26: ",
+      "detail": "…essible to authenticated users without admin permission - Self-service queries blocked for unauthenticated users - Admin queries return `FORBIDDEN` without `iam.us…",
+      "source": {
+        "kind": "PR",
+        "number": 26
+      }
+    },
+    {
+      "id": "E76",
+      "type": "documentary",
+      "summary": "PR #28: ",
+      "detail": "…s critical bugs related to role permissions and configuration updates that were blocking the usage of these features. ## 🚀 Changes ### 🔒 Security Enhancements…",
+      "source": {
+        "kind": "PR",
+        "number": 28
+      }
+    },
+    {
+      "id": "E77",
+      "type": "documentary",
+      "summary": "PR #31: updated asset taxonomy and implemented foundation for block registry setup",
+      "detail": "# Asset Taxonomy Update and Block Registry Foundation Setup ## PR Metadata | Field | Value | |-------|----…",
+      "source": {
+        "kind": "PR",
+        "number": 31
+      }
+    },
+    {
+      "id": "E78",
+      "type": "documentary",
+      "summary": "PR #32: Implemented content block logic layer and api implementation",
+      "detail": "# PR: Content Block Logic Layer & API Implementation | Field | Value | |-------|-------| | **I…",
+      "source": {
+        "kind": "PR",
+        "number": 32
+      }
+    },
+    {
+      "id": "E79",
+      "type": "documentary",
+      "summary": "PR #38: implemented caching enhancements and testSMTPConnection cache invalidation upon update of config",
+      "detail": "…ntegrationService.getActiveIntegration()` 3. **Enhancement**: Migrated `ContentBlockService` to decorator-based caching ## Changes ### Part 1: SMTP Bug Fix…",
+      "source": {
+        "kind": "PR",
+        "number": 38
+      }
+    },
+    {
+      "id": "E80",
+      "type": "documentary",
+      "summary": "PR #40: implemented service account authentication and other required changes related to OIDC token authentication",
+      "detail": "…Access Control**: Verified that Service Accounts CANNOT access `updateProfile` (blocked by `isUser` rule). --- ## 🛠️ Usage Guide ### Creating a Service Acco…",
+      "source": {
+        "kind": "PR",
+        "number": 40
+      }
+    },
+    {
+      "id": "E81",
+      "type": "documentary",
+      "summary": "PR #41: implemented service account authentication and other required changes related to OIDC token authentication",
+      "detail": "…Access Control**: Verified that Service Accounts CANNOT access `updateProfile` (blocked by `isUser` rule). --- ## 🛠️ Usage Guide ### Creating a Service Acco…",
+      "source": {
+        "kind": "PR",
+        "number": 41
+      }
+    },
+    {
+      "id": "E82",
+      "type": "documentary",
+      "summary": "PR #42: ",
+      "detail": "…acheable`. - Added `UserService.invalidateAuthUserCache(authUid)` for manual invalidation. - Implemented efficient data fetching using `FirebaseAuthService`. ### 3.…",
+      "source": {
+        "kind": "PR",
+        "number": 42
+      }
+    },
+    {
+      "id": "E83",
+      "type": "documentary",
+      "summary": "PR #45: ",
+      "detail": "…rypto assets. 2. **Multi-Chain Architecture**: Replaced legacy, single-chain `blockchain` ObjectId references with a scalable `chainId` (number) array structure, s…",
+      "source": {
+        "kind": "PR",
+        "number": 45
+      }
+    },
+    {
+      "id": "E84",
+      "type": "documentary",
+      "summary": "PR #47: ",
+      "detail": "…et_sub\", \"webhookSecret\": \"test_webhook_sub\" } } } ``` *Note: Required using inline fragments for Union Type `IntegrationSecrets`.* ## Deployment A…",
+      "source": {
+        "kind": "PR",
+        "number": 47
+      }
+    },
+    {
+      "id": "E85",
+      "type": "documentary",
+      "summary": "PR #50: ",
+      "detail": "…RVER_ERROR\" } } ], \"data\": null } ``` This same issue affected `Listing`, `ShareClass`, and `Role` types as well. ## Root Cause MongoDB stores do…",
+      "source": {
+        "kind": "PR",
+        "number": 50
+      }
+    },
+    {
+      "id": "E86",
+      "type": "documentary",
+      "summary": "PR #51: ",
+      "detail": "…ge `\"System configuration error.\"` and HTTP status `500` ### 8. Notification Contracts **`src/contracts/commands/notify/contracts.ts`** - Added `VerificationEm…",
+      "source": {
+        "kind": "PR",
+        "number": 51
+      }
+    },
+    {
+      "id": "E87",
+      "type": "documentary",
+      "summary": "PR #52: ",
+      "detail": "…ser` from Redis for authenticated requests, with a 5-minute TTL and automatic invalidation on all mutation boundaries. The implementation also updates the type system to…",
+      "source": {
+        "kind": "PR",
+        "number": 52
+      }
+    },
+    {
+      "id": "E88",
+      "type": "documentary",
+      "summary": "PR #53: implemented email availability validation",
+      "detail": "…fig found: 10 reqs / 60s Running 12 requests (Limit is 10)... ✅ Request 11 blocked correctly ✅ Request 12 blocked correctly ✅ Rate limiter correctly enforced…",
+      "source": {
+        "kind": "PR",
+        "number": 53
+      }
+    },
+    {
+      "id": "E89",
+      "type": "documentary",
+      "summary": "PR #58: implemented auth logging, memory cache limit, subscription date validation, daysLeft resolver for listings",
+      "detail": "…dex.js\"; const logger = getLogger(); // token hoisted to let so the catch block can access it let token = \"\"; } catch (error) { logger.warn(\"Auth reso…",
+      "source": {
+        "kind": "PR",
+        "number": 58
+      }
+    },
+    {
+      "id": "E90",
+      "type": "documentary",
+      "summary": "PR #59: implemented data integrity fix for share class and listing service",
+      "detail": "…service.ts` ### Problem `deleteShareClass()` contained a commented-out TODO block. The guard was never wired up, meaning share classes with live investor holding…",
+      "source": {
+        "kind": "PR",
+        "number": 59
+      }
+    },
+    {
+      "id": "E91",
+      "type": "documentary",
+      "summary": "PR #60: ",
+      "detail": "…if (!id) { throw createError(ErrorCode.UNAUTHENTICATED, \"Authentication required\"); } return id; } ``` All six mutation resolvers now pass `getActorI…",
+      "source": {
+        "kind": "PR",
+        "number": 60
+      }
+    },
+    {
+      "id": "E92",
+      "type": "documentary",
+      "summary": "PR #61: ",
+      "detail": "…ce workflow. Additionally, the original source contained a garbled `else if` block (a literal `\\n` embedded in a comment string) that was cleaned up in the proces…",
+      "source": {
+        "kind": "PR",
+        "number": 61
+      }
+    },
+    {
+      "id": "E93",
+      "type": "documentary",
+      "summary": "PR #63: implemented smart contract deployement recording, with shareClass and listing linking with deployed status",
+      "detail": "…nged ### New files | File | Purpose | |------|---------| | `src/modules/blockchain/validations/smart-contract.validation.ts` | Zod schemas for `ContractDeplo…",
+      "source": {
+        "kind": "PR",
+        "number": 63
+      }
+    },
+    {
+      "id": "E94",
+      "type": "historical",
+      "summary": "touched 4x: src/modules/core/models/listing.model.ts",
+      "detail": "src/modules/core/models/share-class.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/models/listing.model.ts"
+      }
+    },
+    {
+      "id": "E95",
+      "type": "historical",
+      "summary": "touched 4x: src/modules/core/models/share-class.model.ts",
+      "detail": "src/modules/core/models/listing.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/models/share-class.model.ts"
+      }
+    },
+    {
+      "id": "E96",
+      "type": "historical",
+      "summary": "touched 3x: src/contracts/commands/registry.ts",
+      "detail": "src/contracts/events/registry.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/contracts/commands/registry.ts"
+      }
+    },
+    {
+      "id": "E97",
+      "type": "historical",
+      "summary": "touched 2x: docs/refactoring-validation-naming.md",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "docs/refactoring-validation-naming.md"
+      }
+    },
+    {
+      "id": "E98",
+      "type": "historical",
+      "summary": "touched 2x: src/common/commands/blockchain/contracts.ts",
+      "detail": "src/common/commands/order/contracts.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/common/commands/blockchain/contracts.ts"
+      }
+    },
+    {
+      "id": "E99",
+      "type": "historical",
+      "summary": "touched 2x: src/common/commands/order/contracts.ts",
+      "detail": "src/common/commands/blockchain/contracts.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/common/commands/order/contracts.ts"
+      }
+    },
+    {
+      "id": "E100",
+      "type": "historical",
+      "summary": "touched 2x: src/common/constants/validation.constants.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/constants/validation.constants.ts"
+      }
+    },
+    {
+      "id": "E101",
+      "type": "historical",
+      "summary": "touched 2x: src/contracts/events/registry.ts",
+      "detail": "src/contracts/commands/registry.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/contracts/events/registry.ts"
+      }
+    },
+    {
+      "id": "E102",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/core/models/currency.model.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/models/currency.model.ts"
+      }
+    },
+    {
+      "id": "E103",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/core/services/content-block.service.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E104",
+      "type": "historical",
+      "summary": "touched 1x: scripts/migrations/migrate-currency-blockchain-to-chainid.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts"
+      }
+    },
+    {
+      "id": "E105",
+      "type": "historical",
+      "summary": "touched 1x: scripts/rbac/add-listing-member.js",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "scripts/rbac/add-listing-member.js"
+      }
+    },
+    {
+      "id": "E106",
+      "type": "historical",
+      "summary": "touched 1x: src/common/commands/email/contracts.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/commands/email/contracts.ts"
+      }
+    },
+    {
+      "id": "E107",
+      "type": "historical",
+      "summary": "touched 1x: src/common/constants/block-registry.constants.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/constants/block-registry.constants.ts"
+      }
+    },
+    {
+      "id": "E108",
+      "type": "historical",
+      "summary": "touched 1x: src/common/constants/block-rules.constants.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/constants/block-rules.constants.ts"
+      }
+    },
+    {
+      "id": "E109",
+      "type": "historical",
+      "summary": "touched 1x: src/common/enum/block-context.enums.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/enum/block-context.enums.ts"
+      }
+    },
+    {
+      "id": "E110",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/blockchain/models/smart-contract.model.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/blockchain/models/smart-contract.model.ts"
+      }
+    },
+    {
+      "id": "E111",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/compliance/validation/compliance.validation.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/validation/compliance.validation.ts"
+      }
+    },
+    {
+      "id": "E112",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/graphql/content-block-permissions.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E113",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/graphql/content-block.resolvers.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/graphql/content-block.resolvers.ts"
+      }
+    },
+    {
+      "id": "E114",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/graphql/content-block.typeDefs.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/graphql/content-block.typeDefs.ts"
+      }
+    },
+    {
+      "id": "E115",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/models/content-block.model.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/models/content-block.model.ts"
+      }
+    },
+    {
+      "id": "E116",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/validations/listing.validation.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/validations/listing.validation.ts"
+      }
+    },
+    {
+      "id": "E117",
+      "type": "boundary",
+      "summary": "unresolved: src/common/commands/blockchain/contracts.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E118",
+      "type": "boundary",
+      "summary": "unresolved: src/common/constants/block-registry.constants.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E119",
+      "type": "boundary",
+      "summary": "unresolved: src/contracts/commands/registry.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E120",
+      "type": "boundary",
+      "summary": "unresolved: src/contracts/events/registry.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E121",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/blockchain/models/smart-contract.model.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E122",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/core/graphql/content-block.typeDefs.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    }
+  ]
+}

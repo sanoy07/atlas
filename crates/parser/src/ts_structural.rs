@@ -60,6 +60,9 @@ fn extract_structural_edges_with_aliases(
     // Pass 2: extract static calls and model references using the symbol map.
     edges.extend(extract_calls(source_file, content, &symbol_to_file));
 
+    // Pass 3: class … implements Interface (true implementor edges).
+    edges.extend(extract_implements(source_file, content, &symbol_to_file));
+
     edges
 }
 
@@ -78,29 +81,25 @@ fn extract_imports(
     let mut edges: Vec<StructuralEdge> = Vec::new();
     let mut symbol_to_file: HashMap<String, String> = HashMap::new();
 
-    for (line_idx, line) in content.lines().enumerate() {
-        let line_num = (line_idx + 1) as u32;
-        let trimmed = line.trim();
+    // Join multi-line imports so `import {\n  A,\n} from "./x.js"` registers A.
+    let mut buf = String::new();
+    let mut buf_start_line: u32 = 1;
+    let mut in_import = false;
 
-        // Skip comment lines.
-        if trimmed.starts_with("//") || trimmed.starts_with("*") || trimmed.starts_with("/*") {
-            continue;
+    let flush = |buf: &str,
+                 line_num: u32,
+                 edges: &mut Vec<StructuralEdge>,
+                 symbol_to_file: &mut HashMap<String, String>| {
+        let trimmed = buf.trim();
+        if trimmed.is_empty() {
+            return;
         }
-
-        // Named import:  import { A, B } from "./path.js"
-        // Side-effect:   import "./path.js"
-        // Type import:   import type { A } from "./path.js"  (still track — type deps matter)
-        if !trimmed.starts_with("import ") {
-            continue;
-        }
-
-        // Extract the from-path — handles both named (`from "..."`) and
-        // side-effect (`import "./path.js"`) forms.
         let Some(target_raw) = extract_from_path(trimmed)
             .or_else(|| extract_side_effect_path(trimmed))
-        else { continue };
+        else {
+            return;
+        };
 
-        // Resolve: relative → resolve from source dir; alias → resolve via tsconfig paths; else external.
         let resolved = if target_raw.starts_with('.') {
             resolve_import(source_file, &target_raw, known_files, repo_root)
         } else if let Some(alias_resolved) = resolve_alias(&target_raw, aliases, known_files) {
@@ -109,28 +108,60 @@ fn extract_imports(
             format!("UNRESOLVED:external:{}", target_raw)
         };
 
-        // Extract named symbols: "import { A, B } from ..." → ["A", "B"]
         let symbols = extract_named_symbols(trimmed);
-
-        // Register symbol → file mapping for Pass 2.
         for sym in &symbols {
             symbol_to_file.insert(sym.clone(), resolved.clone());
         }
 
-        let edge = StructuralEdge {
-            source_file:   source_file.to_string(),
+        edges.push(StructuralEdge {
+            source_file: source_file.to_string(),
             source_symbol: None,
-            target_file:   resolved,
+            target_file: resolved,
             target_symbol: None,
-            kind:          StructuralEdgeKind::Imports,
-            evidence:      StructuralEvidence {
+            kind: StructuralEdgeKind::Imports,
+            evidence: StructuralEvidence {
                 source_file: source_file.to_string(),
-                line:        Some(line_num),
-                snippet:     trimmed.to_string(),
-                extractor:   "typescript-es-import".to_string(),
+                line: Some(line_num),
+                snippet: trimmed.lines().next().unwrap_or(trimmed).to_string(),
+                extractor: "typescript-es-import".to_string(),
             },
-        };
-        edges.push(edge);
+        });
+    };
+
+    for (line_idx, line) in content.lines().enumerate() {
+        let line_num = (line_idx + 1) as u32;
+        let trimmed = line.trim();
+
+        if trimmed.starts_with("//") || trimmed.starts_with("*") || trimmed.starts_with("/*") {
+            continue;
+        }
+
+        if !in_import {
+            if !trimmed.starts_with("import ") {
+                continue;
+            }
+            in_import = true;
+            buf_start_line = line_num;
+            buf.clear();
+            buf.push_str(trimmed);
+        } else {
+            buf.push(' ');
+            buf.push_str(trimmed);
+        }
+
+        // Complete when we see from "…" / from '…' or a side-effect single-line import.
+        let complete = extract_from_path(&buf).is_some()
+            || (buf.starts_with("import ")
+                && extract_side_effect_path(buf.trim()).is_some()
+                && !buf.contains('{'));
+        if complete {
+            flush(&buf, buf_start_line, &mut edges, &mut symbol_to_file);
+            buf.clear();
+            in_import = false;
+        }
+    }
+    if in_import && !buf.is_empty() {
+        flush(&buf, buf_start_line, &mut edges, &mut symbol_to_file);
     }
 
     (edges, symbol_to_file)
@@ -201,7 +232,7 @@ fn extract_calls(
                 StructuralEdgeKind::ReferencesModel => "typescript-mongoose-ref",
                 StructuralEdgeKind::CallsStatic     => "typescript-static-call",
                 StructuralEdgeKind::CallsInstance   => "typescript-instance-call",
-                StructuralEdgeKind::Imports         => unreachable!(),
+                StructuralEdgeKind::Imports | StructuralEdgeKind::Implements => unreachable!(),
             };
 
             let target_symbol = format!("{}.{}", object_name, method_name);
@@ -230,6 +261,120 @@ fn extract_calls(
     });
 
     edges
+}
+
+// ─── Pass 3 — implements clauses ──────────────────────────────────────────────
+
+/// Extract `class Foo implements Bar, Baz` edges.
+///
+/// For each interface name after `implements`, emit an IMPLEMENTS edge:
+/// - source: this file (class)
+/// - target_file: resolved import of that interface name, or UNRESOLVED:type:Name
+/// - target_symbol: interface name
+fn extract_implements(
+    source_file: &str,
+    content: &str,
+    symbol_to_file: &HashMap<String, String>,
+) -> Vec<StructuralEdge> {
+    let mut edges: Vec<StructuralEdge> = Vec::new();
+    // Match class/export class lines that contain "implements"
+    for (line_idx, line) in content.lines().enumerate() {
+        let line_num = (line_idx + 1) as u32;
+        let trimmed = line.trim();
+        if trimmed.starts_with("//") || trimmed.starts_with("*") {
+            continue;
+        }
+        // Require a class keyword somewhere on the line (or previous continuation is rare)
+        if !trimmed.contains("implements") {
+            continue;
+        }
+        if !trimmed.contains("class ") && !trimmed.contains("class\t") {
+            // multi-line: `export class Foo\n  implements Bar` — handle by scanning
+            // when line starts with implements after a class was opened — skip for v1
+            // unless the line itself has class.
+            if !trimmed.starts_with("implements ") {
+                continue;
+            }
+        }
+
+        let Some(after) = trimmed.split("implements").nth(1) else {
+            continue;
+        };
+        // Strip trailing `{` and anything after
+        let list = after.split('{').next().unwrap_or(after);
+        // Also strip `extends X` if it appears after implements (unusual)
+        let list = list.split("extends").next().unwrap_or(list);
+
+        for raw in list.split(',') {
+            let name = raw
+                .trim()
+                .trim_end_matches('{')
+                .split_whitespace()
+                .next()
+                .unwrap_or("")
+                .trim();
+            // Interface names are TypeScript identifiers; drop generics Foo<Bar>
+            let name = name.split('<').next().unwrap_or(name).trim();
+            if name.is_empty() || !name.chars().next().map(|c| c.is_alphabetic() || c == '_').unwrap_or(false)
+            {
+                continue;
+            }
+            // Skip keywords accidentally captured
+            if matches!(name, "extends" | "implements" | "export" | "default") {
+                continue;
+            }
+
+            let target_file = symbol_to_file
+                .get(name)
+                .cloned()
+                .unwrap_or_else(|| format!("UNRESOLVED:type:{}", name));
+
+            // Prefer a class name as source_symbol when present
+            let source_symbol = extract_class_name(trimmed);
+
+            edges.push(StructuralEdge {
+                source_file: source_file.to_string(),
+                source_symbol: source_symbol.clone(),
+                target_file,
+                target_symbol: Some(name.to_string()),
+                kind: StructuralEdgeKind::Implements,
+                evidence: StructuralEvidence {
+                    source_file: source_file.to_string(),
+                    line: Some(line_num),
+                    snippet: trimmed.to_string(),
+                    extractor: "typescript-implements".to_string(),
+                },
+            });
+        }
+    }
+
+    let mut seen: HashSet<(String, Option<String>)> = HashSet::new();
+    edges.retain(|e| seen.insert((e.target_file.clone(), e.target_symbol.clone())));
+    edges
+}
+
+fn extract_class_name(line: &str) -> Option<String> {
+    // export class Foo implements …  /  class Foo {
+    let bytes = line.as_bytes();
+    let key = b"class ";
+    let Some(pos) = line.find("class ") else {
+        return None;
+    };
+    let mut i = pos + key.len();
+    // skip whitespace
+    while i < bytes.len() && bytes[i].is_ascii_whitespace() {
+        i += 1;
+    }
+    let start = i;
+    while i < bytes.len() && (bytes[i].is_ascii_alphanumeric() || bytes[i] == b'_' || bytes[i] == b'$')
+    {
+        i += 1;
+    }
+    if i > start {
+        Some(line[start..i].to_string())
+    } else {
+        None
+    }
 }
 
 // ─── Path alias resolution ────────────────────────────────────────────────────
@@ -509,20 +654,68 @@ fn collect_recursive(root: &Path, dir: &Path, out: &mut Vec<(String, PathBuf)>) 
 
 /// Extract all structural edges from all TypeScript files under `repo_root`.
 /// Returns (edges, file_count) where file_count is the number of `.ts` files processed.
+///
+/// Backwards-compat shim over `extract_all_with_outcomes`.  New code should
+/// prefer the variant that returns per-file outcomes so `analysis_status`
+/// can distinguish `analyzed` from `parser_failure`.
+/// Does this repository contain TypeScript sources worth extracting?
+///
+/// Mirrors `repo_has_rust_files` / `repo_has_python_files` so ingest can
+/// auto-detect TypeScript instead of requiring `--typescript`.  Reuses the
+/// same collector the extractor uses, so detection and extraction can never
+/// disagree about what counts as a TypeScript file.
+pub fn repo_has_ts_files(repo_root: &str) -> bool {
+    !collect_ts_files(repo_root).is_empty()
+}
+
 pub fn extract_all(repo_root: &str) -> (Vec<StructuralEdge>, usize) {
+    let (edges, outcomes) = extract_all_with_outcomes(repo_root);
+    (edges, outcomes.len())
+}
+
+/// Extract structural edges AND report per-file outcomes.
+///
+/// Every file the extractor attempts appears in the returned outcomes vec —
+/// with `Analyzed` on success (0 or more edges) or `ParserFailure { reason }`
+/// on read/UTF-8 failure.  Silent skipping (the old behaviour) collapsed
+/// these two into one indistinguishable "no rows" state; that gap is what
+/// this variant closes.
+pub fn extract_all_with_outcomes(
+    repo_root: &str,
+) -> (Vec<StructuralEdge>, Vec<crate::FileAnalysis>) {
     let files = collect_ts_files(repo_root);
     let known: HashSet<String> = files.iter().map(|(rel, _)| rel.clone()).collect();
     let aliases = load_path_aliases(repo_root);
     let mut all_edges = Vec::new();
+    let mut outcomes = Vec::with_capacity(files.len());
 
     for (rel_path, abs_path) in &files {
-        let Ok(content) = std::fs::read_to_string(abs_path) else { continue };
-        let edges = extract_structural_edges_with_aliases(rel_path, &content, &known, repo_root, &aliases);
-        all_edges.extend(edges);
+        match std::fs::read_to_string(abs_path) {
+            Ok(content) => {
+                let edges = extract_structural_edges_with_aliases(
+                    rel_path, &content, &known, repo_root, &aliases,
+                );
+                all_edges.extend(edges);
+                outcomes.push(crate::FileAnalysis {
+                    file:   rel_path.clone(),
+                    status: crate::FileAnalysisStatus::Analyzed,
+                });
+            }
+            Err(err) => {
+                let reason = if err.kind() == std::io::ErrorKind::InvalidData {
+                    "invalid utf-8".to_string()
+                } else {
+                    format!("read error: {}", err.kind())
+                };
+                outcomes.push(crate::FileAnalysis {
+                    file:   rel_path.clone(),
+                    status: crate::FileAnalysisStatus::ParserFailure { reason },
+                });
+            }
+        }
     }
 
-    let count = files.len();
-    (all_edges, count)
+    (all_edges, outcomes)
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -903,5 +1096,66 @@ mod tests {
                 && e.target_file == "src/modules/core/services/listing.service.ts"
         );
         assert!(imports_listing_service, "resolver must import listing.service.ts");
+    }
+
+    #[test]
+    fn class_implements_produces_implements_edge() {
+        let src = r#"
+import { IStorageProvider } from "./storage.interface.js";
+export class GoogleCloudStorageAdapter implements IStorageProvider {
+  upload() {}
+}
+"#;
+        let k = known(&[
+            "src/infrastructure/storage/storage.interface.ts",
+            "src/infrastructure/storage/google-cloud-storage.adapter.ts",
+        ]);
+        let edges = extract_structural_edges(
+            "src/infrastructure/storage/google-cloud-storage.adapter.ts",
+            src,
+            &k,
+            "/repo",
+        );
+        let implements: Vec<_> = edges
+            .iter()
+            .filter(|e| e.kind == StructuralEdgeKind::Implements)
+            .collect();
+        assert_eq!(implements.len(), 1, "expected one IMPLEMENTS edge: {:?}", implements);
+        assert_eq!(
+            implements[0].target_symbol.as_deref(),
+            Some("IStorageProvider")
+        );
+        assert!(
+            implements[0].target_file.contains("storage.interface"),
+            "interface should resolve: {}",
+            implements[0].target_file
+        );
+        assert_eq!(
+            implements[0].source_symbol.as_deref(),
+            Some("GoogleCloudStorageAdapter")
+        );
+        assert_eq!(implements[0].evidence.extractor, "typescript-implements");
+    }
+
+    #[test]
+    fn multiline_implements_without_class_keyword() {
+        let src = "  implements IPaymentProvider, IManualReviewable {\n";
+        let edges = extract_structural_edges(
+            "src/modules/payment/providers/manual.provider.ts",
+            src,
+            &known(&[]),
+            "/repo",
+        );
+        let implements: Vec<_> = edges
+            .iter()
+            .filter(|e| e.kind == StructuralEdgeKind::Implements)
+            .collect();
+        assert_eq!(implements.len(), 2, "two interfaces: {:?}", implements);
+        assert!(implements
+            .iter()
+            .any(|e| e.target_file == "UNRESOLVED:type:IPaymentProvider"));
+        assert!(implements
+            .iter()
+            .any(|e| e.target_symbol.as_deref() == Some("IManualReviewable")));
     }
 }

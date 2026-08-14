@@ -1,0 +1,16 @@
+RIPGREP symbol='TODO|FIXME|export'  (definition beats import)
+NOTE: TypeScript often imports `foo.js` while the source file is `foo.ts` — prefer [DEFINITION] paths ending in .ts/.tsx over .js import strings.
+
+IMPORTS / requires (23) — not definitions:
+  [IMPORT]     src/features/users/index.ts:8:export { useUserPlan } from "./hooks/useUserPlan";
+  [IMPORT]     src/features/users/index.ts:9:export type { AdminUserPlanDetail, ChainQuotaDetail } from "./hooks/useUserPlan";
+  [IMPORT]     src/features/users/index.ts:19:export * from "./components/UserListItem";
+  [IMPORT]     src/features/users/index.ts:20:export * from "./components/StatusConfirmationDialog";
+  [IMPORT]     src/features/users/index.ts:21:export { UserPlanCard } from "./components/UserPlanCard";
+  [IMPORT]     src/features/kyc/enums.ts:5: * When codegen generates these from the schema, re-export from types.ts instead.
+  [IMPORT]     src/features/kyc/types.ts:5: * Once codegen types are available, re-export from @/graphql/codegen/generated.
+  [IMPORT]     src/features/tokens/types.ts:14:// Re-export enums and types from codegen for easy access within the feature
+  [IMPORT]     src/features/kyc/index.ts:9:export { useVerifications, useOverrideKycStatus } from "./hooks/useVerifications";
+  [IMPORT]     src/features/kyc/index.ts:23:export { KycStatus, OrgVerificationStatus, EntityType } from "./enums";
+  [IMPORT]     src/features/identity/auth/index.ts:1:export * from "./validation/signIn.schema";
+  [IMPORT]     src/

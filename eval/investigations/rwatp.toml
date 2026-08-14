@@ -1,0 +1,91 @@
+# Atlas investigation benchmarks — RWATP core (rwatp-core)
+# Repository: git@github-vesta:wombytech/rwatp-core.git
+#
+# Each [[case]] runs `atlas investigate <anchors>` and scores the result.
+# expected_center / supporting_evidence / false_positive_alert are matched
+# as *substrings* of candidate file paths.
+#
+# HARNESS LIMITATION: `atlas eval` calls `investigate(&anchors, …)` directly —
+# the raw anchor path. It never routes through `options_from_question` /
+# `build_evidence_packet`, so natural-language *question* mode cannot be
+# expressed here: a sentence passed as a single anchor is matched literally and
+# hits nothing. The question-mode regression that motivated this corpus is
+# recorded in docs/decisions/2026-08-10-nl-question-mode-seed-order-collapse.md
+# and must be checked by running the CLI directly until the harness grows a
+# question-mode case kind.
+
+# --- Support ticket subsystem -----------------------------------------------
+
+[[case]]
+id          = "rwatp-support-tickets-anchors"
+description = "Anchor terms for the support ticket subsystem"
+repo        = "/home/sanoy/Vesta/rwatp-core"
+db          = "/home/sanoy/Vesta/rwatp-core/atlas.db"
+anchors     = ["support", "ticket"]
+expected_center      = [
+  "src/modules/support/services/support-ticket.service.ts",
+  "src/modules/support/models/support-ticket.model.ts",
+]
+supporting_evidence  = [
+  "src/modules/support/services/ticket-transitions.ts",
+  "tests/support/test-support-tickets.ts",
+]
+false_positive_alert = []
+
+# --- RBAC / permissions -----------------------------------------------------
+# permissions.registry.ts and roles.registry.ts co-change 15 times and are
+# import-linked; a permissions question should centre on the registries.
+
+[[case]]
+id          = "rwatp-rbac-permissions"
+description = "Where RBAC permissions and roles are declared"
+repo        = "/home/sanoy/Vesta/rwatp-core"
+db          = "/home/sanoy/Vesta/rwatp-core/atlas.db"
+anchors     = ["permissions", "registry"]
+expected_center      = [
+  "src/common/rbac/permissions.registry.ts",
+  "src/common/rbac/roles.registry.ts",
+]
+supporting_evidence  = [
+  "src/common/graphql/shield/permissions.ts",
+  "src/modules/core/graphql/permissions.ts",
+]
+false_positive_alert = []
+
+# --- KYC compliance flow ----------------------------------------------------
+# Delivered by PR #165 (operator-configurable KYC flow engine) with six
+# dedicated test files under tests/compliance/.
+
+[[case]]
+id          = "rwatp-kyc-flow-engine"
+description = "Operator-configurable KYC flow engine"
+repo        = "/home/sanoy/Vesta/rwatp-core"
+db          = "/home/sanoy/Vesta/rwatp-core/atlas.db"
+anchors     = ["kyc", "flow"]
+expected_center      = [
+  "src/modules/compliance/services",
+  "src/modules/compliance/models/kyc-profile.model.ts",
+]
+supporting_evidence  = [
+  "tests/compliance/test-issue-164-kyc-flow-engine.ts",
+]
+false_positive_alert = []
+
+# --- Listings media library -------------------------------------------------
+# Delivered by PR #166/#167 (ListingAsset media library, presigned GCS uploads).
+
+[[case]]
+id          = "rwatp-listing-assets"
+description = "ListingAsset media library and presigned upload path"
+repo        = "/home/sanoy/Vesta/rwatp-core"
+db          = "/home/sanoy/Vesta/rwatp-core/atlas.db"
+anchors     = ["listing", "asset"]
+expected_center      = [
+  "src/modules/core/services/listing.service.ts",
+  "src/modules/core/models/listing.model.ts",
+]
+supporting_evidence  = [
+  "src/infrastructure/storage/storage.factory.ts",
+  "tests/core/test-issue-166-listing-assets.ts",
+]
+false_positive_alert = []

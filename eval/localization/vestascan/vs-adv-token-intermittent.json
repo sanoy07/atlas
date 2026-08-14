@@ -1,0 +1,27 @@
+{
+  "id": "vs-adv-token-intermittent",
+  "repository": "vestascan-api",
+  "workflow": "bug_localization",
+  "cluster": "adversarial",
+  "question": "I deployed a token successfully, but requests using that token intermittently fail. Where would you investigate first, and why?",
+  "notes": "Adversarial: deployment success + later use failure → token service, verification, auth, association — not only deployment.service.",
+  "gold_files": [
+    "src/modules/core/services/token.service.ts",
+    "src/modules/core/services/token-verification.service.ts",
+    "src/modules/core/models/token.model.ts",
+    "src/modules/core/models/token-verification.model.ts",
+    "src/modules/core/graphql/permissions.ts"
+  ],
+  "gold_optional": [
+    "src/modules/core/services/deployment.service.ts",
+    "src/modules/core/models/token-association.model.ts",
+    "src/lib/auth.ts",
+    "src/modules/identity/auth"
+  ],
+  "hard_negatives": [
+    "src/modules/core/services/data-room-file.service.ts",
+    "src/infrastructure/secret-manager/google-secret-manager.adapter.ts"
+  ],
+  "adversarial": true,
+  "counter_evidence_prompt": "What evidence would prove that your answer is wrong?"
+}

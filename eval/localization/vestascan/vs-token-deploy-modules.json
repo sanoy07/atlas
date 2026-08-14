@@ -1,0 +1,24 @@
+{
+  "id": "vs-token-deploy-modules",
+  "repository": "vestascan-api",
+  "workflow": "system_flow",
+  "cluster": "token_deployment",
+  "question": "Which modules/services are involved in token deployment, and what depends on them?",
+  "notes": "Neighborhood of deployment: token, graphql, verification, marketing loaders optional.",
+  "gold_files": [
+    "src/modules/core/services/deployment.service.ts",
+    "src/modules/core/services/token.service.ts",
+    "src/modules/core/models/token.model.ts",
+    "src/modules/core/graphql/resolvers.ts",
+    "src/modules/core/services/token-verification.service.ts"
+  ],
+  "gold_optional": [
+    "src/modules/marketing/loaders/tokens-by-deployer.loader.ts",
+    "src/modules/marketing/loaders/deploy-count.loader.ts",
+    "src/modules/core/models/token-association.model.ts"
+  ],
+  "hard_negatives": [
+    "src/modules/core/services/data-room-file.service.ts",
+    "src/infrastructure/secret-manager/secret-manager.factory.ts"
+  ]
+}

@@ -1,0 +1,17 @@
+RIPGREP symbol='TODO|FIXME|export'  (definition beats import)
+NOTE: TypeScript often imports `foo.js` while the source file is `foo.ts` — prefer [DEFINITION] paths ending in .ts/.tsx over .js import strings.
+
+IMPORTS / requires (145) — not definitions:
+  [IMPORT]     src/common/errors/index.ts:1:export { ErrorCode, ERROR_MESSAGES, ERROR_HTTP_STATUS } from "./errorCodes.js";
+  [IMPORT]     src/common/errors/index.ts:2:export { createError } from "./createError.js";
+  [IMPORT]     src/common/errors/index.ts:3:export type { CustomError } from "./createError.js";
+  [IMPORT]     src/contracts/commands/sync-kyc-registry/index.ts:1:export * from "./constants.js";
+  [IMPORT]     src/contracts/commands/sync-kyc-registry/index.ts:2:export * from "./contracts.js";
+  [IMPORT]     src/contracts/events/user/index.ts:1:export * from "./constants.js";
+  [IMPORT]     src/contracts/events/user/index.ts:2:export * from "./contracts.js";
+  [IMPORT]     src/common/validations/blocks/index.ts:5:export * from "./hero-media.validation.js";
+  [IMPORT]     src/common/validations/blocks/index.ts:6:export * from "./overview.validation.js";
+  [IMPORT]     src/common/validations/blocks/index.ts:7:export * from "./key-specifications.validation.js";
+  [IMPORT]     src/common/validations/blocks/index.ts:8:export * from "./deal-structure.validation.js";
+  [IMPORT]     src/common/validations/blocks/index.ts:9:export * from "./documents.validation.js";
+  [IMPORT]     src/common/validations/blocks/index.ts:10:ex

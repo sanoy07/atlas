@@ -1,0 +1,102 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  permission check
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · src/components/form/input
+  · src/features/compliance
+  · src/components/rbac
+  · src/components/form/form-elements
+  · app
+  · components
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  0.91  implementation  [file] src/components/form/input/Checkbox.tsx — candidate score≈0.90
+  #2  0.86  implementation  [file] src/features/compliance/permissions.ts — candidate score≈0.90
+  #3  0.76  implementation  [file] src/components/rbac/PermissionGuard.tsx — candidate score≈0.90
+  #4  0.76  implementation  [file] src/components/rbac/ResourcePermissionGuard.tsx — candidate score≈0.90
+  #5  0.76  implementation  [file] src/components/form/form-elements/CheckboxComponents.tsx — candidate score≈0.90
+  #6  0.76  implementation  [file] src/app/(dashboard)/iam/permissions/page.tsx — candidate score≈0.90
+  #7  0.65  implementation  [file] src/features/dashboard/permissions.ts — candidate score≈0.90
+  #8  0.65  implementation  [file] src/features/documents/permissions.ts — candidate score≈0.90
+  #9  0.65  implementation  [file] src/features/enquiries/permissions.ts — candidate score≈0.90
+  #10 0.58  implementation  [file] src/features/iam/components/PermissionCard.tsx — candidate score≈0.90
+  #11 0.58  implementation  [file] src/features/iam/components/PermissionSelector.tsx — candidate score≈0.90
+  #12 0.58  implementation  [file] src/features/iam/hooks/usePermissions.ts — candidate score≈0.90
+  … 12 more
+
+SUPERSESSION  (not mere recency)
+  5816049fa5c9c1dec9c790b31e06dfc3f14cd7d7 → fd9c664c448ff2ce0dc4d2376581c273f80100d4  (implementation_supersedes_implementation)
+  c78020dbdfe81113773b2419e02667ec581fadb0 → 2226fec13aa0b4b14f7249c70a2531a23c865f9c  (implementation_supersedes_implementation)
+  c78020dbdfe81113773b2419e02667ec581fadb0 → fd9c664c448ff2ce0dc4d2376581c273f80100d4  (implementation_supersedes_implementation)
+  c78020dbdfe81113773b2419e02667ec581fadb0 → 3dba50cc762ef9060f34f4d1b9f98dcb4ade8f51  (implementation_supersedes_implementation)
+  c78020dbdfe81113773b2419e02667ec581fadb0 → 2320a75c310791bf267683933ed0dc211826a445  (implementation_supersedes_implementation)
+  c78020dbdfe81113773b2419e02667ec581fadb0 → 88c90721c4c6a0d19d40cc3c3df0b20fe204723c  (implementation_supersedes_implementation)
+  … 14 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/components/form/input/Checkbox.tsx` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/components/form/input/Checkbox.tsx — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1767859583  implementation  5816049fa5c9c1dec9c790b31e06dfc3f14cd7d7  5816049 — initial Commit (src/components/form/form-elements/CheckboxComponents.tsx)
+  1768461420  implementation  c78020dbdfe81113773b2419e02667ec581fadb0  c78020d — feat(iam): implement RBAC management for global roles and permissions (#2) (#3) (src/app/(dashboard)/iam/permissions/page.tsx)
+  1769154698  implementation  2226fec13aa0b4b14f7249c70a2531a23c865f9c  2226fec — refactor: align folder structure with backend, fix lints, upgrade day-picker (#… (src/app/(dashboard)/iam/permissions/page.tsx)
+  1770299254  implementation  fd9c664c448ff2ce0dc4d2376581c273f80100d4  fd9c664 — Feat/frontend rbac infrastructure (#24) (src/components/rbac/PermissionGuard.tsx)
+  1770302761  implementation  3dba50cc762ef9060f34f4d1b9f98dcb4ade8f51  3dba50c — Refactor/iam gql integration (#26) (src/app/(dashboard)/iam/permissions/page.tsx)
+  1785608917  implementation  2320a75c310791bf267683933ed0dc211826a445  2320a75 — feat(compliance): build the KYC admin area on the GraphQL API (#58) (src/features/compliance/permissions.ts)
+  1785799326  implementation  88c90721c4c6a0d19d40cc3c3df0b20fe204723c  88c9072 — feat(documents): admin UI for document signing (authoring + listing/share-class… (src/features/documents/permissions.ts)
+  1785952135  implementation  4a49ffed348294a9bf23db1c79ed220296170fbd  4a49ffe — feat(dashboard): wire the admin dashboard to real data (#73) (src/features/dashboard/permissions.ts)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/components/form/input/Checkbox.tsx
+  · src/features/compliance/permissions.ts
+  · src/components/rbac/PermissionGuard.tsx
+  · src/components/rbac/ResourcePermissionGuard.tsx
+  · src/components/form/form-elements/CheckboxComponents.tsx
+  · src/app/(dashboard)/iam/permissions/page.tsx
+  · src/features/dashboard/permissions.ts
+  · src/features/documents/permissions.ts
+  · src/features/enquiries/permissions.ts
+  · src/features/iam/components/PermissionCard.tsx
+  · src/features/iam/components/PermissionSelector.tsx
+  · src/features/iam/hooks/usePermissions.ts
+  · src/features/identity/iam/index.ts
+  · src/components/ui/badge.tsx
+  · src/components/ui/button.tsx
+  · src/components/layout/Page.tsx
+
+WHAT ATLAS KNOWS
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 8 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=20 top=src/app/(dashboard)/iam/permissions/page.tsx
+  · c5.1e_concept_fragments domain=Generic flow=false n=11
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

@@ -1,0 +1,100 @@
+
+======================================================================
+J1  [jj]
+What are the major production subsystems of this repository, and where should I start reading?
+======================================================================
+  A/deterministic: OK 1.7s (6940 chars)
+  B/agent:         OK 52.5s steps=2 calls=1 [atlas_map]
+
+======================================================================
+J2  [jj]
+What is the main architecture of this system? Identify the important layers and components and how they relate.
+======================================================================
+  A/deterministic: OK 1.5s (9216 chars)
+  B/agent:         OK 177.8s steps=3 calls=2 [atlas_map,atlas_focus]
+
+======================================================================
+J3  [jj]
+Two jj commands running at the same time occasionally leave the repository reporting a different history than expected afterwards. Where should I look?
+======================================================================
+  A/deterministic: OK 2.2s (7879 chars)
+  B/agent:         OK 160.8s steps=4 calls=3 [atlas_map,atlas_focus,read_file]
+
+======================================================================
+J4  [jj]
+Walk me through the end-to-end flow of creating a new commit in jj, from the CLI entry point through to storage.
+======================================================================
+  A/deterministic: OK 2.0s (7827 chars)
+  B/agent:         OK 204.8s steps=4 calls=3 [atlas_map,atlas_search,atlas_focus]
+
+======================================================================
+J5  [jj]
+This repository contains a design document for the jj run command. What would I need to change to bring the implementation in line with that document?
+======================================================================
+  A/deterministic: OK 2.0s (8088 chars)
+  B/agent:         OK 144.1s steps=3 calls=2 [atlas_search,read_file]
+
+======================================================================
+J6  [jj]
+If I modify lib/src/backend.rs, what other production components should I investigate and why?
+======================================================================
+  A/deterministic: OK 1.7s (7761 chars)
+  B/agent:         OK 199.9s steps=4 calls=3 [atlas_map,atlas_search,atlas_impact]
+
+======================================================================
+J7  [jj]
+Which component is responsible for resolving conflicts when a user runs jj resolve?
+======================================================================
+  A/deterministic: OK 1.8s (8557 chars)
+  B/agent:         OK 133.0s steps=4 calls=3 [atlas_map,atlas_search,atlas_focus]
+
+======================================================================
+G1  [gigatoken]
+What are the major production subsystems of this repository, and where should I start reading?
+======================================================================
+  A/deterministic: OK 0.1s (2511 chars)
+  B/agent:         OK 54.5s steps=2 calls=1 [atlas_map]
+
+======================================================================
+G2  [gigatoken]
+What is the main architecture of this system? Identify the important layers and components and how they relate.
+======================================================================
+  A/deterministic: OK 0.1s (4608 chars)
+  B/agent:         OK 33.5s steps=2 calls=1 [atlas_map]
+
+======================================================================
+G3  [gigatoken]
+Some users report that tokenizing the same text gives different results on their machine than on ours, and it seems to depend on their CPU. Where should I look?
+======================================================================
+  A/deterministic: OK 0.1s (6947 chars)
+  B/agent:         OK 52.5s steps=3 calls=2 [atlas_search,atlas_focus]
+
+======================================================================
+G4  [gigatoken]
+Walk me through the end-to-end flow of encoding a batch of documents into tokens, starting from the Python API.
+======================================================================
+  A/deterministic: OK 0.1s (6528 chars)
+  B/agent:         OK 227.8s steps=5 calls=4 [atlas_map,atlas_focus,atlas_search,atlas_search]
+
+======================================================================
+G5  [gigatoken]
+A recent change made from_tiktoken take the pretokenizer and special tokens from the caller instead of inferring them. What would I need to change to implement that?
+======================================================================
+  A/deterministic: OK 0.1s (8107 chars)
+  B/agent:         OK 81.3s steps=3 calls=2 [atlas_search,atlas_focus]
+
+======================================================================
+G6  [gigatoken]
+If I modify src/bpe/pretoken_cache.rs, what other production components should I investigate and why?
+======================================================================
+  A/deterministic: OK 0.1s (7712 chars)
+  B/agent:         OK 36.0s steps=2 calls=1 [atlas_impact]
+
+======================================================================
+G7  [gigatoken]
+Which component causes the slow start-up time when loading a tokenizer from HuggingFace?
+======================================================================
+  A/deterministic: OK 0.1s (7879 chars)
+  B/agent:         OK 74.8s steps=4 calls=3 [atlas_map,atlas_search,atlas_focus]
+
+wrote raw_results.json and transcripts.md to /home/sanoy/projects/atlas/eval/blind

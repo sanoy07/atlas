@@ -1,0 +1,197 @@
+{
+  "repo_path": "/home/sanoy/Vesta/rwatp-core",
+  "capabilities": [
+    {
+      "name": "caching",
+      "layer": "infrastructure",
+      "infrastructure": [
+        "src/infrastructure/caching/cache-keys.ts",
+        "src/infrastructure/caching/cache.factory.ts",
+        "src/infrastructure/caching/cache.interface.ts",
+        "src/infrastructure/caching/cache.manager.ts",
+        "src/infrastructure/caching/decorators/cache-evict.decorator.ts",
+        "src/infrastructure/caching/decorators/cacheable.decorator.ts",
+        "src/infrastructure/caching/implementations/memory-cache.service.ts",
+        "src/infrastructure/caching/implementations/redis-cache.service.ts",
+        "src/infrastructure/caching/index.ts"
+      ],
+      "product_surfaces": [
+        "src/modules/core/services/analytics/analytics.service.ts",
+        "src/modules/identity/models/user.model.ts",
+        "src/modules/identity/services/role.service.ts",
+        "src/modules/support/services/support-faq.service.ts"
+      ],
+      "evidence_notes": [
+        "Product surfaces = non-test files with OBSERVED imports into `src/infrastructure/caching`"
+      ]
+    },
+    {
+      "name": "logger",
+      "layer": "infrastructure",
+      "infrastructure": [
+        "src/infrastructure/logger/console.adapter.ts",
+        "src/infrastructure/logger/google-cloud-logging.adapter.ts",
+        "src/infrastructure/logger/index.ts",
+        "src/infrastructure/logger/logger.factory.ts",
+        "src/infrastructure/logger/logger.interface.ts",
+        "src/infrastructure/logger/types.ts"
+      ],
+      "product_surfaces": [
+        "scripts/migrations/migrate-currency-blockchain-to-chainid.ts",
+        "scripts/seeders/seed-kyc-flows.ts",
+        "scripts/seeders/seed-native-currencies.ts",
+        "scripts/seeders/seed-permissions.ts",
+        "src/common/utils/code-generator.util.ts",
+        "src/config/cors.ts",
+        "src/config/default.ts",
+        "src/graphql/context.ts",
+        "src/handlers/delivery-callbacks.handler.ts",
+        "src/handlers/expire-orders.handler.ts",
+        "src/handlers/refresh-fx.handler.ts",
+        "src/handlers/sweep-listing-assets.handler.ts",
+        "src/handlers/sync-kyc-registry.handler.ts",
+        "src/lib/commands/handler.ts",
+        "src/lib/commands/publisher.ts",
+        "src/lib/events/publisher.ts",
+        "src/lib/events/subscriber.ts",
+        "src/middleware/command-context.middleware.ts",
+        "src/middleware/pubsub-auth.middleware.ts",
+        "src/modules/blockchain/services/blockchain-config.service.ts",
+        "src/modules/blockchain/services/blockchain-service.client.ts",
+        "src/modules/blockchain/services/registry-treasury.service.ts",
+        "src/modules/blockchain/services/rpc-client.service.ts",
+        "src/modules/blockchain/services/smart-contract.service.ts",
+        "src/modules/compliance/providers/kyc.provider.factory.ts",
+        "src/modules/compliance/providers/sumsub.provider.ts",
+        "src/modules/compliance/services/kyc-registry-sync.service.ts",
+        "src/modules/core/graphql/listing-asset.resolvers.ts",
+        "src/modules/core/services/analytics/analytics.service.ts",
+        "src/modules/core/services/content-block.service.ts",
+        "src/modules/core/services/currency-conversion.service.ts",
+        "src/modules/core/services/currency.service.ts",
+        "src/modules/core/services/listing.service.ts",
+        "src/modules/core/services/order-fulfillment.service.ts",
+        "src/modules/core/services/order.service.ts",
+        "src/modules/core/services/payment-channel-eligibility.service.ts",
+        "src/modules/core/services/pricing-engine.service.ts",
+        "src/modules/core/services/pricing-rule.service.ts",
+        "src/modules/core/services/settlement.service.ts",
+        "src/modules/core/services/share-class.service.ts",
+        "src/modules/core/services/supply-ledger.service.ts",
+        "src/modules/core/services/wallet.service.ts",
+        "src/modules/core/settlement/sources/primary-subscription.source.ts",
+        "src/modules/identity/auth/auth-resolver.ts",
+        "src/modules/identity/auth/investor/SiwePrivyAuthProvider.ts",
+        "src/modules/identity/auth/investor/privyIdentity.ts",
+        "src/modules/identity/services/permission.service.ts",
+        "src/modules/identity/services/resource-member.service.ts",
+        "src/modules/identity/services/role.service.ts",
+        "src/modules/identity/services/service-account.service.ts",
+        "src/modules/identity/services/user.service.ts",
+        "src/modules/payment/providers/manual.provider.ts",
+        "src/modules/payment/providers/payment.provider.factory.ts",
+        "src/modules/payment/services/bank-account.service.ts",
+        "src/modules/payment/services/manual-payment.service.ts",
+        "src/modules/payment/services/payment-channel.service.ts",
+        "src/modules/payment/services/payment-settlement.service.ts",
+        "src/modules/payment/services/payment.service.ts",
+        "src/modules/signing/providers/docusign.provider.ts",
+        "src/modules/signing/providers/signing.provider.factory.ts",
+        "src/modules/signing/services/signing.service.ts",
+        "src/routes/auth.router.ts",
+        "src/routes/commands.ts",
+        "src/server.ts",
+        "src/webhooks/handlers/alchemy-gas-policy.webhook.handler.ts",
+        "src/webhooks/handlers/kyc.webhook.handler.ts",
+        "src/webhooks/handlers/payment.webhook.handler.ts",
+        "src/webhooks/handlers/signing.webhook.handler.ts",
+        "src/webhooks/middleware/webhook-logger.ts"
+      ],
+      "evidence_notes": [
+        "Product surfaces = non-test files with OBSERVED imports into `src/infrastructure/logger`"
+      ]
+    },
+    {
+      "name": "messaging",
+      "layer": "infrastructure",
+      "infrastructure": [
+        "src/infrastructure/messaging/pubsub/connection.ts",
+        "src/infrastructure/messaging/pubsub/google-pubsub.adapter.ts",
+        "src/infrastructure/messaging/pubsub/index.ts",
+        "src/infrastructure/messaging/pubsub/pubsub.factory.ts",
+        "src/infrastructure/messaging/pubsub/pubsub.interface.ts",
+        "src/infrastructure/messaging/redis/connection.ts",
+        "src/infrastructure/messaging/redis/index.ts"
+      ],
+      "product_surfaces": [
+        "src/lib/commands/publisher.ts",
+        "src/server.ts"
+      ],
+      "evidence_notes": [
+        "Product surfaces = non-test files with OBSERVED imports into `src/infrastructure/messaging`"
+      ]
+    },
+    {
+      "name": "rate-limiting",
+      "layer": "infrastructure",
+      "infrastructure": [
+        "src/infrastructure/rate-limiting/implementations/memory-rate-limiter.ts",
+        "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts",
+        "src/infrastructure/rate-limiting/index.ts",
+        "src/infrastructure/rate-limiting/key-builder.ts",
+        "src/infrastructure/rate-limiting/plugins/graphql-rate-limit.plugin.ts",
+        "src/infrastructure/rate-limiting/rate-limiter.factory.ts",
+        "src/infrastructure/rate-limiting/rate-limiter.interface.ts",
+        "src/infrastructure/rate-limiting/registry/base-limits.ts",
+        "src/infrastructure/rate-limiting/registry/field-limits.ts",
+        "src/infrastructure/rate-limiting/types.ts",
+        "src/infrastructure/rate-limiting/utils/message-formatter.ts",
+        "src/infrastructure/rate-limiting/utils/response-headers.ts"
+      ],
+      "product_surfaces": [
+        "src/graphql/index.ts"
+      ],
+      "evidence_notes": [
+        "Product surfaces = non-test files with OBSERVED imports into `src/infrastructure/rate-limiting`"
+      ]
+    },
+    {
+      "name": "storage",
+      "layer": "infrastructure",
+      "infrastructure": [
+        "src/infrastructure/storage/google-cloud-storage.adapter.ts",
+        "src/infrastructure/storage/index.ts",
+        "src/infrastructure/storage/signed-url-cache.ts",
+        "src/infrastructure/storage/storage.factory.ts",
+        "src/infrastructure/storage/storage.interface.ts"
+      ],
+      "product_surfaces": [
+        "src/modules/compliance/providers/internal.provider.ts",
+        "src/modules/core/graphql/listing-asset.resolvers.ts",
+        "src/modules/core/services/global-settings.service.ts",
+        "src/modules/core/services/listing-asset.service.ts",
+        "src/modules/payment/graphql/payment.resolvers.ts",
+        "src/modules/payment/services/manual-payment.service.ts",
+        "src/modules/signing/services/signable-document.service.ts",
+        "src/modules/signing/services/signing.service.ts",
+        "src/modules/support/services/support-attachment.service.ts"
+      ],
+      "evidence_notes": [
+        "Product surfaces = non-test files with OBSERVED imports into `src/infrastructure/storage`",
+        "KYC/compliance storage consumer: src/modules/compliance/providers/internal.provider.ts",
+        "data-room / listing assets: src/modules/core/graphql/listing-asset.resolvers.ts",
+        "data-room / listing assets: src/modules/core/services/listing-asset.service.ts",
+        "payment proofs/media: src/modules/payment/graphql/payment.resolvers.ts",
+        "payment proofs/media: src/modules/payment/services/manual-payment.service.ts",
+        "signing documents: src/modules/signing/services/signable-document.service.ts",
+        "signing documents: src/modules/signing/services/signing.service.ts",
+        "support attachments: src/modules/support/services/support-attachment.service.ts"
+      ]
+    }
+  ],
+  "limitations": [
+    "Capabilities are DERIVED from import fan-in to infrastructure path prefixes.",
+    "Missing edges ⇒ missing surfaces. Re-run `atlas ingest . --typescript` after large refactors.",
+    "Not a business-domain ontology — path-derived only."
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "id": "rwatp-order-error-clue",
+  "repository": "rwatp-core",
+  "workflow": "bug_localization",
+  "question": "Users are seeing an error around order processing. We don't know exactly where it originates.",
+  "notes": "Error-style minimal input. Must converge on order domain, not blockchain hub noise. Hard negatives = high-centrality non-order systems.",
+  "gold_files": [
+    "src/modules/core/services/order.service.ts",
+    "src/modules/core/models/order.model.ts",
+    "src/modules/core/graphql/order.resolvers.ts",
+    "src/modules/core/validations/order.validation.ts",
+    "src/common/errors/errorCodes.ts",
+    "src/common/errors/createError.ts"
+  ],
+  "gold_optional": [
+    "src/modules/core/services/order-history.service.ts",
+    "src/modules/payment/services/payment.service.ts",
+    "tests/core/test-order-lifecycle.ts"
+  ],
+  "hard_negatives": [
+    "src/modules/blockchain/models/blockchain.model.ts",
+    "src/infrastructure/image-processor/index.ts",
+    "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts"
+  ],
+  "metrics": { "top_k": [1, 5, 10] }
+}

@@ -5,12 +5,13 @@ use atlas_storage::Store;
 use serde_json;
 
 pub fn run(anchors: &[String], json: bool) -> Result<()> {
-    let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
+    let cleaned = validate_anchors(anchors)?;
+
+    let db_path = super::resolve_db_path();
     let store   = Store::open(&db_path)?;
 
     let repo = super::discover_repo_root()?;
-    let anchor_strs: Vec<&str> = anchors.iter().map(String::as_str).collect();
-    let doc = search(&anchor_strs, &repo, &store)?;
+    let doc = search(&cleaned, &repo, &store)?;
 
     if json {
         println!("{}", serde_json::to_string_pretty(&doc)?);
@@ -18,6 +19,61 @@ pub fn run(anchors: &[String], json: bool) -> Result<()> {
         render(&doc);
     }
     Ok(())
+}
+
+/// Reject empty or whitespace-only anchors before touching the DB.
+///
+/// Previously an empty anchor matched every substring in every file path
+/// and returned the entire repo (~77KB on RWATP).  A blank input is never
+/// a meaningful query.
+fn validate_anchors(anchors: &[String]) -> Result<Vec<&str>> {
+    let cleaned: Vec<&str> = anchors
+        .iter()
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
+        .collect();
+    if cleaned.is_empty() {
+        anyhow::bail!(
+            "at least one non-empty anchor is required; got {} argument(s), all empty or whitespace",
+            anchors.len()
+        );
+    }
+    Ok(cleaned)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_anchors;
+
+    #[test]
+    fn empty_anchor_is_rejected() {
+        let err = validate_anchors(&["".to_string()]).unwrap_err();
+        assert!(err.to_string().contains("non-empty anchor"), "{}", err);
+    }
+
+    #[test]
+    fn whitespace_only_anchor_is_rejected() {
+        let err = validate_anchors(&["   ".to_string(), "\t".to_string()]).unwrap_err();
+        assert!(err.to_string().contains("non-empty anchor"), "{}", err);
+    }
+
+    #[test]
+    fn mixed_anchors_are_trimmed_and_kept() {
+        let anchors = vec![
+            "  order  ".to_string(),
+            "".to_string(),
+            "settlement".to_string(),
+        ];
+        let out = validate_anchors(&anchors).unwrap();
+        assert_eq!(out, vec!["order", "settlement"]);
+    }
+
+    #[test]
+    fn nonempty_anchor_passes() {
+        let anchors = vec!["order".to_string()];
+        let out = validate_anchors(&anchors).unwrap();
+        assert_eq!(out, vec!["order"]);
+    }
 }
 
 fn render(doc: &SearchDocument) {

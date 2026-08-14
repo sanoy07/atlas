@@ -1,0 +1,27 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+note: no modules under `src/modules`; auto-resolved subject `src` (same heuristic as `atlas map`).
+MODULES  (subject: src)
+  discovery: DETERMINISTIC: immediate child directories of `src` that appear in the `files` table AND exist as directories on disk (ghost/historical paths dropped)
+  total: 13 module directories
+
+  module            files  commits      out       in  tests  subdirs
+  app                 104       42      838        3     no  (auth),(dashboard),(full-width)
+  assets                4        1        0        0     no  icons
+  components          109       20      262      730    yes  analytics,auth,branding,common,form,header,kyc,layout,rbac,settings,test,ui,upload
+  context               4        6        4       12     no  -
+  features            426       41     2013      832     no  admin,auth,compliance,content-blocks,currencies,dashboard,documents,enquiries,iam,identity,integrations,kyc,kyc-flows,listings,networks,orders,payment-channels,payments,pricing-rules,registry,settings,share-classes,shared,support,transaction,users,wallet
+  graphql              50       30       13        4     no  client,operations,provider
+  hooks                 6        5        7       64     no  -
+  icons                58        1       53        5     no  -
+  layout                5       20       27        3     no  -
+  lib                   5       11       10       74     no  -
+  store                 4        5        1        1     no  selectors
+  types                 1        1        0        0     no  -
+  utils                11        6        3      120     no  -
+
+PROVENANCE
+  file_count / subdirectories: DETERMINISTIC from `files` table
+  observed_commit_count:       DETERMINISTIC commits ⨝ commit_files (prefix)
+  edge counts:                 DETERMINISTIC structural_edges (prefix)
+  has_associated_tests:        DERIVED — see each module's test_association_rule
+  Language: module names are path segments — not business-domain labels

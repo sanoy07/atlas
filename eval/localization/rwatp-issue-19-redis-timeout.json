@@ -1,0 +1,35 @@
+{
+  "id": "rwatp-issue-19-redis-timeout",
+  "repository": "rwatp-core",
+  "workflow": "issue_implementation",
+  "issue": 19,
+  "question": "What needs to change to implement Configure Redis Command Timeout to Prevent Grey Failures (issue #19)?",
+  "notes": "When the SUBJECT is Redis timeout, redis infrastructure IS gold. Order service is hard-negative (inverse of orders-timeout sacred case). Tests C5.1 domain flip + C4 chronology intent vs implementation.",
+  "gold_files": [
+    "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts",
+    "src/infrastructure/messaging/redis/connection.ts",
+    "src/infrastructure/caching/implementations/redis-cache.service.ts",
+    "src/infrastructure/caching/cache.manager.ts",
+    "src/infrastructure/rate-limiting/rate-limiter.factory.ts"
+  ],
+  "gold_optional": [
+    "src/infrastructure/caching/cache-keys.ts",
+    "src/config/index.ts",
+    "src/modules/identity/services/permission.service.ts"
+  ],
+  "gold_documentary": [
+    "issue#19",
+    "pr#20",
+    "pr#3",
+    "issue#1"
+  ],
+  "hard_negatives": [
+    "src/modules/core/services/order.service.ts",
+    "src/modules/core/models/order.model.ts",
+    "src/handlers/expire-orders.handler.ts"
+  ],
+  "c4_expectations": {
+    "note": "Intent issue#19 may rank high; implementation claims about CURRENT order behavior must not be Supported from issue alone."
+  },
+  "metrics": { "top_k": [1, 5, 10] }
+}

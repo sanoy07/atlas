@@ -1,0 +1,21 @@
+atlas agent → /home/sanoy/projects/atlas/agent/atlas_agent.py  model=qwen3:4b  repo=/home/sanoy/Vesta/rwatp-core
+[36m→ atlas_investigate(question='where is order fulfillment and what calls it?')[0m
+[2m  ← 5569 chars[0m
+
+Order fulfillment is implemented in `src/modules/core/services/order-fulfillment.service.ts` (ranked #1). It is called by `order.service.ts` (ranked #4) and `order-history.service.ts` (ranked #5) based on the repository's structural and historical evidence. 
+
+*Established facts*:  
+✅ `src/modules/core/services/order-fulfillment.service.ts` is the primary implementation (weight 0.99)  
+✅ `order.service.ts` and `order-history.service.ts` are direct service consumers (ranked #4 and #5)  
+
+*Unknowns*:  
+⚠️ Exact caller dependencies (e.g., specific methods/services) require further drilling with `atlas_show` on the files.
+
+---
+C4 FINAL GATE: SUPPORTED
+  Non-causal synthesis grounded in tool evidence.
+  evidence_paths_cited: 3
+  (Existence in a neighborhood ≠ causal support.)
+
+
+[2m[2 step(s), 44.6s, model=qwen3:4b, num_ctx=12288, investigate=yes][0m

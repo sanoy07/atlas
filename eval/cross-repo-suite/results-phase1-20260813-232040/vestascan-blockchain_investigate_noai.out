@@ -1,0 +1,91 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  smart contract
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · src/models/shared
+  · src/services
+  · common
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  1.18  implementation  [file] src/models/shared/smart-contract.model.ts — candidate score≈1.00
+  #2  0.72  implementation  [file] src/services/cursor.service.ts — candidate score≈0.90
+  #3  0.72  implementation  [file] src/services/balance.service.ts — candidate score≈0.90
+  #4  0.72  implementation  [file] src/services/chain-indexer.service.ts — candidate score≈0.90
+  #5  0.72  implementation  [file] src/services/event-processor.service.ts — candidate score≈0.90
+  #6  0.72  implementation  [file] src/services/reconciliation.service.ts — candidate score≈0.90
+  #7  0.72  implementation  [file] src/services/snapshot.service.ts — candidate score≈0.90
+  #8  0.70  implementation  [file] src/common/enums.ts — candidate score≈0.90
+  #9  0.48  implementation  [file] src/models/indexed-transfer.model.ts — candidate score≈0.82
+  #10 0.48  implementation  [file] src/models/indexer-run.model.ts — candidate score≈0.82
+  #11 0.48  implementation  [file] src/models/token-holder.model.ts — candidate score≈0.82
+  #12 0.47  implementation  [file] src/models/indexed-whitelist-event.model.ts — candidate score≈0.75
+  … 8 more
+
+SUPERSESSION  (not mere recency)
+  9176aa8475575e8c4a7bd81cab7fd182c5daaa50 → 400f8c261e1e9f498ee16035c2b58b8bc00163fc  (implementation_supersedes_implementation)
+  9176aa8475575e8c4a7bd81cab7fd182c5daaa50 → 68e5e15807c0fea1c10aab42d359dd6f662068d2  (implementation_supersedes_implementation)
+  400f8c261e1e9f498ee16035c2b58b8bc00163fc → 68e5e15807c0fea1c10aab42d359dd6f662068d2  (implementation_supersedes_implementation)
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/models/shared/smart-contract.model.ts` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/models/shared/smart-contract.model.ts — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1777813100  implementation  959631b44caf5b2a540aa0f61e6d0e10c2e4dc8f  959631b — Initial commit (src/models/shared/smart-contract.model.ts)
+  1781576475  implementation  9176aa8475575e8c4a7bd81cab7fd182c5daaa50  9176aa8 — Production hardening for Cloud Run + optimistic verification flag (src/services/cursor.service.ts)
+  1781580887  implementation  400f8c261e1e9f498ee16035c2b58b8bc00163fc  400f8c2 — fix(cursor): seed at deploymentBlock-1 so constructor mints are indexed (#3) (src/services/cursor.service.ts)
+  1781640954  implementation  68e5e15807c0fea1c10aab42d359dd6f662068d2  68e5e15 — Local chain-indexer CLI + drop token-status filter (#5) (src/services/cursor.service.ts)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/models/shared/smart-contract.model.ts
+  · src/services/cursor.service.ts
+  · src/services/balance.service.ts
+  · src/services/chain-indexer.service.ts
+  · src/services/event-processor.service.ts
+  · src/services/reconciliation.service.ts
+  · src/services/snapshot.service.ts
+  · src/common/enums.ts
+  · src/models/indexed-transfer.model.ts
+  · src/models/indexer-run.model.ts
+  · src/models/token-holder.model.ts
+  · src/models/indexed-whitelist-event.model.ts
+  · src/models/indexer-chain-config.model.ts
+  · src/models/enums.ts
+  · src/models/indexer-cursor.model.ts
+  · src/models/shared/token.model.ts
+
+WHAT ATLAS KNOWS
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 4 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=3 top=src/models/shared/smart-contract.model.ts
+  · c5.1e_concept_fragments domain=Generic flow=false n=11
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

@@ -1,0 +1,23 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+note: no modules under `src/modules`; auto-resolved subject `src` (same heuristic as `atlas map`).
+MODULES  (subject: src)
+  discovery: DETERMINISTIC: immediate child directories of `src` that appear in the `files` table AND exist as directories on disk (ghost/historical paths dropped)
+  total: 9 module directories
+
+  module            files  commits      out       in  tests  subdirs
+  app                  33       28      129        1     no  (protected),auth
+  components           39       14      142      180     no  customRHFcomponents,platform,ui
+  config                1        1        3        2     no  -
+  constants             1        1        0        5     no  -
+  features            349       35     1197      558    yes  auth,compliance,enquiries,kyc,layouts,listings,orders,platform,shared,signing,siteSettings,support,theme,transaction,user,wallet
+  graphql              12       19       18      100     no  client,codegen,operations
+  lib                   7        5        7       85    yes  firebase
+  providers             6        9       20        5     no  -
+  types                 1        1        2        0     no  -
+
+PROVENANCE
+  file_count / subdirectories: DETERMINISTIC from `files` table
+  observed_commit_count:       DETERMINISTIC commits ⨝ commit_files (prefix)
+  edge counts:                 DETERMINISTIC structural_edges (prefix)
+  has_associated_tests:        DERIVED — see each module's test_association_rule
+  Language: module names are path segments — not business-domain labels

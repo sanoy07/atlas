@@ -1,3 +1,4 @@
+use atlas_core::OllamaConfig;
 use atlas_ir::InvestigationDocument;
 use std::io::Write;
 use std::process::{Command, Stdio};
@@ -99,44 +100,150 @@ fn short_name(path: &str) -> &str {
     path.rsplit('/').next().unwrap_or(path)
 }
 
+/// Read the first `max_lines` lines of a repo-relative file.
+/// Returns None if the file does not exist (e.g. it is a new file the plan must create).
+fn read_file_head(repo_path: &str, rel_path: &str, max_lines: usize) -> Option<String> {
+    let full = format!("{}/{}", repo_path.trim_end_matches('/'), rel_path);
+    let content = std::fs::read_to_string(&full).ok()?;
+    let head: Vec<&str> = content.lines().take(max_lines).collect();
+    Some(head.join("\n"))
+}
+
 /// Send the InvestigationDocument to the local Ollama model and return the synthesis.
 /// Returns None if Ollama is not running, the model is unavailable, or the call times out.
 pub fn synthesize(doc: &InvestigationDocument) -> Option<String> {
+    let cfg = OllamaConfig::from_env();
     let user_content = build_prompt(doc);
+    call_ollama(
+        &cfg,
+        &cfg.synthesis_model,
+        "You analyze software engineering evidence collected by Atlas, \
+         a deterministic code intelligence tool. \
+         Output only what the provided evidence supports. \
+         Do not read file contents, do not guess behavior beyond what \
+         structural connections explicitly show.",
+        &user_content,
+        cfg.synthesis_num_predict.min(600),
+    )
+}
 
+/// Name of the synthesis model currently configured (for progress messages).
+pub fn synthesis_model_name() -> String {
+    OllamaConfig::from_env().synthesis_model
+}
+
+/// Name of the reasoning model currently configured.
+pub fn reasoning_model_name() -> String {
+    OllamaConfig::from_env().reasoning_model
+}
+
+/// Generate an implementation plan for a GitHub issue from Atlas evidence.
+/// Snippets must match names present in the evidence; no invented modules.
+pub fn synthesize_plan(
+    issue_number: i64,
+    title: &str,
+    body: &str,
+    doc: &InvestigationDocument,
+    repo_path: &str,
+) -> Option<String> {
+    let cfg = OllamaConfig::from_env();
+    let mut evidence = build_prompt(doc);
+
+    // Attach short heads of the top core files so the model can match real APIs.
+    let mut heads = String::new();
+    for c in doc.core_candidates.iter().take(5) {
+        if let Some(head) = read_file_head(repo_path, &c.file, 40) {
+            heads.push_str(&format!(
+                "\n--- {} (first 40 lines) ---\n{}\n",
+                c.file, head
+            ));
+        }
+    }
+    if !heads.is_empty() {
+        evidence.push_str("\nFILE HEADS (for naming only — do not invent APIs beyond these):\n");
+        evidence.push_str(&heads);
+    }
+
+    let body_trim = if body.len() > 2000 {
+        format!("{}…", &body[..2000])
+    } else {
+        body.to_string()
+    };
+
+    let user = format!(
+        "GitHub Issue #{issue_number}: {title}\n\n\
+         ISSUE BODY:\n{body_trim}\n\n\
+         ATLAS EVIDENCE (only source of truth for paths and structure):\n{evidence}\n\n\
+         Write an implementation plan a human will execute manually.\n\
+         Rules:\n\
+         - Only reference files that appear in CORE FILES / STRUCTURAL CONNECTIONS / FILE HEADS.\n\
+         - Prefer small steps and checklists over large rewrites.\n\
+         - Include a short test checklist grounded in existing test patterns if any.\n\
+         - Do not claim root cause unless structural edges support it.\n\
+         - Snippets must use identifiers visible in FILE HEADS when possible.\n\n\
+         Use this exact structure:\n\n\
+         ## Implementation Plan\n\n\
+         ### Summary\n\
+         - 3-5 bullets of what to do\n\n\
+         ### Steps\n\
+         For each step:\n\
+         **File:** `path`\n\
+         **Function/Class/Location:** where\n\
+         **Code to Add or Change:**\n\
+         ```lang\n\
+         // minimal sketch\n\
+         ```\n\n\
+         ### Test Checklist\n\
+         - [ ] concrete cases\n\n\
+         ### Risks / Gaps\n\
+         - what evidence does not cover\n"
+    );
+
+    call_ollama(
+        &cfg,
+        &cfg.synthesis_model,
+        "You are a senior engineer writing an implementation plan from Atlas \
+         evidence. Atlas is the source of truth. Never invent file paths. \
+         The human will implement the plan manually — you do not apply patches.",
+        &user,
+        cfg.synthesis_num_predict.max(1200),
+    )
+}
+
+/// Send a prompt to Ollama and return the response text.
+/// Shared by synthesize() and synthesize_plan().
+fn call_ollama(cfg: &OllamaConfig, model: &str, system: &str, user: &str, num_predict: u32) -> Option<String> {
+    // Synthesis is non-thinking by default — we want stable structured prose,
+    // not a long CoT that crowds out the packet.
+    let think = false;
     let payload = serde_json::json!({
-        "model": "qwen2.5-coder:7b-instruct",
+        "model": model,
         "messages": [
-            {
-                "role": "system",
-                "content": "You analyze software engineering evidence collected by Atlas, \
-                            a deterministic code intelligence tool. \
-                            Output only what the provided evidence supports. \
-                            Do not read file contents, do not guess behavior beyond what \
-                            structural connections explicitly show."
-            },
-            {
-                "role": "user",
-                "content": user_content
-            }
+            { "role": "system", "content": system },
+            { "role": "user",   "content": user   }
         ],
         "stream": false,
+        "think": think,
         "options": {
             "temperature": 0.1,
-            "num_predict": 600
+            "num_predict": num_predict,
+            "num_ctx": cfg.num_ctx,
         }
     });
-
     let payload_str = serde_json::to_string(&payload).ok()?;
 
     let mut child = Command::new("curl")
         .args([
             "-s",
-            "-m", "90",
-            "-X", "POST",
-            "http://localhost:11434/api/chat",
-            "-H", "Content-Type: application/json",
-            "--data-binary", "@-",
+            "-m",
+            &cfg.timeout_secs.to_string(),
+            "-X",
+            "POST",
+            &cfg.chat_url(),
+            "-H",
+            "Content-Type: application/json",
+            "--data-binary",
+            "@-",
         ])
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -147,7 +254,6 @@ pub fn synthesize(doc: &InvestigationDocument) -> Option<String> {
     if let Some(mut stdin) = child.stdin.take() {
         stdin.write_all(payload_str.as_bytes()).ok()?;
     }
-
     let output = child.wait_with_output().ok()?;
     if !output.status.success() {
         return None;
@@ -155,8 +261,6 @@ pub fn synthesize(doc: &InvestigationDocument) -> Option<String> {
 
     let body = String::from_utf8(output.stdout).ok()?;
     let json: serde_json::Value = serde_json::from_str(&body).ok()?;
-
-    // /api/chat response: { "message": { "content": "..." } }
     let text = json["message"]["content"].as_str()?.trim().to_string();
     if text.is_empty() {
         None

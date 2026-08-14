@@ -1,0 +1,25 @@
+{
+  "id": "vs-dataroom-create",
+  "repository": "vestascan-api",
+  "workflow": "system_flow",
+  "cluster": "data_rooms",
+  "question": "How are data rooms created and initialized?",
+  "notes": "Data room create path: services, models, config, schema.",
+  "gold_files": [
+    "src/modules/core/services/data-room-file.service.ts",
+    "src/modules/core/models/data-room-file.model.ts",
+    "src/config/data-room.config.ts",
+    "src/schemas/data-room-file.schema.ts",
+    "src/common/constants/data-room.ts"
+  ],
+  "gold_optional": [
+    "src/modules/core/services/data-room-file-access.service.ts",
+    "src/modules/core/models/data-room-file-access.model.ts",
+    "src/modules/core/graphql/resolvers.ts"
+  ],
+  "hard_negatives": [
+    "src/modules/core/services/deployment.service.ts",
+    "src/modules/core/services/token.service.ts",
+    "src/infrastructure/secret-manager/google-secret-manager.adapter.ts"
+  ]
+}

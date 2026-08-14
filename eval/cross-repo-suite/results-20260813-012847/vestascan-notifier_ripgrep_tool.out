@@ -1,0 +1,17 @@
+/home/sanoy/Vesta/vestascan-notifier/src/app.ts-7-app.use(requestContextMiddleware);
+/home/sanoy/Vesta/vestascan-notifier/src/app.ts-8-
+/home/sanoy/Vesta/vestascan-notifier/src/app.ts:9:export default app;
+--
+/home/sanoy/Vesta/vestascan-notifier/src/handlers/notify.handler.ts-37-} from "../contracts/commands/notify/contracts.js";
+/home/sanoy/Vesta/vestascan-notifier/src/handlers/notify.handler.ts-38-
+/home/sanoy/Vesta/vestascan-notifier/src/handlers/notify.handler.ts:39:export const notifyHandler = createCommandHandler(NOTIFY_TOPIC)
+/home/sanoy/Vesta/vestascan-notifier/src/handlers/notify.handler.ts-40-  // ── User Registration ────────────────────────────────────────────────────
+/home/sanoy/Vesta/vestascan-notifier/src/handlers/notify.handler.ts-41-  .on(CommandTypes.UserRegistration, async (payload: UserRegistrationPayload, context: CommandContext) => {
+--
+/home/sanoy/Vesta/vestascan-notifier/src/common/errors/createApplicationError.ts-30- * );
+/home/sanoy/Vesta/vestascan-notifier/src/common/errors/createApplicationError.ts-31- */
+/home/sanoy/Vesta/vestascan-notifier/src/common/errors/createApplicationError.ts:32:export function createApplicationError(
+/home/sanoy/Vesta/vestascan-notifier/src/common/errors/createApplicationError.ts-33-  code: NotifierErrorCode,
+/home/sanoy/Vesta/vestascan-notifier/src/common/errors/createApplicationError.ts-34-  customMessage?: string,
+--
+/home/sanoy/Vesta/vestascan-notifier/src/common/errors/notifier.errorCodes.ts-7- * Error codes for the 

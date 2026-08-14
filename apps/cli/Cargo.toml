@@ -1,6 +1,6 @@
 [package]
 name    = "atlas"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [[bin]]
@@ -9,12 +9,15 @@ path = "src/main.rs"
 
 [dependencies]
 atlas-core    = { path = "../../crates/core" }
+atlas-git     = { path = "../../crates/git" }
 atlas-ir      = { path = "../../crates/ir" }
 atlas-storage = { path = "../../crates/storage" }
 clap               = { workspace = true }
 anyhow             = { workspace = true }
 chrono             = { workspace = true }
 serde_json         = { workspace = true }
+serde              = { workspace = true }
+toml               = { workspace = true }
 tokio              = { workspace = true }
 tracing            = { workspace = true }
 tracing-subscriber = { workspace = true }

@@ -1,0 +1,26 @@
+{
+  "id": "vs-token-deploy-how",
+  "repository": "vestascan-api",
+  "workflow": "system_flow",
+  "cluster": "token_deployment",
+  "question": "How are tokens deployed in VestaScan API?",
+  "notes": "GROUND TRUTH CORRECTION: On-chain deploy is client-side (vestascan-user-fe DeploymentWizard + wallet writeContract). API role is post-deploy recording (recordDeployment → DeploymentService.recordERC1404Deployment) + token persistence/query. Gold here is API-side only; full deploy flow requires FE gold suite.",
+  "scope": "api_post_deploy_record",
+  "cross_repo_primary": "vestascan-user-fe",
+  "gold_files": [
+    "src/modules/core/services/deployment.service.ts",
+    "src/schemas/deployment.schema.ts",
+    "src/modules/core/graphql/resolvers.ts",
+    "src/modules/core/models/token.model.ts",
+    "src/modules/core/services/token.service.ts"
+  ],
+  "gold_optional": [
+    "src/modules/core/graphql/typeDefs.ts",
+    "src/modules/core/services/token-verification.service.ts",
+    "src/modules/marketing/loaders/deploy-count.loader.ts"
+  ],
+  "hard_negatives": [
+    "src/modules/core/services/data-room-file.service.ts",
+    "src/infrastructure/secret-manager/google-secret-manager.adapter.ts"
+  ]
+}

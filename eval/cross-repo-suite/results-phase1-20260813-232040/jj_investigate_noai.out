@@ -1,0 +1,111 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  workspace commit
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · lib/src
+  · src
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  0.91  implementation  [file] lib/src/workspace_store.rs — candidate score≈0.90
+  #2  0.78  implementation  [file] lib/src/commit.rs — candidate score≈0.90
+  #3  0.77  implementation  [file] lib/src/commit_builder.rs — candidate score≈0.90
+  #4  0.76  implementation  [file] lib/src/workspace.rs — candidate score≈0.90
+  #5  0.62  implementation  [commit] 9b9656d06d924c08108d8893f1d33be08c21d5de — 9b9656d06 — cli_util: make workspace_helper*() async (cli/src/commands/commit.rs)
+  #6  0.62  implementation  [commit] 609b2eb286aa9930c6ed00d69e36965192188975 — 609b2eb28 — cli: use get_commit_async() + try_join_all() in a few more places (cli/src/commands/workspace/add.rs)
+  #7  0.59  implementation  [file] src/commit_templater.rs — candidate score≈0.90
+  #8  0.55  implementation  [file] cli/src/commands/workspace.rs — candidate score≈0.63
+  #9  0.51  implementation  [file] cli/src/commands/commit.rs — candidate score≈0.63
+  #10 0.50  implementation  [commit] 40d58b919381d8262e1484c9939b14187353c128 — 40d58b919 — git init: allow setting the object hash format (lib/src/workspace.rs)
+  #11 0.50  implementation  [commit] c27815637366842b26e2734e4a3661814344a656 — c27815637 — cli: remove deprecated metaedit-related command options (cli/src/commands/commit.rs)
+  #12 0.50  implementation  [commit] 22b04970fb25e8aed7e6d179e027694ff566eac2 — 22b04970f — working_copy: make start_mutation() async (lib/src/workspace.rs)
+  … 18 more
+
+SUPERSESSION  (not mere recency)
+  4cfe2591b612847048eccf81f63fb279306a9ee2 → 443391bf8f0b6a3977ee3237ff30a1288a261ae0  (implementation_supersedes_implementation)
+  4cfe2591b612847048eccf81f63fb279306a9ee2 → 4da8483228160fcc090b7e601891af54ccac1a39  (implementation_supersedes_implementation)
+  4cfe2591b612847048eccf81f63fb279306a9ee2 → 9c69a7cb150d683f1235703ec174d7e6111e25f9  (implementation_supersedes_implementation)
+  4cfe2591b612847048eccf81f63fb279306a9ee2 → 2bbaa4352aa340692540f1d7238edfc16d8ebfe4  (implementation_supersedes_implementation)
+  4cfe2591b612847048eccf81f63fb279306a9ee2 → 37e645023625ae3ed234f9d905df247f332ee6c6  (implementation_supersedes_implementation)
+  4cfe2591b612847048eccf81f63fb279306a9ee2 → e61f70ece3d7edfb25f27a6cff72c2cc06730664  (implementation_supersedes_implementation)
+  … 14 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `lib/src/workspace_store.rs` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] lib/src/workspace_store.rs — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1689170927  implementation  4cfe2591b612847048eccf81f63fb279306a9ee2  4cfe2591b — refs: turn RefTarget::adds()/removes() into iterator, rename accordingly (src/commit_templater.rs)
+  1689172898  implementation  443391bf8f0b6a3977ee3237ff30a1288a261ae0  443391bf8 — view: store Option<RefTarget> in maps, add extension trait to flatten Option (src/commit_templater.rs)
+  1689200444  implementation  4da8483228160fcc090b7e601891af54ccac1a39  4da848322 — refs: reimplement RefTarget as Conflict<Option<CommitId>> wrapper (src/commit_templater.rs)
+  1689202708  implementation  9c69a7cb150d683f1235703ec174d7e6111e25f9  9c69a7cb1 — refs: leverage Option<RefTarget> extension methods (src/commit_templater.rs)
+  1689769909  implementation  2bbaa4352aa340692540f1d7238edfc16d8ebfe4  2bbaa4352 — refs: rename RefTarget::is_conflict() to has_conflict() (src/commit_templater.rs)
+  1721511390  implementation  304f6dfc3f3f441e4dfe193f851aa5e70d979232  304f6dfc3 — workspace: warn if destination doesn't contain path separator (cli/src/commands/workspace.rs)
+  1721657209  implementation  d7c1b97418e2a03176d55d5fe39714758c7ec57c  d7c1b9741 — cli: fix "workspace add --at-op" to set up new working copy properly (cli/src/commands/workspace.rs)
+  1721657886  implementation  eb332b1d08422fa64d39b8afdb62ba6e5e53843f  eb332b1d0 — cli: make for_loaded_repo() callers specify whether repo/workspace are synced (cli/src/commands/workspace.rs)
+  1721700080  implementation  3f05d065b5f4c4d79d28f230938ac79a95424a18  3f05d065b — cli: uncapitalize op description of "workspace add" and custom command example (cli/src/commands/workspace.rs)
+  1722165938  implementation  21e1ce4f508ae29fee79e8269f85d27c6b73e3ac  21e1ce4f5 — cli: split commands/workspace.rs into sub modules (cli/src/commands/workspace.rs)
+  1751180228  implementation  69d808fe0a241851f69540205ab4a88d370df45d  69d808fe0 — workspaces: Allow retrieving the path of another workspace (lib/src/workspace_store.rs)
+  1767277510  implementation  37e645023625ae3ed234f9d905df247f332ee6c6  37e645023 — commit: allow Unicode characters in conflict labels (lib/src/commit.rs)
+  1767296510  implementation  e61f70ece3d7edfb25f27a6cff72c2cc06730664  e61f70ece — rewrite: use `MergedTree::merge` in `rebase_to_dest_parent()` (lib/src/commit.rs)
+  1767996295  implementation  4371ff4b812aaeefa44b67b365b2aed195e2d7f1  4371ff4b8 — workspaces: use relative paths for workspaces (lib/src/workspace_store.rs)
+  1768691143  implementation  1bc90ed38f7780b11984571fa82d5a2b04b5f8ec  1bc90ed38 — cli: remove legacy placeholder string for user/email (lib/src/commit_builder.rs)
+  1771133220  implementation  5b2bf8736cf4265c23d85ddacd10da6adcf7f6b1  5b2bf8736 — commit_builder: make write() async (lib/src/commit_builder.rs)
+  1771707318  implementation  6ab12e59673513f08e093e5a8a5d3e91fd473f81  6ab12e596 — workspace: convert functions to async (lib/src/workspace.rs)
+  1771746094  implementation  1871f4b5eadee6598a43065b5f713e05ac6ab9a1  1871f4b5e — LockedWorkspace: make `LockedWorkspace::finish` async (lib/src/workspace.rs)
+  1771877241  implementation  6660647f35d74762c16133d83bfbc59143c37b67  6660647f3 — commit: convert some functions to async (lib/src/commit.rs)
+  1772052969  implementation  e8c340f6e2f0301410661d431215a5e6cbdf9b15  e8c340f6e — style: avoid some `ref` keywords (lib/src/workspace.rs)
+  … 14 more
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · lib/src/workspace_store.rs
+  · lib/src/commit.rs
+  · lib/src/commit_builder.rs
+  · lib/src/workspace.rs
+  · src/commit_templater.rs
+  · cli/src/commands/workspace.rs
+  · cli/src/commands/commit.rs
+  · lib/src/merge.rs
+  · cli/src/commands/workspace/add.rs
+  · cli/src/commands/workspace/forget.rs
+  · cli/src/commands/workspace/list.rs
+  · cli/src/commands/workspace/mod.rs
+  · cli/src/commands/workspace/rename.rs
+  · lib/src/backend.rs
+  · lib/src/conflict_labels.rs
+  · lib/src/index.rs
+
+WHAT ATLAS KNOWS
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 34 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=20 top=lib/src/commit.rs
+  · c5.1e_concept_fragments domain=Generic flow=false n=11
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

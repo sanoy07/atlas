@@ -1,0 +1,65 @@
+ATLAS MAP
+  repo: /home/sanoy/Vesta/vestascan-user-fe
+  git_head: 1061f12
+  modules_subject: src/modules
+  modules (7): ai, compliance, core, identity, plan, quota, support
+
+CLAIMS  (observed | derived | inferred | unknown)
+  [OBSERVED] map-001 — Module/layer inventory under `src/modules` has 7 child directories.
+    method: compute_modules immediate children of subject from files table
+    evidence: [method] compute_modules — total_modules=7
+    limitation: Names are path segments, not business-domain labels.
+    limitation: Historical paths in files table may appear as modules.
+
+  [DERIVED] map-002 — `core` has the highest observed commit touch count under the inventory (48 commits).
+    method: max(observed_commit_count) over ModuleEntry
+    evidence: [module] src/modules/core — commits=48
+    limitation: Commit count is not ownership or importance.
+
+  [OBSERVED] map-003 — Hottest file by commit touches: `src/modules/core/graphql/resolvers.ts` (37 commits).
+    method: hot_files(repo, 15)
+    evidence: [file] src/modules/core/graphql/resolvers.ts — touches=37
+    limitation: Path-scoped hot files; identity-aware hot files not used in map v1.
+
+  [DERIVED] map-004 — Most prevalent peer structural pattern: `graphql/` in 7/7 peers.
+    method: detect_peer_structure patterns prevalence
+    evidence: [pattern] graphql/ — 7/7
+    limitation: Prevalence is not a style judgment.
+
+  [DERIVED] map-005 — Dependency linkage: 109 declared, 79 observed via structural edges, 79 both.
+    method: compute_dependency_linkage
+    evidence: [config] package.json — working-tree package.json (not present in configuration_artifacts)
+    limitation: OBSERVED ≠ runtime usage.
+
+  [DERIVED] map-006 — Test↔module links: 10 links from 16 test files under path rules (6 unlinked).
+    method: compute_test_module_links
+    evidence: [method] test_linkage — links=10
+    limitation: Path rules only; unlinked is not 'orphan ownership'.
+
+HOT FILES
+    37  src/modules/core/graphql/resolvers.ts
+    34  package.json
+    33  src/modules/core/graphql/typeDefs.ts
+    31  package-lock.json
+    30  src/modules/core/services/token.service.ts
+    24  src/app/(main)/scan/page.tsx
+    19  src/common/enums/index.ts
+    18  src/app/(auth)/login/page.tsx
+    17  src/components/auth/AuthProvider.tsx
+    17  src/components/token/management/AdminControls.tsx
+    17  src/modules/core/graphql/permissions.ts
+    16  src/components/token/management/ManagementView.tsx
+    15  src/app/providers.tsx
+    14  codegen.ts
+    14  src/app/(main)/scan/[address]/page.tsx
+
+COVERAGE
+  · commits_in_db≈160
+  · structural_edges=2156
+  · modules_subject=src/modules
+
+LIMITATIONS
+  · Map is orientation, not architectural meaning or quality judgment.
+  · Structural data is a working-tree snapshot from last structural ingest.
+  · Git history scope depends on last ingest (often HEAD-only).
+  · No runtime DI, dynamic dispatch, or production traffic.

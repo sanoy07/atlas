@@ -1,0 +1,81 @@
+atlas agent → /home/sanoy/projects/atlas/agent/atlas_agent.py  model=qwen3:4b  repo=/home/sanoy/projects/research/jj
+[2m[fast path: atlas investigate --no-ai][0m
+ATLAS INVESTIGATE EVIDENCE PACKET (deterministic C5.1 + C4)
+QUESTION: workspace commit
+MODE: deterministic_only
+
+RANKED_FILES (highest weight first — prefer these):
+  #1 w=0.91  lib/src/workspace_store.rs
+      core_candidate rank_index=5; c5.1_pagerank=1.000
+  #2 w=0.78  lib/src/commit.rs
+      core_candidate rank_index=0; c5.1_pagerank=0.667
+  #3 w=0.77  lib/src/commit_builder.rs
+      core_candidate rank_index=4; c5.1_pagerank=0.617
+  #4 w=0.76  lib/src/workspace.rs
+      core_candidate rank_index=1; c5.1_pagerank=0.613
+  #7 w=0.59  src/commit_templater.rs
+      core_candidate rank_index=6; c5.1_pagerank=0.356
+  #8 w=0.55  cli/src/commands/workspace.rs
+      core_candidate rank_index=3; c5.1_pagerank=0.969
+  #9 w=0.51  cli/src/commands/commit.rs
+      core_candidate rank_index=2; c5.1_pagerank=0.613
+  #27 w=0.48  lib/src/merge.rs
+      core_candidate rank_index=15; c5.1_pagerank=0.126
+
+CORE_CANDIDATES:
+  - lib/src/workspace_store.rs
+  - lib/src/commit.rs
+  - lib/src/commit_builder.rs
+  - lib/src/workspace.rs
+  - src/commit_templater.rs
+  - cli/src/commands/workspace.rs
+  - cli/src/commands/commit.rs
+  - lib/src/merge.rs
+  - cli/src/commands/workspace/add.rs
+  - cli/src/commands/workspace/forget.rs
+  - cli/src/commands/workspace/list.rs
+  - cli/src/commands/workspace/mod.rs
+
+LIKELY_AREA: lib/src, src
+
+HYPOTHESES (already C4-gated by Atlas — status is authoritative):
+  [PLAUSIBLE] Deterministic retrieval associates this question with `lib/src/workspace_store.rs` and its neighborhood.
+      evidence: file:lib/src/workspace_store.rs
+
+CHRONOLOGY (sample):
+  implementation 4cfe2591b612 — 4cfe2591b — refs: turn RefTarget::adds()/removes() into iterator, rename accordingly (src/commit_templater.rs)
+  implementation 443391bf8f0b — 443391bf8 — view: store Option<RefTarget> in maps, add extension trait to flatten Option (src/commit_templater.rs)
+  implementation 4da848322816 — 4da848322 — refs: reimplement RefTarget as Conflict<Option<CommitId>> wrapper (src/commit_templater.rs)
+  implementation 9c69a7cb150d — 9c69a7cb1 — refs: leverage Option<RefTarget> extension methods (src/commit_templater.rs)
+  implementation 2bbaa4352aa3 — 2bbaa4352 — refs: rename RefTarget::is_conflict() to has_conflict() (src/commit_templater.rs)
+  implementation 304f6dfc3f3f — 304f6dfc3 — workspace: warn if destination doesn't contain path separator (cli/src/commands/workspace.rs)
+  implementation d7c1b97418e2 — d7c1b9741 — cli: fix "workspace add --at-op" to set up new working copy properly (cli/src/commands/workspace.rs)
+  implementation eb332b1d0842 — eb332b1d0 — cli: make for_loaded_repo() callers specify whether repo/workspace are synced (cli/src/commands/workspace.rs
+
+C4_VERIFICATION_POLICY:
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+WHAT_ATLAS_KNOWS:
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 34 chronology event(s) assembled (intent + implementation)
+
+WHAT_ATLAS_DOES_NOT_KNOW:
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=20 top=lib/src/commit.rs
+  · c5.1e_concept_fragments domain=Generic flow=false n=11
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+NEXT_INVESTIGATION:
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+RULE: Existence of a ranked file is NOT causal support. Do not upgrade [PLAUSIBLE]/[UNRESOLVED] to factual cause language. Prefer ranked files over map hot-files alone for localization.

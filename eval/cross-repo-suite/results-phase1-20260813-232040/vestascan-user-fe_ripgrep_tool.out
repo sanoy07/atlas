@@ -1,0 +1,17 @@
+RIPGREP symbol='TODO|FIXME|export'  (definition beats import)
+NOTE: TypeScript often imports `foo.js` while the source file is `foo.ts` — prefer [DEFINITION] paths ending in .ts/.tsx over .js import strings.
+
+IMPORTS / requires (39) — not definitions:
+  [IMPORT]     src/common/enums/kyc.enums.ts:1:export { EntityType, KycStatus, Gender, RiskLevel, OrgVerificationFieldType } from "@/types/graphql";
+  [IMPORT]     src/common/enums/index.ts:5: * generated from the GraphQL schema and re-exported here for convenience. Import
+  [IMPORT]     src/common/enums/index.ts:13:export * from "./asset.enums";
+  [IMPORT]     src/common/enums/index.ts:14:export * from "./kyc.enums";
+  [IMPORT]     src/common/enums/index.ts:15:export * from "./support-ticket.enums";
+  [IMPORT]     src/common/enums/index.ts:17:// ─── Schema-derived enums (re-exported from generated types) ─────────────────
+  [IMPORT]     src/config/alchemyMigration.ts:37: * → Privy user export/import is done and Phase 1 is live in production.
+  [IMPORT]     src/blockchain/index.ts:21:export * from "./types";
+  [IMPORT]     src/common/errors/index.ts:1:export { ErrorCode, ERROR_MESSAGES, ERROR_HTTP_STATUS } from "./errorCodes";
+  [IMPORT]     src/common/errors/index.ts:2:export { createError } from "./createError";
+  [IMPORT]     src/common/errors/index.ts:3:export type { CustomError } from "./createError";
+  [IMPORT]     src/common/utils/index.ts:1:export * from "./identity";
+  [IMPORT]     src/common/types/index.ts:1:export * f

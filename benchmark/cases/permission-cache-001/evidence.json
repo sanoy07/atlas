@@ -1,0 +1,1487 @@
+{
+  "case_id": "permission-cache-001",
+  "task": "How is a users permission set loaded and cached for a GraphQL request?",
+  "repo": "RWATP",
+  "repo_commit": "b21260594c0e8d66be01d6a24b7b79e428fcc947",
+  "generated_by": "atlas atlas 0.1.0",
+  "evidence": [
+    {
+      "id": "E1",
+      "type": "source_signal",
+      "summary": "src/common/graphql/shield/permissions.js",
+      "detail": "anchor \"graphql\" via file_path; anchor \"permission\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/graphql/shield/permissions.js"
+      }
+    },
+    {
+      "id": "E2",
+      "type": "source_signal",
+      "summary": "src/modules/compliance/graphql/permissions.ts",
+      "detail": "anchor \"graphql\" via file_path; anchor \"permission\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/compliance/graphql/permissions.ts"
+      }
+    },
+    {
+      "id": "E3",
+      "type": "source_signal",
+      "summary": "src/modules/core/graphql/content-block-permissions.ts",
+      "detail": "anchor \"graphql\" via file_path; anchor \"permission\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E4",
+      "type": "source_signal",
+      "summary": "src/modules/core/graphql/permissions.ts",
+      "detail": "anchor \"graphql\" via file_path; anchor \"permission\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/graphql/permissions.ts"
+      }
+    },
+    {
+      "id": "E5",
+      "type": "source_signal",
+      "summary": "src/modules/core/graphql/share-class-permissions.ts",
+      "detail": "anchor \"graphql\" via file_path; anchor \"permission\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/graphql/share-class-permissions.ts"
+      }
+    },
+    {
+      "id": "E6",
+      "type": "source_signal",
+      "summary": "src/modules/core/models/share-class.model.ts",
+      "detail": "references_model neighbor from src/modules/core/graphql/content-block-permissions.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/models/share-class.model.ts"
+      }
+    },
+    {
+      "id": "E7",
+      "type": "source_signal",
+      "summary": "src/modules/identity/graphql/permissions.ts",
+      "detail": "anchor \"graphql\" via file_path; anchor \"permission\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/graphql/permissions.ts"
+      }
+    },
+    {
+      "id": "E8",
+      "type": "source_signal",
+      "summary": "src/modules/identity/models/permission.model.ts",
+      "detail": "references_model neighbor from tests/rbac/verify-permission-cache.ts; references_model neighbor from tests/rbac/verify-permission-cache.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/models/permission.model.ts"
+      }
+    },
+    {
+      "id": "E9",
+      "type": "source_signal",
+      "summary": "src/modules/identity/models/role.model.ts",
+      "detail": "references_model neighbor from tests/rbac/verify-permission-cache.ts; references_model neighbor from tests/rbac/verify-permission-cache.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E10",
+      "type": "source_signal",
+      "summary": "src/modules/identity/models/user.model.ts",
+      "detail": "references_model neighbor from tests/rbac/verify-permission-cache.ts; references_model neighbor from tests/rbac/verify-permission-cache.ts; references_model neighbor from tests/rbac/verify-permission-cache.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/models/user.model.ts"
+      }
+    },
+    {
+      "id": "E11",
+      "type": "source_signal",
+      "summary": "src/modules/identity/services/permission.service.ts",
+      "detail": "calls_static neighbor from tests/rbac/verify-permission-cache.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E12",
+      "type": "source_signal",
+      "summary": "src/modules/identity/services/user.service.ts",
+      "detail": "calls_static neighbor from scripts/verify-auth-user-cache.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E13",
+      "type": "source_signal",
+      "summary": "[script] scripts/rbac/refresh-user-permissions.js",
+      "detail": "anchor \"permission\" via file_path; anchor \"user\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "scripts/rbac/refresh-user-permissions.js"
+      }
+    },
+    {
+      "id": "E14",
+      "type": "source_signal",
+      "summary": "[script] scripts/verify-auth-user-cache.ts",
+      "detail": "anchor \"cache\" via file_path; anchor \"user\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "scripts/verify-auth-user-cache.ts"
+      }
+    },
+    {
+      "id": "E15",
+      "type": "source_signal",
+      "summary": "[test] tests/rbac/verify-permission-cache.ts",
+      "detail": "anchor \"cache\" via file_path; anchor \"permission\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E16",
+      "type": "observed_call",
+      "summary": "scripts/verify-auth-user-cache.ts → src/modules/identity/services/user.service.ts [UserService.invalidateAuthUserCache]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "scripts/verify-auth-user-cache.ts"
+      }
+    },
+    {
+      "id": "E17",
+      "type": "observed_import",
+      "summary": "scripts/verify-auth-user-cache.ts → src/modules/identity/services/user.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "scripts/verify-auth-user-cache.ts"
+      }
+    },
+    {
+      "id": "E18",
+      "type": "observed_import",
+      "summary": "src/modules/core/graphql/content-block-permissions.ts → src/modules/core/models/share-class.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E19",
+      "type": "model_reference",
+      "summary": "src/modules/core/graphql/content-block-permissions.ts → src/modules/core/models/share-class.model.ts [ShareClass.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E20",
+      "type": "observed_import",
+      "summary": "src/modules/identity/models/role.model.ts → src/modules/identity/models/permission.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E21",
+      "type": "model_reference",
+      "summary": "src/modules/identity/models/role.model.ts → src/modules/identity/models/permission.model.ts [Permission.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E22",
+      "type": "model_reference",
+      "summary": "src/modules/identity/models/role.model.ts → src/modules/identity/models/permission.model.ts [Permission.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E23",
+      "type": "model_reference",
+      "summary": "src/modules/identity/models/role.model.ts → src/modules/identity/models/permission.model.ts [Permission.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E24",
+      "type": "observed_import",
+      "summary": "src/modules/identity/services/permission.service.ts → src/modules/identity/models/role.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E25",
+      "type": "observed_import",
+      "summary": "src/modules/identity/services/permission.service.ts → src/modules/identity/models/user.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E26",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/permission.service.ts → src/modules/identity/models/role.model.ts [Role.updateOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E27",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/permission.service.ts → src/modules/identity/models/user.model.ts [User.updateOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E28",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/permission.service.ts → src/modules/identity/models/user.model.ts [User.updateMany]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E29",
+      "type": "observed_import",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/permission.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E30",
+      "type": "observed_import",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/role.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E31",
+      "type": "observed_import",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E32",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/permission.model.ts [Permission.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E33",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/permission.model.ts [Permission.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E34",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/permission.model.ts [Permission.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E35",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/role.model.ts [Role.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E36",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/role.model.ts [Role.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E37",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/role.model.ts [Role.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E38",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E39",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.create]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E40",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E41",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.updateOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E42",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E43",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.countDocuments]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E44",
+      "type": "observed_call",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/services/permission.service.ts [PermissionService.invalidateRole]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E45",
+      "type": "observed_import",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/permission.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E46",
+      "type": "observed_import",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/role.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E47",
+      "type": "observed_import",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/user.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E48",
+      "type": "observed_import",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/services/permission.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E49",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/permission.model.ts [Permission.findOneAndUpdate]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E50",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/permission.model.ts [Permission.deleteOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E51",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/role.model.ts [Role.findOneAndUpdate]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E52",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/role.model.ts [Role.deleteOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E53",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/user.model.ts [User.findOneAndUpdate]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E54",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/user.model.ts [User.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E55",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/user.model.ts [User.deleteOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E56",
+      "type": "documentary",
+      "summary": "Issue #1: ",
+      "detail": "…ompatible with existing request context middleware 3. **Redis**: Uses existing cache client - `getCacheClient()` from `@infrastructure/messaging/redis` - Aut…",
+      "source": {
+        "kind": "Issue",
+        "number": 1
+      }
+    },
+    {
+      "id": "E57",
+      "type": "documentary",
+      "summary": "Issue #4: ",
+      "detail": "…Implementation ### Core Infrastructure - **Provider Agnostic**: Abstracted `ICacheService` interface supporting interchangeable backends. - **Redis Implementation…",
+      "source": {
+        "kind": "Issue",
+        "number": 4
+      }
+    },
+    {
+      "id": "E58",
+      "type": "documentary",
+      "summary": "Issue #10: ",
+      "detail": "## 1. Schema Definitions (GraphQL) We need to expose the following types and mutations in `src/modules/core/grap…",
+      "source": {
+        "kind": "Issue",
+        "number": 10
+      }
+    },
+    {
+      "id": "E59",
+      "type": "documentary",
+      "summary": "Issue #12: ",
+      "detail": "…he actual creation logic to the `ShareClassService`. ## 3. Schema Definitions (GraphQL) Expose these in `src/modules/core/graphql/share-class.typeDefs.ts`. ### Inpu…",
+      "source": {
+        "kind": "Issue",
+        "number": 12
+      }
+    },
+    {
+      "id": "E60",
+      "type": "documentary",
+      "summary": "Issue #14: ",
+      "detail": "…e class is auto-created (see `SHARE_CLASS_REQUIREMENTS.md`). ### Mutations ```graphql extend type Mutation { \"\"\" Manually create a share class for ERC-1400 listi…",
+      "source": {
+        "kind": "Issue",
+        "number": 14
+      }
+    },
+    {
+      "id": "E61",
+      "type": "documentary",
+      "summary": "Issue #17: Implement Redis-Based Global Permission Caching Infrastructure",
+      "detail": "…ext Our current permission system relies on MongoDB-based caching (`permissionsCache` in User document), which performs poorly under load. We need to transition to…",
+      "source": {
+        "kind": "Issue",
+        "number": 17
+      }
+    },
+    {
+      "id": "E62",
+      "type": "documentary",
+      "summary": "Issue #18: Implement Resource-Level Permission System & Caching",
+      "detail": "…- This prevents accidental DB hits and ensures all checks go through the Redis cache. ### 2. Service Implementation (`ResourceMemberService`) Create `src/modules/…",
+      "source": {
+        "kind": "Issue",
+        "number": 18
+      }
+    },
+    {
+      "id": "E63",
+      "type": "documentary",
+      "summary": "Issue #19: ",
+      "detail": "…ime. ## Objective Configure a strict `commandTimeout` for all Redis clients (`Cache`, `Publisher`, `Subscriber`) to ensure the application fails fast and can trigg…",
+      "source": {
+        "kind": "Issue",
+        "number": 19
+      }
+    },
+    {
+      "id": "E64",
+      "type": "documentary",
+      "summary": "Issue #23: Enhance Permission Query System and Security",
+      "detail": "…tors. ## Objectives 1. Fix security vulnerabilities in existing queries using GraphQL Shield. 2. Add self-service permission queries for logged-in users (`getMy...`)…",
+      "source": {
+        "kind": "Issue",
+        "number": 23
+      }
+    },
+    {
+      "id": "E65",
+      "type": "documentary",
+      "summary": "Issue #24: ",
+      "detail": "## Background The Core module provides GraphQL queries to manage third-party integrations. Currently, these queries are not ex…",
+      "source": {
+        "kind": "Issue",
+        "number": 24
+      }
+    },
+    {
+      "id": "E66",
+      "type": "documentary",
+      "summary": "Issue #29: ",
+      "detail": "…e issue. --- ## Attachments - [Block Registry Excel file](https://github.com/user-attachments/files/25016785/block_registry_phase1.xlsx) - [Updated asset taxonom…",
+      "source": {
+        "kind": "Issue",
+        "number": 29
+      }
+    },
+    {
+      "id": "E67",
+      "type": "documentary",
+      "summary": "Issue #30: ",
+      "detail": "…re class } ``` --- ## 2. Infrastructure Layer (Caching & Keys) ### A. Update Cache Keys **Location**: `src/infrastructure/caching/cache-keys.ts` Add a new names…",
+      "source": {
+        "kind": "Issue",
+        "number": 30
+      }
+    },
+    {
+      "id": "E68",
+      "type": "documentary",
+      "summary": "Issue #33: ",
+      "detail": "…shield/rules.ts` **Add New Rule**: ```typescript export const isUser = rule({ cache: \"contextual\" })(async ( parent, args, ctx: GraphQLContext, ) => { retu…",
+      "source": {
+        "kind": "Issue",
+        "number": 33
+      }
+    },
+    {
+      "id": "E69",
+      "type": "documentary",
+      "summary": "Issue #34: ",
+      "detail": "…module caching implementation: 1. **Bug Fix**: `testSMTPConnection` uses stale cached data after configuration updates 2. **Enhancement**: Add caching for `Integrat…",
+      "source": {
+        "kind": "Issue",
+        "number": 34
+      }
+    },
+    {
+      "id": "E70",
+      "type": "documentary",
+      "summary": "Issue #35: Enrich User Queries with Auth Provider Metadata",
+      "detail": "…us This data should be fetched from the auth provider (Firebase) on-demand and cached for 3 minutes. --- ## Implementation ### Part 1: Add GraphQL Type **File**…",
+      "source": {
+        "kind": "Issue",
+        "number": 35
+      }
+    },
+    {
+      "id": "E71",
+      "type": "documentary",
+      "summary": "Issue #36: ",
+      "detail": "…l.js\"; import { CurrencyType } from \"../../../common/enum/index.js\"; import { Cacheable, CacheEvict, CacheKeys, } from \"../../../infrastructure/caching/index.j…",
+      "source": {
+        "kind": "Issue",
+        "number": 36
+      }
+    },
+    {
+      "id": "E72",
+      "type": "documentary",
+      "summary": "Issue #37: ",
+      "detail": "…` Method**: Add `active` filter parameter and caching: ```typescript import { Cacheable, CacheEvict } from '@type-cacheable/core'; /** * Get integrations with op…",
+      "source": {
+        "kind": "Issue",
+        "number": 37
+      }
+    },
+    {
+      "id": "E73",
+      "type": "documentary",
+      "summary": "Issue #43: ",
+      "detail": "…Promise<string> { const settings = await this.getSettings(); // Uses existing cache if (applicationType === ApplicationType.ADMIN) { if (!settings.adminFron…",
+      "source": {
+        "kind": "Issue",
+        "number": 43
+      }
+    },
+    {
+      "id": "E74",
+      "type": "documentary",
+      "summary": "Issue #44: Implement User Document Caching in GraphQL Context",
+      "detail": "…quest → createContext() → AuthResolver.resolve(token) → getUserByToken() [Cached: 3 min] → resolveUserFromTokenPayload() [NOT CACHED] → User.findOne({ auth…",
+      "source": {
+        "kind": "Issue",
+        "number": 44
+      }
+    },
+    {
+      "id": "E75",
+      "type": "documentary",
+      "summary": "Issue #46: ",
+      "detail": "…tity module** that: - Normalizes the email (e.g., lowercase). - Checks **Redis cache first** using a standardized cache key. - Falls back to **database lookup** onl…",
+      "source": {
+        "kind": "Issue",
+        "number": 46
+      }
+    },
+    {
+      "id": "E76",
+      "type": "documentary",
+      "summary": "Issue #48: Complete GraphQL Codegen Model Mapper Configuration",
+      "detail": "## Problem The `GetCurrencies` GraphQL query fails with: ```json { \"errors\": [ { \"message\": \"Cannot retur…",
+      "source": {
+        "kind": "Issue",
+        "number": 48
+      }
+    },
+    {
+      "id": "E77",
+      "type": "documentary",
+      "summary": "Issue #49: GraphQL Currency Query Returns Null ID Error",
+      "detail": "## Problem The `GetCurrencies` GraphQL query fails with: ```json { \"errors\": [ { \"message\": \"Cannot retur…",
+      "source": {
+        "kind": "Issue",
+        "number": 49
+      }
+    },
+    {
+      "id": "E78",
+      "type": "documentary",
+      "summary": "Issue #54: ",
+      "detail": "…rds and can cause downstream failures. **What needs to happen:** - Import the `UserHolding` model (from `src/modules/core/models/user-holding.model.ts`) - Before d…",
+      "source": {
+        "kind": "Issue",
+        "number": 54
+      }
+    },
+    {
+      "id": "E79",
+      "type": "documentary",
+      "summary": "Issue #55: Fix error handling and audit trail in currency service and user search",
+      "detail": "…Error(\"Cannot update core configuration of system-managed currency\"); ``` The GraphQL error formatter relies on `createError` to map errors to proper HTTP statuses a…",
+      "source": {
+        "kind": "Issue",
+        "number": 55
+      }
+    },
+    {
+      "id": "E80",
+      "type": "documentary",
+      "summary": "Issue #56: ",
+      "detail": "…p` and `AnyNotifyCommand`: ```ts export interface VerificationEmailPayload { userId: string; email: string; name: string; verificationUrl: string; expire…",
+      "source": {
+        "kind": "Issue",
+        "number": 56
+      }
+    },
+    {
+      "id": "E81",
+      "type": "documentary",
+      "summary": "Issue #57: Minor improvements: auth logging, memory cache limit, subscription dates, daysLeft resolver",
+      "detail": "…on of smaller improvements that improve logging, add a safety net to the memory cache, fix a missing validation, and implement a stub resolver. --- ## 1. Replace `…",
+      "source": {
+        "kind": "Issue",
+        "number": 57
+      }
+    },
+    {
+      "id": "E82",
+      "type": "documentary",
+      "summary": "Issue #62: ",
+      "detail": "…c/modules/blockchain/models/smart-contract.model.ts`) but the entire blockchain GraphQL layer is commented out and **there is no service or mutation that creates `Smar…",
+      "source": {
+        "kind": "Issue",
+        "number": 62
+      }
+    },
+    {
+      "id": "E83",
+      "type": "documentary",
+      "summary": "PR #2: ",
+      "detail": "…cture**: Added `RedisRateLimiter` and `MemoryRateLimiter` implementations. - **GraphQL**: Integrated `GraphQLRateLimitPlugin` to enforce limits on `didResolveOperatio…",
+      "source": {
+        "kind": "PR",
+        "number": 2
+      }
+    },
+    {
+      "id": "E84",
+      "type": "documentary",
+      "summary": "PR #5: ",
+      "detail": "…ted robust Redis caching with memory fallback and circuit breaker. - Added `ICacheService` with strictly typed `CacheKeys`. - Added `@Cacheable`/`@CacheEvict` de…",
+      "source": {
+        "kind": "PR",
+        "number": 5
+      }
+    },
+    {
+      "id": "E85",
+      "type": "documentary",
+      "summary": "PR #11: ",
+      "detail": "…ervices/listing.service.ts:145:2-247:3)) ### ✅ BlockchainConfig Support - **GraphQL Input**: [BlockchainConfigInput](cci:2://file:///home/sanoy/Vesta/rwatp-core/sr…",
+      "source": {
+        "kind": "PR",
+        "number": 11
+      }
+    },
+    {
+      "id": "E86",
+      "type": "documentary",
+      "summary": "PR #13: ",
+      "detail": "…ts` | ShareClassService with CRUD + `createDefaultClass` | | `src/modules/core/graphql/share-class.typeDefs.ts` | GraphQL schema (types, inputs, queries, mutations) |…",
+      "source": {
+        "kind": "PR",
+        "number": 13
+      }
+    },
+    {
+      "id": "E87",
+      "type": "documentary",
+      "summary": "PR #15: ",
+      "detail": "…ded - **Blockchain Config Support** - Added `blockchainConfig` to Listing GraphQL inputs - Updated Zod validations accordingly - **Token Standard Immutabil…",
+      "source": {
+        "kind": "PR",
+        "number": 15
+      }
+    },
+    {
+      "id": "E88",
+      "type": "documentary",
+      "summary": "PR #16: ",
+      "detail": "…sions (`share-class.create`, `share-class.supply.manage`, etc.) integrated with GraphQL Shield. ### 🐛 Bug Fix * Fixed `Schema hasn't been registered for model \"C…",
+      "source": {
+        "kind": "PR",
+        "number": 16
+      }
+    },
+    {
+      "id": "E89",
+      "type": "documentary",
+      "summary": "PR #20: implemented Redis cache-Aside architecture for global permissions + redis command timeout fix",
+      "detail": "…DB-based permission checking system with a high-performance **Distributed Redis Cache-Aside** architecture (Issue #17). Hardens the entire caching infrastructure aga…",
+      "source": {
+        "kind": "PR",
+        "number": 20
+      }
+    },
+    {
+      "id": "E90",
+      "type": "documentary",
+      "summary": "PR #21: 18 feature/resource permission caching",
+      "detail": "…:120:2-152:3) specifically for resources. * **Caching**: Implements the \"Cache-Aside\" pattern to seamlessly handle Redis hits/misses. ### 2. O(1) Caching A…",
+      "source": {
+        "kind": "PR",
+        "number": 21
+      }
+    },
+    {
+      "id": "E91",
+      "type": "documentary",
+      "summary": "PR #22: ",
+      "detail": "…em The development branch failed to start on Cloud Run with the error: > \"The user-provided container failed to start and listen on the PORT (8080)\" ### Root C…",
+      "source": {
+        "kind": "PR",
+        "number": 22
+      }
+    },
+    {
+      "id": "E92",
+      "type": "documentary",
+      "summary": "PR #25: ",
+      "detail": "…randing, logos, images) 2. **TypeError in permission computation** causing all GraphQL operations to fail Both issues have been causing cascading failures in the p…",
+      "source": {
+        "kind": "PR",
+        "number": 25
+      }
+    },
+    {
+      "id": "E93",
+      "type": "documentary",
+      "summary": "PR #26: 23 feat/enhance permission queries",
+      "detail": "….users.view` permission (admin-only access) ```diff // src/modules/identity/graphql/permissions.ts - getUserRoles: hasPermission(PERMISSION_REGISTRY.IAM_ROLES_VIE…",
+      "source": {
+        "kind": "PR",
+        "number": 26
+      }
+    },
+    {
+      "id": "E94",
+      "type": "documentary",
+      "summary": "PR #27: implemented fix for the backend mongodb connection + graphql setup sy…",
+      "detail": "# Fix: GraphQL Authentication Failures Due to Server Initialization Order ## Problem Graph…",
+      "source": {
+        "kind": "PR",
+        "number": 27
+      }
+    },
+    {
+      "id": "E95",
+      "type": "documentary",
+      "summary": "PR #28: ",
+      "detail": "…he method failed with `settings.save is not a function`. The method was using a cached result (plain object); it now forces a database fetch (`ensureSettings`) to ge…",
+      "source": {
+        "kind": "PR",
+        "number": 28
+      }
+    },
+    {
+      "id": "E96",
+      "type": "documentary",
+      "summary": "PR #32: ",
+      "detail": "…m/index.ts` | Export new `block-context.enums` | | `src/infrastructure/caching/cache-keys.ts` | Added `CONTENT_BLOCKS.LISTING` and `CONTENT_BLOCKS.SHARE_CLASS` cach…",
+      "source": {
+        "kind": "PR",
+        "number": 32
+      }
+    },
+    {
+      "id": "E97",
+      "type": "documentary",
+      "summary": "PR #38: implemented caching enhancements and testSMTPConnection cache invalidation upon update of config",
+      "detail": "…nts outlined in Issue #34: 1. **Bug Fix**: `testSMTPConnection` now bypasses cache to use fresh credentials 2. **Enhancement**: Added caching for `IntegrationSer…",
+      "source": {
+        "kind": "PR",
+        "number": 38
+      }
+    },
+    {
+      "id": "E98",
+      "type": "documentary",
+      "summary": "PR #40: ",
+      "detail": "…**: Stores `name`, `description`, `issuer`, `subject`, `roles`, and `permissionsCache`. - **Identity**: Unique compound index on `(issuer, subject)` ensures OID…",
+      "source": {
+        "kind": "PR",
+        "number": 40
+      }
+    },
+    {
+      "id": "E99",
+      "type": "documentary",
+      "summary": "PR #41: ",
+      "detail": "…**: Stores `name`, `description`, `issuer`, `subject`, `roles`, and `permissionsCache`. - **Identity**: Unique compound index on `(issuer, subject)` ensures OID…",
+      "source": {
+        "kind": "PR",
+        "number": 41
+      }
+    },
+    {
+      "id": "E100",
+      "type": "documentary",
+      "summary": "PR #42: 35 enhancement/user query auth provider metadata addition",
+      "detail": "…on-demand. It introduces a new `authUser` field on the `User` type, backed by a cached service method that fetches data directly from the Auth Provider. ## Change…",
+      "source": {
+        "kind": "PR",
+        "number": 42
+      }
+    },
+    {
+      "id": "E101",
+      "type": "documentary",
+      "summary": "PR #45: ",
+      "detail": "…ated tokens. 4. **Performance**: Implemented aggressive caching strategies (`@Cacheable`, `@CacheEvict`) to ensure sub-millisecond read performance for high-traffi…",
+      "source": {
+        "kind": "PR",
+        "number": 45
+      }
+    },
+    {
+      "id": "E102",
+      "type": "documentary",
+      "summary": "PR #47: ",
+      "detail": "…**`getIntegrations`**: Supports filtering by `category` and `active` status. Cached. * **`toggleIntegrationStatus`**: Updates `isActive` and populates audit fi…",
+      "source": {
+        "kind": "PR",
+        "number": 47
+      }
+    },
+    {
+      "id": "E103",
+      "type": "documentary",
+      "summary": "PR #50: Fix: GraphQL Currency Null ID Error",
+      "detail": "## Problem The `GetCurrencies` GraphQL query was failing with the following error: ```json { \"errors\": [ {…",
+      "source": {
+        "kind": "PR",
+        "number": 50
+      }
+    },
+    {
+      "id": "E104",
+      "type": "documentary",
+      "summary": "PR #51: ",
+      "detail": "…Closes #43 --- ## Summary Implemented two authenticated, self-service GraphQL mutations that allow users to request a password reset link or an email verific…",
+      "source": {
+        "kind": "PR",
+        "number": 51
+      }
+    },
+    {
+      "id": "E105",
+      "type": "documentary",
+      "summary": "PR #52: implemented user document caching",
+      "detail": "…ll mutation boundaries. The implementation also updates the type system to use `CachedUser` (plain object) instead of Mongoose documents in the context, ensuring bet…",
+      "source": {
+        "kind": "PR",
+        "number": 52
+      }
+    },
+    {
+      "id": "E106",
+      "type": "documentary",
+      "summary": "PR #53: ",
+      "detail": "…he registration flow. It introduces a `checkEmailAvailability` mutation that is cached (Redis, 5-min TTL) and rate-limited (10 reqs/min per IP) to prevent abuse whil…",
+      "source": {
+        "kind": "PR",
+        "number": 53
+      }
+    },
+    {
+      "id": "E107",
+      "type": "documentary",
+      "summary": "PR #58: implemented auth logging, memory cache limit, subscription date validation, daysLeft resolver for listings",
+      "detail": "# Issue #57 — Minor Improvements: Auth Logging, Memory Cache Limit, Subscription Dates, `daysLeft` Resolver **Branch:** enhancement/57-au…",
+      "source": {
+        "kind": "PR",
+        "number": 58
+      }
+    },
+    {
+      "id": "E108",
+      "type": "documentary",
+      "summary": "PR #59: ",
+      "detail": "…asses with live investor holdings could be silently deleted — leaving orphaned `UserHolding` records pointing at a non-existent share class. ### Fix Activated t…",
+      "source": {
+        "kind": "PR",
+        "number": 59
+      }
+    },
+    {
+      "id": "E109",
+      "type": "documentary",
+      "summary": "PR #60: implemented error handling and audit trail in currency service and user search",
+      "detail": "…### Problem Every error in the service used `throw new Error(\"message\")`. The GraphQL error formatter maps a plain `Error` to `INTERNAL_SERVER_ERROR` (500), so the c…",
+      "source": {
+        "kind": "PR",
+        "number": 60
+      }
+    },
+    {
+      "id": "E110",
+      "type": "documentary",
+      "summary": "PR #61: ",
+      "detail": "…otifyCommand`: ```typescript export interface VerificationEmailPayload { userId: string; email: string; name: string; verificationUrl: string; ex…",
+      "source": {
+        "kind": "PR",
+        "number": 61
+      }
+    },
+    {
+      "id": "E111",
+      "type": "documentary",
+      "summary": "PR #63: ",
+      "detail": "…and automatically transition their status from `APPROVED` → `DEPLOYED`. Two new GraphQL mutations are exposed (`recordListingDeployment`, `recordShareClassDeployment`)…",
+      "source": {
+        "kind": "PR",
+        "number": 63
+      }
+    },
+    {
+      "id": "E112",
+      "type": "historical",
+      "summary": "touched 7x: src/modules/core/graphql/permissions.ts",
+      "detail": "src/modules/core/models/share-class.model.ts, scripts/rbac/refresh-user-permissions.js, src/common/graphql/shield/permissions.js",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/graphql/permissions.ts"
+      }
+    },
+    {
+      "id": "E113",
+      "type": "historical",
+      "summary": "touched 7x: src/modules/identity/services/user.service.ts",
+      "detail": "src/modules/identity/models/user.model.ts, src/common/graphql/shield/permissions.js",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E114",
+      "type": "historical",
+      "summary": "touched 6x: src/modules/identity/models/user.model.ts",
+      "detail": "src/modules/identity/models/role.model.ts, src/modules/identity/services/user.service.ts, src/common/graphql/shield/permissions.js, src/modules/identity/graphql/permissions.ts, src/modules/identity/graphql/user.resolvers.ts, src/modules/identity/graphql/user.typeDefs.ts, src/modules/identity/models/permission.model.ts, src/modules/identity/services/permission.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/models/user.model.ts"
+      }
+    },
+    {
+      "id": "E115",
+      "type": "historical",
+      "summary": "touched 6x: src/modules/identity/services/permission.service.ts",
+      "detail": "src/modules/identity/graphql/permissions.ts, src/modules/identity/models/role.model.ts, src/modules/identity/models/user.model.ts, src/common/graphql/shield/permissions.js",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E116",
+      "type": "historical",
+      "summary": "touched 5x: src/common/graphql/shield/permissions.js",
+      "detail": "src/modules/identity/graphql/permissions.ts, src/modules/identity/graphql/user.resolvers.ts, src/modules/identity/graphql/user.typeDefs.ts, src/modules/identity/models/user.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/common/graphql/shield/permissions.js"
+      }
+    },
+    {
+      "id": "E117",
+      "type": "historical",
+      "summary": "touched 5x: src/modules/identity/graphql/permissions.ts",
+      "detail": "src/common/graphql/shield/permissions.js, src/modules/identity/graphql/user.resolvers.ts, src/modules/identity/graphql/user.typeDefs.ts, src/modules/identity/models/user.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/graphql/permissions.ts"
+      }
+    },
+    {
+      "id": "E118",
+      "type": "historical",
+      "summary": "touched 4x: src/modules/core/models/share-class.model.ts",
+      "detail": "src/modules/core/graphql/permissions.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/models/share-class.model.ts"
+      }
+    },
+    {
+      "id": "E119",
+      "type": "historical",
+      "summary": "touched 4x: src/modules/identity/models/permission.model.ts",
+      "detail": "src/modules/identity/models/role.model.ts, src/modules/identity/models/user.model.ts, src/common/graphql/shield/permissions.js",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/models/permission.model.ts"
+      }
+    },
+    {
+      "id": "E120",
+      "type": "historical",
+      "summary": "touched 4x: src/modules/identity/models/role.model.ts",
+      "detail": "src/modules/identity/models/user.model.ts, src/modules/identity/models/permission.model.ts, src/modules/identity/services/permission.service.ts, src/common/graphql/shield/permissions.js",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E121",
+      "type": "historical",
+      "summary": "touched 3x: examples/graphql/shield-permissions.js",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "examples/graphql/shield-permissions.js"
+      }
+    },
+    {
+      "id": "E122",
+      "type": "historical",
+      "summary": "touched 3x: src/modules/identity/graphql/user.resolvers.ts",
+      "detail": "src/common/graphql/shield/permissions.js, src/modules/identity/graphql/permissions.ts, src/modules/identity/graphql/user.typeDefs.ts, src/modules/identity/models/user.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/graphql/user.resolvers.ts"
+      }
+    },
+    {
+      "id": "E123",
+      "type": "historical",
+      "summary": "touched 3x: src/modules/identity/graphql/user.typeDefs.ts",
+      "detail": "src/common/graphql/shield/permissions.js, src/modules/identity/graphql/permissions.ts, src/modules/identity/graphql/user.resolvers.ts, src/modules/identity/models/user.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/graphql/user.typeDefs.ts"
+      }
+    },
+    {
+      "id": "E124",
+      "type": "historical",
+      "summary": "touched 2x: docs/graphql-reference-resolver.md",
+      "detail": "docs/user-deletion-custom-permissions.md, docs/user-query-operations.md",
+      "source": {
+        "kind": "git",
+        "file": "docs/graphql-reference-resolver.md"
+      }
+    },
+    {
+      "id": "E125",
+      "type": "historical",
+      "summary": "touched 2x: docs/user-deletion-custom-permissions.md",
+      "detail": "docs/graphql-reference-resolver.md, docs/user-query-operations.md",
+      "source": {
+        "kind": "git",
+        "file": "docs/user-deletion-custom-permissions.md"
+      }
+    },
+    {
+      "id": "E126",
+      "type": "historical",
+      "summary": "touched 2x: docs/user-query-operations.md",
+      "detail": "docs/graphql-reference-resolver.md, docs/user-deletion-custom-permissions.md",
+      "source": {
+        "kind": "git",
+        "file": "docs/user-query-operations.md"
+      }
+    },
+    {
+      "id": "E127",
+      "type": "historical",
+      "summary": "touched 2x: scripts/rbac/refresh-user-permissions.js",
+      "detail": "src/modules/core/graphql/permissions.ts",
+      "source": {
+        "kind": "git",
+        "file": "scripts/rbac/refresh-user-permissions.js"
+      }
+    },
+    {
+      "id": "E128",
+      "type": "historical",
+      "summary": "touched 2x: src/graphql/modules/user/user.resolvers.ts",
+      "detail": "examples/graphql/shield-permissions.js",
+      "source": {
+        "kind": "git",
+        "file": "src/graphql/modules/user/user.resolvers.ts"
+      }
+    },
+    {
+      "id": "E129",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/compliance/graphql/permissions.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/compliance/graphql/permissions.ts"
+      }
+    },
+    {
+      "id": "E130",
+      "type": "historical",
+      "summary": "touched 1x: scripts/verify-auth-user-cache.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "scripts/verify-auth-user-cache.ts"
+      }
+    },
+    {
+      "id": "E131",
+      "type": "historical",
+      "summary": "touched 1x: src/graphql/loaders/user.loader.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/graphql/loaders/user.loader.ts"
+      }
+    },
+    {
+      "id": "E132",
+      "type": "historical",
+      "summary": "touched 1x: src/graphql/modules/user/permissions.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/graphql/modules/user/permissions.ts"
+      }
+    },
+    {
+      "id": "E133",
+      "type": "historical",
+      "summary": "touched 1x: src/graphql/modules/user/user.typeDefs.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/graphql/modules/user/user.typeDefs.ts"
+      }
+    },
+    {
+      "id": "E134",
+      "type": "historical",
+      "summary": "touched 1x: src/graphql/shield/permissions.js",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/graphql/shield/permissions.js"
+      }
+    },
+    {
+      "id": "E135",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/graphql/content-block-permissions.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E136",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/graphql/share-class-permissions.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/graphql/share-class-permissions.ts"
+      }
+    },
+    {
+      "id": "E137",
+      "type": "historical",
+      "summary": "touched 1x: tests/rbac/verify-permission-cache.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E138",
+      "type": "boundary",
+      "summary": "unresolved: src/common/graphql/shield/permissions.js",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E139",
+      "type": "boundary",
+      "summary": "unresolved: src/graphql/loaders/user.loader.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E140",
+      "type": "boundary",
+      "summary": "unresolved: src/graphql/modules/user/permissions.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E141",
+      "type": "boundary",
+      "summary": "unresolved: src/graphql/modules/user/user.resolvers.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E142",
+      "type": "boundary",
+      "summary": "unresolved: src/graphql/modules/user/user.typeDefs.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E143",
+      "type": "boundary",
+      "summary": "unresolved: src/graphql/shield/permissions.js",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E144",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/compliance/graphql/permissions.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E145",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/core/graphql/permissions.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E146",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/core/graphql/share-class-permissions.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E147",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/identity/graphql/permissions.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E148",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/identity/graphql/user.resolvers.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E149",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/identity/graphql/user.typeDefs.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    }
+  ]
+}

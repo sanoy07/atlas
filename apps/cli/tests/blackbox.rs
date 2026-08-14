@@ -707,9 +707,10 @@ fn investigate_json_flag_emits_valid_json_with_schema_version() {
     let parsed: serde_json::Value =
         serde_json::from_str(&output).expect("--json output must be valid JSON");
 
-    assert_eq!(parsed["schema_version"].as_u64().unwrap(), 4, "schema_version must be 4 (v0.7 related_decisions)");
+    assert_eq!(parsed["schema_version"].as_u64().unwrap(), 6, "schema_version must be 6 (score breakdown field)");
     assert!(parsed["anchors"].is_array(),                "expected 'anchors' array");
     assert!(parsed["effective_anchors"].is_array(),      "expected 'effective_anchors' array");
+    assert!(parsed["lexicon_expansions"].is_array(),     "expected 'lexicon_expansions' array");
     assert!(parsed["concept_expansions"].is_array(),     "expected 'concept_expansions' array");
     assert!(parsed["core_candidates"].is_array(),        "expected 'core_candidates' array");
     assert!(parsed["supporting_artifacts"].is_array(),   "expected 'supporting_artifacts' array");
@@ -1109,5 +1110,429 @@ fn structural_model_ref_gaps_surface_common_peer_models() {
     assert!(
         output.contains("2 of 2 peers"),
         "expected '2 of 2 peers' annotation:\n{output}"
+    );
+}
+
+// ── Project command family ───────────────────────────────────────────────────
+//
+// These tests exercise the wire-up of the previously-dormant project layer:
+// init → register → ingest → census.  The project command family introduces
+// no new IR types or storage tables — it only composes the existing per-repo
+// pipeline.  Correspondingly, the tests check composition (multiple repos
+// under one project) and observation (census reports what is on disk), not
+// any new abstraction.
+
+/// A project-scoped harness that keeps one shared SQLite DB across multiple
+/// repositories, so `atlas project ingest <p>` can fan out across them.
+struct ProjectFixture {
+    _db_dir: TempDir,
+    _repo_dir_a: TempDir,
+    _repo_dir_b: TempDir,
+    db:     String,
+    repo_a: String,
+    repo_b: String,
+}
+
+impl ProjectFixture {
+    fn create() -> Self {
+        let db_dir = tempfile::tempdir().expect("db tempdir");
+        let db     = db_dir.path().join("atlas.db").to_str().unwrap().to_string();
+
+        let (repo_a_dir, repo_a) = init_project_git_repo("repo-a", "auth.ts", "export const a = 1;\n");
+        let (repo_b_dir, repo_b) = init_project_git_repo("repo-b", "handler.ts", "export const b = 2;\n");
+
+        ProjectFixture {
+            _db_dir: db_dir,
+            _repo_dir_a: repo_a_dir,
+            _repo_dir_b: repo_b_dir,
+            db,
+            repo_a,
+            repo_b,
+        }
+    }
+
+    /// Run `atlas` from `cwd` with the shared DB.
+    fn atlas(&self, cwd: &str, args: &[&str]) -> String {
+        let out = Command::new(atlas_bin())
+            .args(args)
+            .current_dir(cwd)
+            .env("ATLAS_DB", &self.db)
+            .output()
+            .expect("atlas binary");
+        assert!(
+            out.status.success(),
+            "atlas {:?} in {} failed:\nstdout: {}\nstderr: {}",
+            args, cwd,
+            String::from_utf8_lossy(&out.stdout),
+            String::from_utf8_lossy(&out.stderr),
+        );
+        String::from_utf8(out.stdout).unwrap()
+    }
+}
+
+/// Create a temp git repo with one file and one commit; return (tempdir, canonical path).
+fn init_project_git_repo(name: &str, filename: &str, content: &str) -> (TempDir, String) {
+    let dir  = tempfile::tempdir().expect("tempdir");
+    let raw  = dir.path().to_str().unwrap().to_string();
+    // Canonicalize so the path we register matches what canonicalize will produce
+    // inside register_repository_at_path.
+    let path = std::fs::canonicalize(&raw)
+        .map(|p| p.to_string_lossy().into_owned())
+        .unwrap_or(raw);
+
+    let git = |args: &[&str]| {
+        let out = Command::new("git")
+            .args(args)
+            .current_dir(&path)
+            .output()
+            .expect("git");
+        assert!(out.status.success(),
+            "git {:?} in {} failed: {}",
+            args, name, String::from_utf8_lossy(&out.stderr));
+    };
+
+    git(&["init", "-b", "main"]);
+    git(&["config", "user.email", "fixture@test.com"]);
+    git(&["config", "user.name",  "Fixture"]);
+
+    // A minimal package.json so the inspector has something to observe.
+    std::fs::write(
+        format!("{path}/package.json"),
+        format!(r#"{{"name":"{name}","dependencies":{{"mongoose":"^7.0.0"}}}}"#),
+    ).unwrap();
+    std::fs::write(format!("{path}/{filename}"), content).unwrap();
+    git(&["add", "."]);
+
+    let out = Command::new("git")
+        .args(["commit", "-m", "init"])
+        .current_dir(&path)
+        .env("GIT_AUTHOR_DATE",    "2024-01-01T10:00:00+0000")
+        .env("GIT_COMMITTER_DATE", "2024-01-01T10:00:00+0000")
+        .output()
+        .expect("git commit");
+    assert!(out.status.success(), "commit failed for {name}");
+
+    (dir, path)
+}
+
+#[test]
+fn project_init_is_idempotent() {
+    let f = ProjectFixture::create();
+    let a = f.atlas(&f.repo_a, &["project", "init", "rwatp"]);
+    assert!(a.contains("Project 'rwatp' ready"), "init output:\n{a}");
+    let b = f.atlas(&f.repo_a, &["project", "init", "rwatp"]);
+    assert!(b.contains("Project 'rwatp' ready"), "re-init output:\n{b}");
+
+    let list = f.atlas(&f.repo_a, &["project", "list"]);
+    assert_eq!(list.matches("rwatp").count(), 1, "duplicate project:\n{list}");
+}
+
+#[test]
+fn project_register_and_list_shows_two_repos() {
+    let f = ProjectFixture::create();
+    f.atlas(&f.repo_a, &["project", "init", "rwatp"]);
+    f.atlas(&f.repo_a, &["project", "register", "rwatp", &f.repo_a, "--name", "core"]);
+    f.atlas(&f.repo_a, &["project", "register", "rwatp", &f.repo_b, "--name", "notifier"]);
+
+    let listing = f.atlas(&f.repo_a, &["project", "list", "rwatp"]);
+    assert!(listing.contains("core"),     "core missing:\n{listing}");
+    assert!(listing.contains("notifier"), "notifier missing:\n{listing}");
+    assert!(listing.contains("accessible"),   "accessibility flag missing:\n{listing}");
+    assert!(listing.contains("not-ingested"), "ingestion flag missing:\n{listing}");
+}
+
+#[test]
+fn project_ingest_fans_out_and_marks_ingested() {
+    let f = ProjectFixture::create();
+    f.atlas(&f.repo_a, &["project", "init", "rwatp"]);
+    f.atlas(&f.repo_a, &["project", "register", "rwatp", &f.repo_a, "--name", "core"]);
+    f.atlas(&f.repo_a, &["project", "register", "rwatp", &f.repo_b, "--name", "notifier"]);
+
+    let ingest = f.atlas(&f.repo_a, &["project", "ingest", "rwatp"]);
+    assert!(ingest.contains("[done] core"),     "core not ingested:\n{ingest}");
+    assert!(ingest.contains("[done] notifier"), "notifier not ingested:\n{ingest}");
+    assert!(ingest.contains("Ingested 2 repositories"), "summary missing:\n{ingest}");
+
+    // After ingest the listing should show both as ingested.
+    let listing = f.atlas(&f.repo_a, &["project", "list", "rwatp"]);
+    assert_eq!(listing.matches("ingested").count(), 2,
+               "expected ingestion_state=ingested for both repos:\n{listing}");
+
+    // Existing per-repo commands must still work against the shared DB.
+    let explain = f.atlas(&f.repo_a, &["explain", "auth.ts"]);
+    assert!(explain.contains("init"), "per-repo explain broken:\n{explain}");
+}
+
+#[test]
+fn project_census_reports_observed_claims_per_repo() {
+    let f = ProjectFixture::create();
+    f.atlas(&f.repo_a, &["project", "init", "rwatp"]);
+    f.atlas(&f.repo_a, &["project", "register", "rwatp", &f.repo_a, "--name", "core"]);
+    f.atlas(&f.repo_a, &["project", "register", "rwatp", &f.repo_b, "--name", "notifier"]);
+
+    let census = f.atlas(&f.repo_a, &["project", "census", "rwatp"]);
+
+    assert!(census.contains("── core"),     "core header missing:\n{census}");
+    assert!(census.contains("── notifier"), "notifier header missing:\n{census}");
+    // mongoose was declared in both package.jsons — inspector should surface it
+    // as Persistence for both repos.
+    assert!(census.contains("mongoose"), "mongoose claim missing:\n{census}");
+    // Every repo should report a Runtime observation (Node.js) since we wrote a package.json.
+    assert!(census.contains("Node.js"), "Node.js runtime not observed:\n{census}");
+}
+
+#[test]
+fn project_census_json_emits_valid_document() {
+    let f = ProjectFixture::create();
+    f.atlas(&f.repo_a, &["project", "init", "rwatp"]);
+    f.atlas(&f.repo_a, &["project", "register", "rwatp", &f.repo_a, "--name", "core"]);
+
+    let json = f.atlas(&f.repo_a, &["project", "census", "rwatp", "--json"]);
+    let doc: serde_json::Value = serde_json::from_str(&json)
+        .expect("census --json should be valid JSON");
+
+    assert_eq!(doc["schema_version"], 1);
+    assert_eq!(doc["project"]["name"], "rwatp");
+    let entries = doc["entries"].as_array().expect("entries array");
+    assert_eq!(entries.len(), 1);
+    let claims = entries[0]["claims"].as_array().expect("claims array");
+    assert!(!claims.is_empty(), "should have observed at least one claim from package.json");
+}
+
+// ── Reasoning investigation loop (evidence packet + optional local AI) ───────
+
+#[test]
+fn investigate_question_no_ai_emits_reasoning_json() {
+    let f = Fixture::create();
+    f.run_ok(&["ingest", "."]);
+
+    // Quoted-style question: single argv with spaces → reasoning path.
+    let output = f.run_ok(&[
+        "investigate",
+        "auth session timeout",
+        "--no-ai",
+        "--json",
+    ]);
+    let parsed: serde_json::Value =
+        serde_json::from_str(&output).expect("reasoning --json must be valid JSON");
+    assert_eq!(parsed["schema_version"], 1);
+    assert_eq!(parsed["mode"], "deterministic_only");
+    assert!(parsed["packet"].is_object(), "packet required");
+    assert!(parsed["packet"]["limitations"].as_array().unwrap().len() > 0);
+    assert!(parsed["what_atlas_does_not_know"].is_array());
+    assert!(parsed["question"].as_str().unwrap().contains("auth"));
+}
+
+#[test]
+fn investigate_file_flag_seeds_neighborhood() {
+    let f = Fixture::create();
+    f.run_ok(&["ingest", "."]);
+
+    let output = f.run_ok(&[
+        "investigate",
+        "--file",
+        "auth.ts",
+        "--no-ai",
+        "--json",
+    ]);
+    let parsed: serde_json::Value = serde_json::from_str(&output).unwrap();
+    let cores = parsed["packet"]["investigation"]["core_candidates"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    let has_auth = cores.iter().any(|c| c["file"].as_str() == Some("auth.ts"));
+    assert!(has_auth, "seed file auth.ts must appear in core_candidates:\n{output}");
+}
+
+#[test]
+fn investigate_legacy_anchors_still_work_with_raw() {
+    let f = Fixture::create();
+    f.run_ok(&["ingest", "."]);
+    let output = f.run_ok(&["investigate", "auth", "--raw"]);
+    assert!(
+        output.contains("CORE IMPLEMENTATION NEIGHBORHOOD"),
+        "legacy anchor mode must still render core neighborhood:\n{output}"
+    );
+}
+
+// ── DB resolution (repo-root anchored, not cwd-relative) ─────────────────────
+
+/// Every read command previously resolved the DB as cwd-relative `./atlas.db`,
+/// so running `atlas` from a subdirectory silently opened a *different*, empty
+/// database and reported "no history" instead of the ingested evidence.
+#[test]
+fn db_resolves_from_repo_root_not_cwd() {
+    let f = Fixture::create();
+    let repo = std::fs::canonicalize(&f.repo).unwrap();
+
+    // Ingest with no ATLAS_DB set: the DB belongs at the repository root.
+    let out = Command::new(atlas_bin())
+        .args(["ingest", "."])
+        .current_dir(&repo)
+        .env_remove("ATLAS_DB")
+        .output()
+        .expect("atlas ingest");
+    assert!(
+        out.status.success(),
+        "ingest failed:\n{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert!(
+        repo.join("atlas.db").is_file(),
+        "ingest must create the DB at the repo root, not the cwd"
+    );
+
+    // A read command run from deep inside the tree must find the same evidence.
+    let sub = repo.join("src/deep/nested");
+    std::fs::create_dir_all(&sub).unwrap();
+    let out = Command::new(atlas_bin())
+        .args(["hot-files"])
+        .current_dir(&sub)
+        .env_remove("ATLAS_DB")
+        .output()
+        .expect("atlas hot-files");
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    assert!(
+        out.status.success(),
+        "hot-files from subdirectory failed:\n{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    assert!(
+        stdout.contains("auth.ts"),
+        "subdirectory read must see repo-root evidence, got:\n{stdout}"
+    );
+    assert!(
+        !sub.join("atlas.db").exists(),
+        "must not create a stray second database inside the subdirectory"
+    );
+}
+
+/// `ATLAS_DB` is the explicit override the eval harness and multi-repo
+/// workflows depend on; repo-root anchoring must not shadow it.
+#[test]
+fn atlas_db_env_overrides_repo_root() {
+    let f = Fixture::create();
+    let repo = std::fs::canonicalize(&f.repo).unwrap();
+
+    f.run_ok(&["ingest", "."]);
+
+    assert!(
+        std::path::Path::new(&f.db).is_file(),
+        "ATLAS_DB path must be used verbatim"
+    );
+    assert!(
+        !repo.join("atlas.db").exists(),
+        "explicit ATLAS_DB must not also write a DB at the repo root"
+    );
+}
+
+// ── Evidence freshness ───────────────────────────────────────────────────────
+
+/// The structural graph is a snapshot at ingest time; nothing invalidates it
+/// when the repo moves on.  `atlas status` must say so rather than presenting
+/// a stale graph with the same confidence as a current one.
+#[test]
+fn status_reports_freshness_against_head() {
+    let f = Fixture::create();
+
+    f.run_ok(&["ingest", "."]);
+    let fresh = f.run_ok(&["status"]);
+    assert!(
+        fresh.contains("current with HEAD"),
+        "freshly ingested repo must report current, got:\n{fresh}"
+    );
+
+    // Move the repository on by one commit.
+    std::fs::write(format!("{}/auth.ts", f.repo), "export function auth2() {}").unwrap();
+    for args in [
+        vec!["add", "auth.ts"],
+        vec!["commit", "-m", "Drift past the ingested snapshot"],
+    ] {
+        let out = Command::new("git")
+            .args(&args)
+            .current_dir(&f.repo)
+            .env("GIT_AUTHOR_DATE", "2024-01-05T10:00:00+0000")
+            .env("GIT_COMMITTER_DATE", "2024-01-05T10:00:00+0000")
+            .output()
+            .expect("git");
+        assert!(out.status.success(), "git {:?} failed", args);
+    }
+
+    let stale = f.run_ok(&["status"]);
+    assert!(
+        stale.contains("1 commit(s) behind HEAD"),
+        "status must report the exact drift after a new commit, got:\n{stale}"
+    );
+}
+
+// ── atlas init ───────────────────────────────────────────────────────────────
+
+/// `init` is the one-command path from cloned repo to queryable graph: DB at
+/// the root, ignored by git, extractors auto-detected, and safe to re-run.
+#[test]
+fn init_sets_up_repo_end_to_end() {
+    let f = Fixture::create();
+    let repo = std::fs::canonicalize(&f.repo).unwrap();
+    std::fs::write(repo.join(".gitignore"), "node_modules/\n").unwrap();
+
+    let init = |label: &str| -> String {
+        let out = Command::new(atlas_bin())
+            .args(["init"])
+            .current_dir(&repo)
+            .env_remove("ATLAS_DB")
+            .output()
+            .expect("atlas init");
+        assert!(
+            out.status.success(),
+            "{label} failed:\n{}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+        String::from_utf8_lossy(&out.stdout).into_owned()
+    };
+
+    let first = init("first init");
+    assert!(repo.join("atlas.db").is_file(), "init must create the DB at the repo root");
+    assert!(
+        first.contains("Ingest complete"),
+        "init must run the first ingest, got:\n{first}"
+    );
+
+    let ignored = std::fs::read_to_string(repo.join(".gitignore")).unwrap();
+    assert!(ignored.contains("atlas.db"), "init must ignore the DB, got:\n{ignored}");
+    assert!(ignored.contains("node_modules/"), "init must not clobber existing .gitignore entries");
+
+    // Re-running must not duplicate the .gitignore entry.
+    init("second init");
+    let reignored = std::fs::read_to_string(repo.join(".gitignore")).unwrap();
+    assert_eq!(
+        reignored.matches("atlas.db").count(),
+        1,
+        "re-running init must not append a duplicate ignore entry, got:\n{reignored}"
+    );
+}
+
+/// TypeScript was the only extractor gated behind a flag, so plain
+/// `atlas ingest .` produced no structural edges on TS repositories.
+#[test]
+fn ingest_auto_detects_typescript() {
+    let f = Fixture::create();
+    f.add_typescript_sources();
+
+    let out = Command::new(atlas_bin())
+        .args(["ingest", "."])
+        .current_dir(&f.repo)
+        .env("ATLAS_DB", &f.db)
+        .output()
+        .expect("atlas ingest");
+    let stdout = String::from_utf8_lossy(&out.stdout);
+    assert!(out.status.success(), "ingest failed:\n{}", String::from_utf8_lossy(&out.stderr));
+
+    let ts_line = stdout
+        .lines()
+        .find(|l| l.contains("typescript structural"))
+        .unwrap_or_else(|| panic!("no typescript stage in output:\n{stdout}"));
+    assert!(
+        !ts_line.contains("skipped") && !ts_line.contains("0 edges"),
+        "typescript must be auto-detected without --typescript, got: {ts_line}"
     );
 }

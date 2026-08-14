@@ -1,0 +1,20 @@
+/home/sanoy/Vesta/vestascan-console/codegen.ts-43-};
+/home/sanoy/Vesta/vestascan-console/codegen.ts-44-
+/home/sanoy/Vesta/vestascan-console/codegen.ts:45:export default config;
+--
+/home/sanoy/Vesta/vestascan-console/src/hooks/useGoBack.ts-15-};
+/home/sanoy/Vesta/vestascan-console/src/hooks/useGoBack.ts-16-
+/home/sanoy/Vesta/vestascan-console/src/hooks/useGoBack.ts:17:export default useGoBack;
+--
+/home/sanoy/Vesta/vestascan-console/src/hooks/useModal.ts-2-import { useState, useCallback } from "react";
+/home/sanoy/Vesta/vestascan-console/src/hooks/useModal.ts-3-
+/home/sanoy/Vesta/vestascan-console/src/hooks/useModal.ts:4:export const useModal = (initialState: boolean = false) => {
+/home/sanoy/Vesta/vestascan-console/src/hooks/useModal.ts-5-  const [isOpen, setIsOpen] = useState(initialState);
+/home/sanoy/Vesta/vestascan-console/src/hooks/useModal.ts-6-
+--
+/home/sanoy/Vesta/vestascan-console/src/graphql/codegen/generated.ts-1-import { gql } from '@apollo/client';
+/home/sanoy/Vesta/vestascan-console/src/graphql/codegen/generated.ts-2-import * as Apollo from '@apollo/client';
+/home/sanoy/Vesta/vestascan-console/src/graphql/codegen/generated.ts:3:export type Maybe<T> = T | null;
+/home/sanoy/Vesta/vestascan-console/src/graphql/codegen/generated.ts:4:export type InputMaybe<T> = Maybe<T>;
+/home/sanoy/Vesta/vestascan-console/src/graphql/codegen/generated.ts:5:export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+/home/sanoy/Vesta/vestascan-console/src/grap

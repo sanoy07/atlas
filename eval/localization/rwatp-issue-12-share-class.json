@@ -1,0 +1,33 @@
+{
+  "id": "rwatp-issue-12-share-class",
+  "repository": "rwatp-core",
+  "workflow": "issue_implementation",
+  "issue": 12,
+  "question": "What would need to change in the current repository to implement issue #12 (share class management & auto-creation)?",
+  "notes": "Issue-driven planning. Gold = share-class + listing services/models and related issue/PR intent. Order service is optional neighbor, not hard-negative, but redis infra is hard-negative.",
+  "gold_files": [
+    "src/modules/core/services/share-class.service.ts",
+    "src/modules/core/models/share-class.model.ts",
+    "src/modules/core/services/listing.service.ts",
+    "src/modules/core/models/listing.model.ts",
+    "src/modules/core/graphql/share-class.resolvers.ts",
+    "src/modules/core/graphql/listing.resolvers.ts"
+  ],
+  "gold_optional": [
+    "src/modules/core/services/supply-ledger.service.ts",
+    "src/modules/blockchain/services/smart-contract.service.ts",
+    "src/modules/core/services/order.service.ts"
+  ],
+  "gold_documentary": [
+    "issue#12",
+    "issue#14",
+    "issue#10",
+    "pr#16"
+  ],
+  "hard_negatives": [
+    "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts",
+    "src/infrastructure/image-processor/index.ts",
+    "src/modules/support/services/support-ticket.service.ts"
+  ],
+  "metrics": { "top_k": [1, 5, 10] }
+}

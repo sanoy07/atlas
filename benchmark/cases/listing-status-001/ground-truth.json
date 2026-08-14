@@ -1,0 +1,6 @@
+{
+  "case_id": "listing-status-001",
+  "essential": ["E2", "E5", "E10", "E15", "E31", "E37", "E43", "E59", "E80"],
+  "distractors": ["E3", "E4", "E8", "E9", "E13", "E14", "E64", "E66", "E67"],
+  "notes": "E10 (listing.validation.ts) is the direct answer — contains listingReadinessSchema and validateStatusTransition. E2/E5 provide the enums and types it operates on. E15/E37/E43/E59 are documentary evidence showing the evolution of readiness logic. E64/E66/E67 are strong distractors: git history for deleted files (src/common/commands/order/, src/common/events/order/, src/common/events/payment/) — touched 2x each, look active, but those files no longer exist on disk. E3/E4 (share-class and smart-contract enums) are pulled in by structural expansion but irrelevant to readiness validation. E8/E9 are script/compliance noise."
+}

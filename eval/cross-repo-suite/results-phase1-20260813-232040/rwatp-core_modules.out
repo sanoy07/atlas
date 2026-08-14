@@ -1,0 +1,22 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+MODULES  (subject: src/modules)
+  discovery: DETERMINISTIC: immediate child directories of `src/modules` that appear in the `files` table AND exist as directories on disk (ghost/historical paths dropped)
+  total: 9 module directories
+
+  module            files  commits      out       in  tests  subdirs
+  blockchain           30       15      146      127    yes  artifacts,graphql,models,services,utils,validations
+  compliance           31       19      303      257    yes  config,enum,graphql,models,providers,services,types,validation
+  core                109       63      948      955    yes  config,constants,enum,graphql,models,services,settlement,validations
+  identity             46       29      226      399    yes  auth,constants,enum,graphql,loaders,models,rbac,services,utils,validation
+  market                3        1        4        1     no  models
+  notifications         5        2        4        2     no  enum,models
+  payment              23       11      244      158    yes  graphql,models,providers,services,validations
+  signing              18        6      165      183    yes  content,graphql,loaders,models,providers,services,validations
+  support              23        2      156      145    yes  config,enum,graphql,models,services,validations
+
+PROVENANCE
+  file_count / subdirectories: DETERMINISTIC from `files` table
+  observed_commit_count:       DETERMINISTIC commits ⨝ commit_files (prefix)
+  edge counts:                 DETERMINISTIC structural_edges (prefix)
+  has_associated_tests:        DERIVED — see each module's test_association_rule
+  Language: module names are path segments — not business-domain labels

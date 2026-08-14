@@ -1,0 +1,46 @@
+# Atlas investigation benchmarks — Gigatoken
+# Repository: https://github.com/yazansaleh/gigatoken (or similar)
+#
+# Each [[case]] runs `atlas investigate <anchors>` and scores the result.
+# expected_center / supporting_evidence / false_positive_alert are matched
+# as *substrings* of candidate file paths.
+
+[[case]]
+id          = "gigatoken-tokenize"
+description = "Core tokenization and pretoken pipeline"
+repo        = "/home/sanoy/projects/research/gigatoken"
+db          = "/home/sanoy/projects/research/gigatoken/atlas.db"
+anchors     = ["tokenize", "token"]
+expected_center      = ["token.rs", "pretokenize_traits.rs", "pretoken.rs"]
+supporting_evidence  = ["pretokenize/mod.rs"]
+false_positive_alert = []
+
+[[case]]
+id          = "gigatoken-cache"
+description = "Pretoken cache — multi-tier memoization layer"
+repo        = "/home/sanoy/projects/research/gigatoken"
+db          = "/home/sanoy/projects/research/gigatoken/atlas.db"
+anchors     = ["cache", "pretoken"]
+expected_center      = ["pretoken_cache.rs", "pretoken.rs"]
+supporting_evidence  = ["pretokenize_traits.rs"]
+false_positive_alert = []
+
+[[case]]
+id          = "gigatoken-batch"
+description = "Batch encoding and parallel chunking"
+repo        = "/home/sanoy/projects/research/gigatoken"
+db          = "/home/sanoy/projects/research/gigatoken/atlas.db"
+anchors     = ["batch", "parallel"]
+expected_center      = ["batch.rs"]
+supporting_evidence  = []
+false_positive_alert = []
+
+[[case]]
+id          = "gigatoken-bpe"
+description = "BPE encoding and training"
+repo        = "/home/sanoy/projects/research/gigatoken"
+db          = "/home/sanoy/projects/research/gigatoken/atlas.db"
+anchors     = ["bpe", "train"]
+expected_center      = ["bpe_train.rs", "bpe/mod.rs"]
+supporting_evidence  = ["sentencepiece.rs", "tiktoken.rs"]
+false_positive_alert = []

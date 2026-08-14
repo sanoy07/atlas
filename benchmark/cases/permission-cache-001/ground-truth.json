@@ -1,0 +1,7 @@
+{
+  "case_id": "permission-cache-001",
+  "essential": ["E8", "E9", "E10", "E11", "E12", "E14", "E15", "E24", "E25", "E26", "E27", "E28"],
+  "distractors": ["E1", "E2", "E3", "E4", "E5", "E6", "E7", "E13", "E16", "E17"],
+  "notes": "The permission load+cache path: permission.service.ts (E11) loads permissions for a user via Permission model (E8) and Role model (E9), linked to User model (E10). E24-E28 are the structural edges showing permission.service imports its models and makes model references. E12 (user.service) is needed because the cache key is per-user. E14/E15 (cache verification scripts) show the cache contract. Distractors: E1 (shield/permissions.js) is a common/graphql utility — keyword match on 'permission'. E2-E7 are per-module permission files (compliance, content-block, core, share-class, identity) that define GraphQL shield rules — these are authorisation config, not the caching mechanism. E13/E16/E17 are scripts/tests — not the runtime path.",
+  "protocol_note": "Item count 149 exceeds 30-120 spec. Identity module structural expansion. Recorded as Atlas finding."
+}

@@ -1,0 +1,7 @@
+{
+  "case_id": "supply-ledger-001",
+  "essential": ["E2", "E4", "E11", "E12", "E16", "E15", "E40", "E41", "E42"],
+  "distractors": ["E5", "E6", "E13", "E17", "E20", "E21", "E22"],
+  "notes": "SupplyLedger (E12) is written by supply-ledger.service.ts (E16). The service is called by share-class.service.ts (E15) when share class quantities change, and from listing.service.ts (E14/E40-E42) when token allocation changes. E2 (supply-ledger.enums.ts) and E4 (supply-ledger.types.ts) define the state transitions. E11 (share-class.model.ts) is needed because supply tracks per share class. Distractors: E5/E6 (content-block-permissions, share-class-permissions) are GraphQL shield files pulled in by share-class structural neighbourhood — they define who can call share-class mutations, not what updates supply. E13 (content-block.service) is pulled in via share-class structural chain. E17 (migration script) matches on 'supply' indirectly via currency/blockchain migration. E20-E22 are structural edges from the migration script.",
+  "protocol_note": "Item count 153 exceeds 30-120 spec. Share-class module structural expansion is wide. Recorded as Atlas finding."
+}

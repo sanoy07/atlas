@@ -1,0 +1,14 @@
+atlas agent → /home/sanoy/projects/atlas/agent/atlas_agent.py  model=qwen3:4b  repo=/home/sanoy/Vesta/rwatp-core
+[36m→ atlas_capabilities()[0m
+[2m  ← 5112 chars[0m
+
+The backend uses Google Cloud Storage (GCS) for file storage via `src/infrastructure/storage/google-cloud-storage.adapter.ts`, with file operations handled by the `ListingAsset` module in `src/modules/core/graphql/listing-asset.resolvers.ts`.
+
+---
+C4 FINAL GATE: SUPPORTED
+  Non-causal synthesis grounded in tool evidence.
+  evidence_paths_cited: 2
+  (Existence in a neighborhood ≠ causal support.)
+
+
+[2m[2 step(s), 59.3s, model=qwen3:4b, num_ctx=12288, investigate=no, flow_drill=no, storage_drill=no][0m

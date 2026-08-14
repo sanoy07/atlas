@@ -1,0 +1,26 @@
+{
+  "id": "vs-adv-dataroom-create-no-access",
+  "repository": "vestascan-api",
+  "workflow": "bug_localization",
+  "cluster": "adversarial",
+  "question": "A user can create a data room but later cannot access it. What parts of the system could explain that behavior?",
+  "notes": "Create works, access fails → access service/model/permissions more than create alone.",
+  "gold_files": [
+    "src/modules/core/services/data-room-file-access.service.ts",
+    "src/modules/core/models/data-room-file-access.model.ts",
+    "src/modules/core/graphql/permissions.ts",
+    "src/modules/core/services/data-room-file.service.ts"
+  ],
+  "gold_optional": [
+    "src/lib/auth.ts",
+    "src/modules/identity/models/user.model.ts",
+    "src/graphql/rules.ts",
+    "src/config/data-room.config.ts"
+  ],
+  "hard_negatives": [
+    "src/modules/core/services/deployment.service.ts",
+    "src/modules/core/services/token.service.ts"
+  ],
+  "adversarial": true,
+  "counter_evidence_prompt": "What evidence would prove that your answer is wrong?"
+}

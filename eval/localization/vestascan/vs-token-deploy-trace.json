@@ -1,0 +1,28 @@
+{
+  "id": "vs-token-deploy-trace",
+  "repository": "vestascan-api",
+  "workflow": "system_flow",
+  "cluster": "token_deployment",
+  "question": "Where is token issuance triggered, and what happens from the request until the token is persisted or returned?",
+  "notes": "API path is record-after-chain-deploy, not chain issuance. Client deploys; API records ERC-1404 deployment + token docs. Full request→chain path is primarily vestascan-user-fe.",
+  "scope": "api_post_deploy_record",
+  "cross_repo_primary": "vestascan-user-fe",
+  "gold_files": [
+    "src/modules/core/graphql/resolvers.ts",
+    "src/modules/core/services/deployment.service.ts",
+    "src/modules/core/services/token.service.ts",
+    "src/modules/core/models/token.model.ts",
+    "src/schemas/deployment.schema.ts"
+  ],
+  "gold_optional": [
+    "src/modules/core/graphql/typeDefs.ts",
+    "src/modules/core/graphql/permissions.ts",
+    "src/types/dto/token.dto.ts",
+    "src/modules/core/services/indexer-trigger.service.ts"
+  ],
+  "hard_negatives": [
+    "src/modules/core/services/data-room-file.service.ts",
+    "src/config/secrets.ts",
+    "src/infrastructure/messaging/redis/connection.ts"
+  ]
+}

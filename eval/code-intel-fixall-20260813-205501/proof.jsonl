@@ -1,0 +1,14 @@
+{"ts":"2026-08-13T20:55:01+05:30","phase":"full","case":"det.callers.tryEnqueue","status":"ok","ms":15,"detail":"matched payment-settlement|signing\\.service"}
+{"ts":"2026-08-13T20:55:01+05:30","phase":"full","case":"det.callers.OrderFulfillmentService.tryEnqueue","status":"ok","ms":13,"detail":"matched payment-settlement|signing"}
+{"ts":"2026-08-13T20:55:01+05:30","phase":"full","case":"det.implementations.IStorageProvider","status":"ok","ms":23,"detail":"matched OBSERVED implements|google-cloud-storage|adapter|storage\\.interface"}
+{"ts":"2026-08-13T20:55:01+05:30","phase":"full","case":"det.implements.edge.IStorage","status":"ok","ms":9,"detail":"matched IStorageProvider|storage\\.interface"}
+{"ts":"2026-08-13T20:55:01+05:30","phase":"full","case":"det.capabilities.storage","status":"ok","ms":22,"detail":"matched listing-asset|storage\\.factory|google-cloud"}
+{"ts":"2026-08-13T20:55:01+05:30","phase":"full","case":"det.code-search.ListingAsset","status":"ok","ms":10,"detail":"matched listing-asset|ListingAsset"}
+{"ts":"2026-08-13T20:55:02+05:30","phase":"full","case":"det.code-search.getSignedUrl","status":"ok","ms":15,"detail":"matched signed|getSignedUrl|storage"}
+{"ts":"2026-08-13T20:55:02+05:30","phase":"full","case":"det.callers.json","status":"ok","ms":10,"detail":"matched production_callers"}
+{"ts":"2026-08-13T20:55:02+05:30","phase":"full","case":"det.capabilities.json","status":"ok","ms":18,"detail":"matched capabilities"}
+{"ts":"2026-08-13T20:55:02+05:30","phase":"full","case":"det.map","status":"ok","ms":47,"detail":"matched modules|CLAIMS|ATLAS MAP"}
+{"ts":"2026-08-13T20:55:02+05:30","phase":"full","case":"det.investigate.storage","status":"ok","ms":168,"detail":"matched google-cloud-storage|storage\\.factory|ListingAsset|infrastructure/storage"}
+{"ts":"2026-08-13T20:56:01+05:30","phase":"full","case":"agent.storing_files","status":"ok","ms":59349,"detail":"matched ListingAsset|google-cloud|GCS|listing-asset|storage\\.factory|getSignedUrl"}
+{"ts":"2026-08-13T20:59:04+05:30","phase":"full","case":"agent.data_room_gcs","status":"ok","ms":182945,"detail":"matched ListingAsset|listing-asset|google-cloud|documents|getSignedUrl|GCS"}
+{"ts":"2026-08-13T21:01:29+05:30","phase":"full","case":"agent.payment_fulfill","status":"ok","ms":144358,"detail":"matched tryEnqueue|payment-settlement|OrderFulfillment"}

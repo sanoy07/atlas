@@ -1,0 +1,31 @@
+atlas agent → /home/sanoy/projects/atlas/agent/atlas_agent.py  model=qwen3:4b  repo=/home/sanoy/Vesta/rwatp-core
+[36m→ atlas_investigate(question='how does data room document storage work with GCS?')[0m
+[2m  ← 5512 chars[0m
+[36m→ ripgrep(pattern='GCS', path='src/infrastructure/storage/google-cloud-storage.adapter.ts')[0m
+[2m  ← 1128 chars[0m
+[36m→ atlas_callers(subject='makePublic')[0m
+[2m  ← 411 chars[0m
+[33m↻ storage question: forcing atlas_capabilities + implementations + code_search (fs_trap=False, grounded=False)[0m
+[36m→ atlas_capabilities [host-forced][0m
+[2m  ← 5111 chars[0m
+[36m→ atlas_implementations(IStorageProvider) [host-forced][0m
+[2m  ← 1197 chars[0m
+[36m→ atlas_code_search('ListingAsset') [host-forced][0m
+[2m  ← 1869 chars[0m
+[36m→ atlas_code_search('google-cloud-storage') [host-forced][0m
+[2m  ← 448 chars[0m
+[36m→ atlas_code_search('getSignedUrl') [host-forced][0m
+[2m  ← 413 chars[0m
+
+Data room document storage uses Google Cloud Storage via `src/infrastructure/storage/google-cloud-storage.adapter.ts`, which generates signed URLs for uploads through `ListingAssetService.requestUploadUrl` in the data room module. The adapter handles GCS bucket operations and makes files public via `makePublic` after upload, while the storage factory (`src/infrastructure/storage/storage.factory.ts`) orchestrates this integration for product surfaces like listing assets.
+
+---
+C4 FINAL GATE: SUPPORTED
+  Non-causal synthesis grounded in tool evidence.
+  evidence_paths_cited: 2
+  (Existence in a neighborhood ≠ causal support.)
+
+  note: host forced atlas_capabilities/implementations structural drill (rejected fs test-only answers).
+
+
+[2m[5 step(s), 161.9s, model=qwen3:4b, num_ctx=12288, investigate=yes, flow_drill=no, storage_drill=yes][0m

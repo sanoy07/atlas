@@ -1,0 +1,6 @@
+{
+  "case_id": "kyc-notification-001",
+  "essential": ["E10", "E13", "E14", "E15", "E16", "E47", "E48", "E60", "E69"],
+  "distractors": ["E11", "E12", "E17", "E54", "E71", "E72"],
+  "notes": "E60 (Issue #56) and E69 (PR #61) are the key documentary signal — they name the gap explicitly: KYC notification commands not wired. E10/E16/E47/E48 are the structural chain from webhook to service. E13-E15 establish that the notification infra exists but is disconnected. E11/E12/E17/E71/E72 are integration-service noise (highest historical churn, tempting distractor for keyword matchers)."
+}

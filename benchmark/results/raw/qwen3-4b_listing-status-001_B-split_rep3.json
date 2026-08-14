@@ -1,0 +1,110 @@
+{
+  "runId": "qwen3-4b_listing-status-001_B-split_rep3",
+  "model": "qwen3:4b",
+  "caseId": "listing-status-001",
+  "condition": "B-split",
+  "repetition": 3,
+  "decisions": [
+    {
+      "id": "E62",
+      "class": "UNKNOWN",
+      "reason": "This documentation file about refactoring validation naming does not directly relate to listing readiness validation."
+    },
+    {
+      "id": "E63",
+      "class": "UNKNOWN",
+      "reason": "Blockchain commands for orders are not part of listing readiness validation."
+    },
+    {
+      "id": "E64",
+      "class": "UNKNOWN",
+      "reason": "Order contracts are not related to listing readiness validation."
+    },
+    {
+      "id": "E65",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Validation constants might be used in listing validation, but the evidence does not specify if they are listing-specific."
+    },
+    {
+      "id": "E66",
+      "class": "UNKNOWN",
+      "reason": "Order events are not related to listing readiness validation."
+    },
+    {
+      "id": "E67",
+      "class": "UNKNOWN",
+      "reason": "Payment events are not related to listing readiness validation."
+    },
+    {
+      "id": "E68",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Share-class validation might be a component of listing validation, but the evidence does not confirm if share-class is part of the listing system."
+    },
+    {
+      "id": "E69",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "This script manages listing members, not the validation of listing readiness."
+    },
+    {
+      "id": "E70",
+      "class": "UNKNOWN",
+      "reason": "Email commands are not related to listing readiness validation."
+    },
+    {
+      "id": "E71",
+      "class": "RELEVANT",
+      "reason": "Listing enums define the possible states and types that are critical for determining listing readiness before a status change to REVIEW."
+    },
+    {
+      "id": "E72",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Share-class enums might be used in listing validation, but the evidence does not specify their role in listing readiness."
+    },
+    {
+      "id": "E73",
+      "class": "UNKNOWN",
+      "reason": "Smart contract enums are not related to listing readiness validation."
+    },
+    {
+      "id": "E74",
+      "class": "UNKNOWN",
+      "reason": "User events are not related to listing readiness validation."
+    },
+    {
+      "id": "E75",
+      "class": "RELEVANT",
+      "reason": "Listing types define the structure of listings, which is essential for validating readiness before a status change to REVIEW."
+    },
+    {
+      "id": "E76",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Share-class types might be part of the listing system, but the evidence does not confirm their direct role in listing readiness validation."
+    },
+    {
+      "id": "E77",
+      "class": "UNKNOWN",
+      "reason": "Email contracts are not related to listing readiness validation."
+    },
+    {
+      "id": "E78",
+      "class": "UNKNOWN",
+      "reason": "Smart contract models are not related to listing readiness validation."
+    },
+    {
+      "id": "E79",
+      "class": "UNKNOWN",
+      "reason": "Compliance validation is for compliance checks, not specifically for listing readiness."
+    },
+    {
+      "id": "E80",
+      "class": "RELEVANT",
+      "reason": "Listing validation directly checks the conditions that must be met for a listing to be ready before changing status to REVIEW."
+    },
+    {
+      "id": "E81",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Share-class management validation might be a prerequisite for listing readiness, but the evidence does not specify if it is directly related to the listing status change."
+    }
+  ],
+  "rawOutput": "\n\n// --- documentary batch ---\nThe question asks for what validates listing readiness before a status change to REVIEW. After reviewing the provided evidence, the most direct and relevant item is PR #58, which implements \"subscription date validation\" and \"daysLeft resolver for listings\". These are explicit validation steps that ensure the listing meets readiness criteria (e.g., valid subscription date and sufficient time remaining), which is critical for the status change to REVIEW.\n\nOther items like PR #53 (email availability validation) or Issue #54 (data integrity fix) are related to listing but do not explicitly constitute validation steps for readiness in the context of the status change to REVIEW. PR #58 is the only item that directly addresses validation of listing readiness as required by the query.\n\nThus, the answer is a list containing the PR number 58.\n\n[58]\n\n// --- historical batch ---\n{\n  \"decisions\": [\n    {\n      \"id\": \"E62\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentation file about refactoring validation naming does not directly relate to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E63\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Blockchain commands for orders are not part of listing readiness validation.\"\n    },\n    {\n      \"id\": \"E64\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Order contracts are not related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E65\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Validation constants might be used in listing validation, but the evidence does not specify if they are listing-specific.\"\n    },\n    {\n      \"id\": \"E66\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Order events are not related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E67\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Payment events are not related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E68\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Share-class validation might be a component of listing validation, but the evidence does not confirm if share-class is part of the listing system.\"\n    },\n    {\n      \"id\": \"E69\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"This script manages listing members, not the validation of listing readiness.\"\n    },\n    {\n      \"id\": \"E70\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Email commands are not related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E71\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Listing enums define the possible states and types that are critical for determining listing readiness before a status change to REVIEW.\"\n    },\n    {\n      \"id\": \"E72\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Share-class enums might be used in listing validation, but the evidence does not specify their role in listing readiness.\"\n    },\n    {\n      \"id\": \"E73\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Smart contract enums are not related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E74\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"User events are not related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E75\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Listing types define the structure of listings, which is essential for validating readiness before a status change to REVIEW.\"\n    },\n    {\n      \"id\": \"E76\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Share-class types might be part of the listing system, but the evidence does not confirm their direct role in listing readiness validation.\"\n    },\n    {\n      \"id\": \"E77\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Email contracts are not related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E78\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Smart contract models are not related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E79\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Compliance validation is for compliance checks, not specifically for listing readiness.\"\n    },\n    {\n      \"id\": \"E80\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Listing validation directly checks the conditions that must be met for a listing to be ready before changing status to REVIEW.\"\n    },\n    {\n      \"id\": \"E81\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Share-class management validation might be a prerequisite for listing readiness, but the evidence does not specify if it is directly related to the listing status change.\"\n    }\n  ]\n}\n\n// --- source batch ---\n{\n  \"E1\": \"Generic validation constants file not confirmed to be specific to listing readiness.\",\n  \"E2\": \"May define states required for readiness (e.g., DRAFT) before status change to REVIEW.\",\n  \"E3\": \"Share-class enums are unrelated to listing readiness.\",\n  \"E4\": \"Smart contract enums are unrelated to the listing readiness process.\",\n  \"E5\": \"Listing types may be a dependency for validation but are not directly the validator.\",\n  \"E6\": \"Share-class types are unrelated to listing readiness.\",\n  \"E7\": \"Smart contract model is unrelated to listing readiness.\",\n  \"E8\": \"Script for adding listing members is unrelated to validation of readiness.\",\n  \"E9\": \"Compliance validation is unrelated to listing readiness.\",\n  \"E10\": \"Directly validates listing readiness before status change to REVIEW.\",\n  \"E11\": \"Share-class management validation is unrelated to listing readiness.\",\n  \"E12\": \"Share-class validation is unrelated to listing readiness.\",\n  \"E82\": \"Unresolved boundary for smart contract enums, not known to be relevant to listing readiness.\",\n  \"E83\": \"Unresolved boundary for smart contract model, not known to be relevant to listing readiness.\"\n}"
+}

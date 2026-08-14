@@ -1,0 +1,175 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'rwatp-core' in project 'rwatp'.
+  role:      api
+  path:      /home/sanoy/Vesta/rwatp-core
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'rwatp-notifier' in project 'rwatp'.
+  role:      notifier
+  path:      /home/sanoy/Vesta/rwatp-notifier
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'rwatp-console' in project 'rwatp'.
+  role:      console
+  path:      /home/sanoy/Vesta/rwatp-console
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'rwatp-user-frontend' in project 'rwatp'.
+  role:      user-fe
+  path:      /home/sanoy/Vesta/rwatp-user-frontend
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'vestascan-api' in project 'vestascan'.
+  role:      api
+  path:      /home/sanoy/Vesta/vestascan-api
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'vestascan-notifier' in project 'vestascan'.
+  role:      notifier
+  path:      /home/sanoy/Vesta/vestascan-notifier
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'vestascan-blockchain' in project 'vestascan'.
+  role:      chain
+  path:      /home/sanoy/Vesta/vestascan-blockchain
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'vestascan-user-fe' in project 'vestascan'.
+  role:      user-fe
+  path:      /home/sanoy/Vesta/vestascan-user-fe
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'vestascan-console' in project 'vestascan'.
+  role:      console
+  path:      /home/sanoy/Vesta/vestascan-console
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'jj' in project 'research'.
+  role:      vcs
+  path:      /home/sanoy/projects/research/jj
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Registered 'gigatoken' in project 'research'.
+  role:      tokenizer
+  path:      /home/sanoy/projects/research/gigatoken
+  existence: local-observed
+  access:    accessible
+  ingestion: ingested
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Ingesting project 'rwatp' …
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=47 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 4 file-change records
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=43 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m rebuild_file_identities repo=/home/sanoy/Vesta/rwatp-console identities=44
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 157 structural edges
+[32m INFO[0m [2matlas_core[0m[2m:[0m typescript structural edges inserted=3234
+[32m INFO[0m [2matlas_core[0m[2m:[0m c structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m python structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=1
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=104 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 16 file-change records
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=33 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m rebuild_file_identities repo=/home/sanoy/Vesta/rwatp-core identities=30
+[32m INFO[0m [2matlas_core[0m[2m:[0m typescript structural edges inserted=4028
+[32m INFO[0m [2matlas_core[0m[2m:[0m c structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m python structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=8
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=9 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=0 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m typescript structural edges inserted=175
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=39 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 4 file-change records
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=19 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m rebuild_file_identities repo=/home/sanoy/Vesta/rwatp-user-frontend identities=19
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 1 structural edges
+[32m INFO[0m [2matlas_core[0m[2m:[0m typescript structural edges inserted=1523
+[32m INFO[0m [2matlas_core[0m[2m:[0m c structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m python structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=2
+  [done] rwatp-console  commits=47 renames=43 identities=44 prs=0 edges=3234 docs=1
+  [done] rwatp-core  commits=104 renames=33 identities=30 prs=0 edges=4028 docs=8
+  [done] rwatp-notifier  commits=9 renames=0 identities=0 prs=0 edges=175 docs=0
+  [done] rwatp-user-frontend  commits=39 renames=19 identities=19 prs=0 edges=1523 docs=2
+Ingested 4 repositories (0 skipped).
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Ingesting project 'vestascan' …
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=98 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 260 file-change records
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=3 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m rebuild_file_identities repo=/home/sanoy/Vesta/vestascan-api identities=3
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 36 structural edges
+[32m INFO[0m [2matlas_core[0m[2m:[0m typescript structural edges inserted=1278
+[32m INFO[0m [2matlas_core[0m[2m:[0m c structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m python structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=4
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=10 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=0 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m typescript structural edges inserted=311
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=6
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=17 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 1 file-change records
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=3 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m rebuild_file_identities repo=/home/sanoy/Vesta/vestascan-console identities=3
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 20 structural edges
+[32m INFO[0m [2matlas_core[0m[2m:[0m typescript structural edges inserted=828
+[32m INFO[0m [2matlas_core[0m[2m:[0m c structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m python structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=1
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=15 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 2 file-change records
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=0 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m typescript structural edges inserted=191
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=2
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=160 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 69 file-change records
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=10 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m rebuild_file_identities repo=/home/sanoy/Vesta/vestascan-user-fe identities=10
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 92 structural edges
+[32m INFO[0m [2matlas_core[0m[2m:[0m typescript structural edges inserted=2321
+[32m INFO[0m [2matlas_core[0m[2m:[0m c structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m python structural edges inserted=0
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=40
+  [done] vestascan-api  commits=98 renames=3 identities=3 prs=0 edges=1278 docs=4
+  [done] vestascan-blockchain  commits=10 renames=0 identities=0 prs=0 edges=311 docs=6
+  [done] vestascan-console  commits=17 renames=3 identities=3 prs=0 edges=828 docs=1
+  [done] vestascan-notifier  commits=15 renames=0 identities=0 prs=0 edges=191 docs=2
+  [done] vestascan-user-fe  commits=160 renames=10 identities=10 prs=0 edges=2321 docs=40
+Ingested 5 repositories (0 skipped).
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Ingesting project 'research' …
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=363 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=30 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m rebuild_file_identities repo=/home/sanoy/projects/research/gigatoken identities=17
+[32m INFO[0m [2matlas_core[0m[2m:[0m rust structural edges inserted=80
+[32m INFO[0m [2matlas_core[0m[2m:[0m python structural edges inserted=52
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=1
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=Repository History scope=head_only parsed=10000 commits
+[32m INFO[0m [2matlas_core[0m[2m:[0m repository awareness excluded 5 file-change records
+[32m INFO[0m [2matlas_core[0m[2m:[0m connector=git capability=rename-evidence parsed=186 records
+[32m INFO[0m [2matlas_core[0m[2m:[0m rebuild_file_identities repo=/home/sanoy/projects/research/jj identities=166
+[32m INFO[0m [2matlas_core[0m[2m:[0m rust structural edges inserted=1291
+[32m INFO[0m [2matlas_core[0m[2m:[0m documents ingested=56
+  [done] gigatoken  commits=363 renames=30 identities=17 prs=0 edges=132 docs=1
+  [done] jj  commits=10000 renames=186 identities=166 prs=0 edges=1291 docs=56
+Ingested 2 repositories (0 skipped).

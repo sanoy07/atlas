@@ -1,0 +1,84 @@
+ATLAS MAP
+  repo: /home/sanoy/Vesta/rwatp-core
+  git_head: e5fe211
+  modules_subject: src/modules
+  modules (9): blockchain, compliance, core, identity, market, notifications, payment, signing, support
+
+CLAIMS  (observed | derived | inferred | unknown)
+  [OBSERVED] map-001 — Module/layer inventory under `src/modules` has 9 child directories.
+    method: compute_modules immediate children of subject from files table
+    evidence: [method] compute_modules — total_modules=9
+    limitation: Names are path segments, not business-domain labels.
+    limitation: Historical paths in files table may appear as modules.
+
+  [DERIVED] map-002 — `core` has the highest observed commit touch count under the inventory (63 commits).
+    method: max(observed_commit_count) over ModuleEntry
+    evidence: [module] src/modules/core — commits=63
+    limitation: Commit count is not ownership or importance.
+
+  [OBSERVED] map-003 — Strongest observed cross-module coupling cell: payment → core (32 structural edges).
+    method: compute_module_coupling sparse cells sorted by edge_count
+    evidence: [structural] payment→core — 32 edges
+    limitation: Static edges only; snapshot of working tree at last structural ingest.
+
+  [OBSERVED] map-004 — Hottest file by commit touches: `package.json` (54 commits).
+    method: hot_files(repo, 15)
+    evidence: [file] package.json — touches=54
+    limitation: Path-scoped hot files; identity-aware hot files not used in map v1.
+
+  [DERIVED] map-005 — Most prevalent peer structural pattern: `models/` in 9/9 peers.
+    method: detect_peer_structure patterns prevalence
+    evidence: [pattern] models/ — 9/9
+    limitation: Prevalence is not a style judgment.
+
+  [DERIVED] map-006 — Dependency linkage: 70 declared, 59 observed via structural edges, 48 both.
+    method: compute_dependency_linkage
+    evidence: [config] package.json — working-tree package.json (not present in configuration_artifacts)
+    limitation: OBSERVED ≠ runtime usage.
+
+  [DERIVED] map-007 — Test↔module links: 54 links from 70 test files under path rules (16 unlinked).
+    method: compute_test_module_links
+    evidence: [method] test_linkage — links=54
+    limitation: Path rules only; unlinked is not 'orphan ownership'.
+
+HOT FILES
+    54  package.json
+    38  src/graphql/generated/graphql.ts
+    20  src/common/rbac/permissions.registry.ts
+    17  src/infrastructure/caching/cache-keys.ts
+    17  src/server.ts
+    16  src/common/rbac/roles.registry.ts
+    15  src/common/graphql/shield/permissions.js
+    15  src/modules/core/graphql/permissions.ts
+    14  src/modules/core/services/listing.service.ts
+    13  codegen.ts
+    13  src/common/enum/index.ts
+    13  src/modules/core/models/share-class.model.ts
+    13  src/modules/core/services/share-class.service.ts
+    13  src/modules/identity/services/user.service.ts
+    12  src/modules/compliance/services/compliance.service.ts
+
+TOP COUPLING CELLS
+    32  payment → core
+    23  core → blockchain
+    14  core → identity
+    13  core → payment
+    12  signing → core
+    10  blockchain → core
+    10  compliance → core
+    10  core → signing
+     7  compliance → blockchain
+     6  compliance → identity
+     5  core → compliance
+     4  payment → identity
+
+COVERAGE
+  · commits_in_db≈104
+  · structural_edges=3455
+  · modules_subject=src/modules
+
+LIMITATIONS
+  · Map is orientation, not architectural meaning or quality judgment.
+  · Structural data is a working-tree snapshot from last structural ingest.
+  · Git history scope depends on last ingest (often HEAD-only).
+  · No runtime DI, dynamic dispatch, or production traffic.

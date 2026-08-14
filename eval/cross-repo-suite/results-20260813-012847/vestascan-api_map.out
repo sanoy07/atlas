@@ -1,0 +1,84 @@
+ATLAS MAP
+  repo: /home/sanoy/Vesta/vestascan-api
+  git_head: 7ca89a8
+  modules_subject: src/modules
+  modules (9): ai, compliance, core, identity, marketing, payment, plan, quota, support
+
+CLAIMS  (observed | derived | inferred | unknown)
+  [OBSERVED] map-001 — Module/layer inventory under `src/modules` has 9 child directories.
+    method: compute_modules immediate children of subject from files table
+    evidence: [method] compute_modules — total_modules=9
+    limitation: Names are path segments, not business-domain labels.
+    limitation: Historical paths in files table may appear as modules.
+
+  [DERIVED] map-002 — `core` has the highest observed commit touch count under the inventory (41 commits).
+    method: max(observed_commit_count) over ModuleEntry
+    evidence: [module] src/modules/core — commits=41
+    limitation: Commit count is not ownership or importance.
+
+  [OBSERVED] map-003 — Strongest observed cross-module coupling cell: core → identity (21 structural edges).
+    method: compute_module_coupling sparse cells sorted by edge_count
+    evidence: [structural] core→identity — 21 edges
+    limitation: Static edges only; snapshot of working tree at last structural ingest.
+
+  [OBSERVED] map-004 — Hottest file by commit touches: `src/modules/core/graphql/resolvers.ts` (21 commits).
+    method: hot_files(repo, 15)
+    evidence: [file] src/modules/core/graphql/resolvers.ts — touches=21
+    limitation: Path-scoped hot files; identity-aware hot files not used in map v1.
+
+  [DERIVED] map-005 — Most prevalent peer structural pattern: `services/` in 9/9 peers.
+    method: detect_peer_structure patterns prevalence
+    evidence: [pattern] services/ — 9/9
+    limitation: Prevalence is not a style judgment.
+
+  [DERIVED] map-006 — Dependency linkage: 64 declared, 55 observed via structural edges, 44 both.
+    method: compute_dependency_linkage
+    evidence: [config] package.json — working-tree package.json (not present in configuration_artifacts)
+    limitation: OBSERVED ≠ runtime usage.
+
+  [DERIVED] map-007 — Test↔module links: 0 links from 0 test files under path rules (0 unlinked).
+    method: compute_test_module_links
+    evidence: [method] test_linkage — links=0
+    limitation: Path rules only; unlinked is not 'orphan ownership'.
+
+HOT FILES
+    21  src/modules/core/graphql/resolvers.ts
+    16  src/modules/core/services/token.service.ts
+    16  src/server.ts
+    13  package.json
+    13  src/modules/core/graphql/typeDefs.ts
+    10  src/modules/plan/graphql/resolvers.ts
+    10  src/modules/plan/graphql/typeDefs.ts
+     9  package-lock.json
+     9  src/config/index.ts
+     9  src/modules/core/services/data-room-file.service.ts
+     8  .gitignore
+     8  src/config/secrets.ts
+     8  src/graphql/context.ts
+     8  src/modules/core/services/interest-request.service.ts
+     8  src/modules/identity/services/user.service.ts
+
+TOP COUPLING CELLS
+    21  core → identity
+    17  compliance → identity
+    11  ai → core
+    10  marketing → core
+     8  plan → core
+     5  plan → identity
+     4  core → plan
+     4  marketing → identity
+     3  ai → identity
+     3  plan → payment
+     2  ai → plan
+     2  payment → identity
+
+COVERAGE
+  · commits_in_db≈98
+  · structural_edges=1104
+  · modules_subject=src/modules
+
+LIMITATIONS
+  · Map is orientation, not architectural meaning or quality judgment.
+  · Structural data is a working-tree snapshot from last structural ingest.
+  · Git history scope depends on last ingest (often HEAD-only).
+  · No runtime DI, dynamic dispatch, or production traffic.

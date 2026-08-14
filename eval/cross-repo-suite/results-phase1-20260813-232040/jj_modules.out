@@ -1,0 +1,19 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+note: no modules under `src/modules`; auto-resolved subject `lib/src` (same heuristic as `atlas map`).
+MODULES  (subject: lib/src)
+  discovery: DETERMINISTIC: immediate child directories of `lib/src` that appear in the `files` table AND exist as directories on disk (ghost/historical paths dropped)
+  total: 5 module directories
+
+  module            files  commits      out       in  tests  subdirs
+  config                2       26        0        0     no  -
+  default_index        12      381      152       18     no  -
+  diff_presentation      2        6       22        0     no  -
+  lock                  5       21        4       12     no  -
+  protos               23       63        0        2     no  -
+
+PROVENANCE
+  file_count / subdirectories: DETERMINISTIC from `files` table
+  observed_commit_count:       DETERMINISTIC commits ⨝ commit_files (prefix)
+  edge counts:                 DETERMINISTIC structural_edges (prefix)
+  has_associated_tests:        DERIVED — see each module's test_association_rule
+  Language: module names are path segments — not business-domain labels

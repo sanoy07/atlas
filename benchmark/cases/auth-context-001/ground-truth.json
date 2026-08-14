@@ -1,0 +1,7 @@
+{
+  "case_id": "auth-context-001",
+  "essential": ["E4", "E6", "E7", "E9", "E13", "E16", "E27", "E28", "E29", "E32", "E33", "E34"],
+  "distractors": ["E1", "E2", "E3", "E10", "E11", "E17", "E19", "E20", "E21", "E22", "E23", "E24"],
+  "notes": "The auth resolution chain is: context.ts (E4) calls auth-resolver.ts (E7) via AuthResolver.resolve (E27/E28), which calls FirebaseAuthService (E6) and UserService (E16), then looks up the User model (E13) via user.loader.ts (E9). E29 (context.ts imports user.model) and E32-E34 (auth-resolver calls user.service) complete the chain. Distractors: E1 (geo.constants) is pure structural noise. E2/E3 (block-context/user-holding-history enums) matched on 'context'/'user' keywords. E10-E12 (permission/resource-member/role models) are identity infra but not in the auth resolution path. E17-E24 (scripts and tests) are tooling, not the runtime path. Over-limit case (230 items): many items are deep identity model references pulled in by structural expansion.",
+  "protocol_note": "Item count 230 exceeds 30-120 spec. Deep structural neighborhood expansion in identity module. Recorded as Atlas finding."
+}

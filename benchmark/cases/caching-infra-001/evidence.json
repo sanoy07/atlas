@@ -1,0 +1,1649 @@
+{
+  "case_id": "caching-infra-001",
+  "task": "What determines whether CacheFactory selects Redis or the memory implementation?",
+  "repo": "RWATP",
+  "repo_commit": "b21260594c0e8d66be01d6a24b7b79e428fcc947",
+  "generated_by": "atlas atlas 0.1.0",
+  "evidence": [
+    {
+      "id": "E1",
+      "type": "source_signal",
+      "summary": "src/infrastructure/caching/cache-keys.ts",
+      "detail": "anchor \"cache\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/caching/cache-keys.ts"
+      }
+    },
+    {
+      "id": "E2",
+      "type": "source_signal",
+      "summary": "src/infrastructure/caching/cache.factory.ts",
+      "detail": "anchor \"cache\" via file_path; anchor \"factory\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/caching/cache.factory.ts"
+      }
+    },
+    {
+      "id": "E3",
+      "type": "source_signal",
+      "summary": "src/infrastructure/caching/cache.interface.ts",
+      "detail": "anchor \"cache\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/caching/cache.interface.ts"
+      }
+    },
+    {
+      "id": "E4",
+      "type": "source_signal",
+      "summary": "src/infrastructure/caching/cache.manager.ts",
+      "detail": "anchor \"cache\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/caching/cache.manager.ts"
+      }
+    },
+    {
+      "id": "E5",
+      "type": "source_signal",
+      "summary": "src/infrastructure/caching/decorators/cache-evict.decorator.ts",
+      "detail": "anchor \"cache\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/caching/decorators/cache-evict.decorator.ts"
+      }
+    },
+    {
+      "id": "E6",
+      "type": "source_signal",
+      "summary": "src/infrastructure/caching/decorators/cacheable.decorator.ts",
+      "detail": "anchor \"cache\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/caching/decorators/cacheable.decorator.ts"
+      }
+    },
+    {
+      "id": "E7",
+      "type": "source_signal",
+      "summary": "src/infrastructure/caching/implementations/memory-cache.service.ts",
+      "detail": "anchor \"cache\" via file_path; anchor \"ory-cache\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/caching/implementations/memory-cache.service.ts"
+      }
+    },
+    {
+      "id": "E8",
+      "type": "source_signal",
+      "summary": "src/infrastructure/caching/implementations/redis-cache.service.ts",
+      "detail": "anchor \"cache\" via file_path; anchor \"redis\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/caching/implementations/redis-cache.service.ts"
+      }
+    },
+    {
+      "id": "E9",
+      "type": "source_signal",
+      "summary": "src/infrastructure/image-processor/image-processor.service.ts",
+      "detail": "anchor \"process\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/image-processor/image-processor.service.ts"
+      }
+    },
+    {
+      "id": "E10",
+      "type": "source_signal",
+      "summary": "src/infrastructure/image-processor/index.ts",
+      "detail": "anchor \"process\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/image-processor/index.ts"
+      }
+    },
+    {
+      "id": "E11",
+      "type": "source_signal",
+      "summary": "src/infrastructure/logger/logger.factory.ts",
+      "detail": "anchor \"factory\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/logger/logger.factory.ts"
+      }
+    },
+    {
+      "id": "E12",
+      "type": "source_signal",
+      "summary": "src/infrastructure/messaging/pubsub/pubsub.factory.ts",
+      "detail": "anchor \"factory\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/messaging/pubsub/pubsub.factory.ts"
+      }
+    },
+    {
+      "id": "E13",
+      "type": "source_signal",
+      "summary": "src/infrastructure/messaging/redis/connection.ts",
+      "detail": "anchor \"redis\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/messaging/redis/connection.ts"
+      }
+    },
+    {
+      "id": "E14",
+      "type": "source_signal",
+      "summary": "src/infrastructure/messaging/redis/index.ts",
+      "detail": "anchor \"redis\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/messaging/redis/index.ts"
+      }
+    },
+    {
+      "id": "E15",
+      "type": "source_signal",
+      "summary": "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts",
+      "detail": "anchor \"redis\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts"
+      }
+    },
+    {
+      "id": "E16",
+      "type": "source_signal",
+      "summary": "src/infrastructure/rate-limiting/rate-limiter.factory.ts",
+      "detail": "anchor \"factory\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/rate-limiting/rate-limiter.factory.ts"
+      }
+    },
+    {
+      "id": "E17",
+      "type": "source_signal",
+      "summary": "src/infrastructure/secret-manager/secret-manager.factory.ts",
+      "detail": "anchor \"factory\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/secret-manager/secret-manager.factory.ts"
+      }
+    },
+    {
+      "id": "E18",
+      "type": "source_signal",
+      "summary": "src/infrastructure/storage/storage.factory.ts",
+      "detail": "anchor \"factory\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/infrastructure/storage/storage.factory.ts"
+      }
+    },
+    {
+      "id": "E19",
+      "type": "source_signal",
+      "summary": "src/modules/core/services/global-settings.service.ts",
+      "detail": "calls_static neighbor from src/infrastructure/image-processor/index.ts; calls_static neighbor from src/infrastructure/image-processor/index.ts; calls_static neighbor from src/infrastructure/image-processor/index.ts; calls_static neighbor from src/infrastructure/image-processor/index.ts; calls_static neighbor from src/infrastructure/image-processor/index.ts; calls_static neighbor from src/infrastructure/image-processor/index.ts; calls_static neighbor from src/infrastructure/image-processor/index.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/services/global-settings.service.ts"
+      }
+    },
+    {
+      "id": "E20",
+      "type": "source_signal",
+      "summary": "src/modules/identity/models/permission.model.ts",
+      "detail": "references_model neighbor from tests/rbac/verify-permission-cache.ts; references_model neighbor from tests/rbac/verify-permission-cache.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/models/permission.model.ts"
+      }
+    },
+    {
+      "id": "E21",
+      "type": "source_signal",
+      "summary": "src/modules/identity/models/role.model.ts",
+      "detail": "references_model neighbor from tests/rbac/verify-permission-cache.ts; references_model neighbor from tests/rbac/verify-permission-cache.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E22",
+      "type": "source_signal",
+      "summary": "src/modules/identity/models/user.model.ts",
+      "detail": "references_model neighbor from tests/rbac/verify-permission-cache.ts; references_model neighbor from tests/rbac/verify-permission-cache.ts; references_model neighbor from tests/rbac/verify-permission-cache.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/models/user.model.ts"
+      }
+    },
+    {
+      "id": "E23",
+      "type": "source_signal",
+      "summary": "src/modules/identity/services/permission.service.ts",
+      "detail": "calls_static neighbor from tests/rbac/verify-permission-cache.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E24",
+      "type": "source_signal",
+      "summary": "src/modules/identity/services/user.service.ts",
+      "detail": "calls_static neighbor from scripts/verify-auth-user-cache.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E25",
+      "type": "source_signal",
+      "summary": "[script] scripts/verify-auth-user-cache.ts",
+      "detail": "anchor \"cache\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "scripts/verify-auth-user-cache.ts"
+      }
+    },
+    {
+      "id": "E26",
+      "type": "source_signal",
+      "summary": "[test] tests/rbac/verify-permission-cache.ts",
+      "detail": "anchor \"cache\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E27",
+      "type": "observed_call",
+      "summary": "scripts/verify-auth-user-cache.ts → src/modules/identity/services/user.service.ts [UserService.invalidateAuthUserCache]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "scripts/verify-auth-user-cache.ts"
+      }
+    },
+    {
+      "id": "E28",
+      "type": "observed_import",
+      "summary": "scripts/verify-auth-user-cache.ts → src/modules/identity/services/user.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "scripts/verify-auth-user-cache.ts"
+      }
+    },
+    {
+      "id": "E29",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/cache.factory.ts → src/infrastructure/caching/cache.interface.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/cache.factory.ts"
+      }
+    },
+    {
+      "id": "E30",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/cache.factory.ts → src/infrastructure/caching/implementations/memory-cache.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/cache.factory.ts"
+      }
+    },
+    {
+      "id": "E31",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/cache.factory.ts → src/infrastructure/caching/implementations/redis-cache.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/cache.factory.ts"
+      }
+    },
+    {
+      "id": "E32",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/cache.factory.ts → src/infrastructure/logger/logger.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/cache.factory.ts"
+      }
+    },
+    {
+      "id": "E33",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/cache.interface.ts → src/infrastructure/caching/cache-keys.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/cache.interface.ts"
+      }
+    },
+    {
+      "id": "E34",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/cache.manager.ts → src/infrastructure/caching/cache-keys.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/cache.manager.ts"
+      }
+    },
+    {
+      "id": "E35",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/cache.manager.ts → src/infrastructure/caching/cache.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/cache.manager.ts"
+      }
+    },
+    {
+      "id": "E36",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/cache.manager.ts → src/infrastructure/caching/cache.interface.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/cache.manager.ts"
+      }
+    },
+    {
+      "id": "E37",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/cache.manager.ts → src/infrastructure/logger/logger.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/cache.manager.ts"
+      }
+    },
+    {
+      "id": "E38",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/decorators/cache-evict.decorator.ts → src/infrastructure/caching/cache-keys.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/decorators/cache-evict.decorator.ts"
+      }
+    },
+    {
+      "id": "E39",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/decorators/cache-evict.decorator.ts → src/infrastructure/caching/cache.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/decorators/cache-evict.decorator.ts"
+      }
+    },
+    {
+      "id": "E40",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/decorators/cache-evict.decorator.ts → src/infrastructure/logger/logger.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/decorators/cache-evict.decorator.ts"
+      }
+    },
+    {
+      "id": "E41",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/decorators/cacheable.decorator.ts → src/infrastructure/caching/cache-keys.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/decorators/cacheable.decorator.ts"
+      }
+    },
+    {
+      "id": "E42",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/decorators/cacheable.decorator.ts → src/infrastructure/caching/cache.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/decorators/cacheable.decorator.ts"
+      }
+    },
+    {
+      "id": "E43",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/decorators/cacheable.decorator.ts → src/infrastructure/logger/logger.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/decorators/cacheable.decorator.ts"
+      }
+    },
+    {
+      "id": "E44",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/implementations/memory-cache.service.ts → src/infrastructure/caching/cache-keys.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/implementations/memory-cache.service.ts"
+      }
+    },
+    {
+      "id": "E45",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/implementations/memory-cache.service.ts → src/infrastructure/caching/cache.interface.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/implementations/memory-cache.service.ts"
+      }
+    },
+    {
+      "id": "E46",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/implementations/memory-cache.service.ts → src/infrastructure/logger/logger.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/implementations/memory-cache.service.ts"
+      }
+    },
+    {
+      "id": "E47",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/implementations/redis-cache.service.ts → src/infrastructure/caching/cache-keys.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/implementations/redis-cache.service.ts"
+      }
+    },
+    {
+      "id": "E48",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/implementations/redis-cache.service.ts → src/infrastructure/caching/cache.interface.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/implementations/redis-cache.service.ts"
+      }
+    },
+    {
+      "id": "E49",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/implementations/redis-cache.service.ts → src/infrastructure/logger/logger.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/implementations/redis-cache.service.ts"
+      }
+    },
+    {
+      "id": "E50",
+      "type": "observed_import",
+      "summary": "src/infrastructure/caching/implementations/redis-cache.service.ts → src/infrastructure/messaging/redis/connection.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/caching/implementations/redis-cache.service.ts"
+      }
+    },
+    {
+      "id": "E51",
+      "type": "observed_import",
+      "summary": "src/infrastructure/messaging/redis/connection.ts → src/infrastructure/logger/logger.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/messaging/redis/connection.ts"
+      }
+    },
+    {
+      "id": "E52",
+      "type": "observed_import",
+      "summary": "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts → src/infrastructure/logger/logger.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts"
+      }
+    },
+    {
+      "id": "E53",
+      "type": "observed_import",
+      "summary": "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts → src/infrastructure/messaging/redis/index.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts"
+      }
+    },
+    {
+      "id": "E54",
+      "type": "observed_import",
+      "summary": "src/infrastructure/rate-limiting/rate-limiter.factory.ts → src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/infrastructure/rate-limiting/rate-limiter.factory.ts"
+      }
+    },
+    {
+      "id": "E55",
+      "type": "observed_call",
+      "summary": "src/modules/core/services/global-settings.service.ts → src/infrastructure/image-processor/index.ts [ImageProcessorService.validateImage]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/global-settings.service.ts"
+      }
+    },
+    {
+      "id": "E56",
+      "type": "observed_call",
+      "summary": "src/modules/core/services/global-settings.service.ts → src/infrastructure/image-processor/index.ts [ImageProcessorService.processBrandIcon]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/global-settings.service.ts"
+      }
+    },
+    {
+      "id": "E57",
+      "type": "observed_call",
+      "summary": "src/modules/core/services/global-settings.service.ts → src/infrastructure/image-processor/index.ts [ImageProcessorService.generatePWAIcons]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/global-settings.service.ts"
+      }
+    },
+    {
+      "id": "E58",
+      "type": "observed_call",
+      "summary": "src/modules/core/services/global-settings.service.ts → src/infrastructure/image-processor/index.ts [ImageProcessorService.generateAppleTouchIcon]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/global-settings.service.ts"
+      }
+    },
+    {
+      "id": "E59",
+      "type": "observed_call",
+      "summary": "src/modules/core/services/global-settings.service.ts → src/infrastructure/image-processor/index.ts [ImageProcessorService.generateFaviconSet]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/global-settings.service.ts"
+      }
+    },
+    {
+      "id": "E60",
+      "type": "observed_call",
+      "summary": "src/modules/core/services/global-settings.service.ts → src/infrastructure/image-processor/index.ts [ImageProcessorService.generateMaskablePWAIcons]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/global-settings.service.ts"
+      }
+    },
+    {
+      "id": "E61",
+      "type": "observed_call",
+      "summary": "src/modules/core/services/global-settings.service.ts → src/infrastructure/image-processor/index.ts [ImageProcessorService.processEmailLogo]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/global-settings.service.ts"
+      }
+    },
+    {
+      "id": "E62",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/global-settings.service.ts → src/infrastructure/image-processor/index.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/global-settings.service.ts"
+      }
+    },
+    {
+      "id": "E63",
+      "type": "observed_import",
+      "summary": "src/modules/identity/models/role.model.ts → src/modules/identity/models/permission.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E64",
+      "type": "model_reference",
+      "summary": "src/modules/identity/models/role.model.ts → src/modules/identity/models/permission.model.ts [Permission.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E65",
+      "type": "model_reference",
+      "summary": "src/modules/identity/models/role.model.ts → src/modules/identity/models/permission.model.ts [Permission.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E66",
+      "type": "model_reference",
+      "summary": "src/modules/identity/models/role.model.ts → src/modules/identity/models/permission.model.ts [Permission.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E67",
+      "type": "observed_import",
+      "summary": "src/modules/identity/services/permission.service.ts → src/modules/identity/models/role.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E68",
+      "type": "observed_import",
+      "summary": "src/modules/identity/services/permission.service.ts → src/modules/identity/models/user.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E69",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/permission.service.ts → src/modules/identity/models/role.model.ts [Role.updateOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E70",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/permission.service.ts → src/modules/identity/models/user.model.ts [User.updateOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E71",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/permission.service.ts → src/modules/identity/models/user.model.ts [User.updateMany]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E72",
+      "type": "observed_import",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/permission.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E73",
+      "type": "observed_import",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/role.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E74",
+      "type": "observed_import",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E75",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/permission.model.ts [Permission.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E76",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/permission.model.ts [Permission.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E77",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/permission.model.ts [Permission.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E78",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/role.model.ts [Role.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E79",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/role.model.ts [Role.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E80",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/role.model.ts [Role.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E81",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E82",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.create]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E83",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E84",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.updateOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E85",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E86",
+      "type": "model_reference",
+      "summary": "src/modules/identity/services/user.service.ts → src/modules/identity/models/user.model.ts [User.countDocuments]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E87",
+      "type": "observed_call",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/services/permission.service.ts [PermissionService.invalidateRole]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E88",
+      "type": "observed_import",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/infrastructure/caching/cache-keys.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E89",
+      "type": "observed_import",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/infrastructure/caching/cache.factory.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E90",
+      "type": "observed_import",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/permission.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E91",
+      "type": "observed_import",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/role.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E92",
+      "type": "observed_import",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/user.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E93",
+      "type": "observed_import",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/services/permission.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E94",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/permission.model.ts [Permission.findOneAndUpdate]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E95",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/permission.model.ts [Permission.deleteOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E96",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/role.model.ts [Role.findOneAndUpdate]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E97",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/role.model.ts [Role.deleteOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E98",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/user.model.ts [User.findOneAndUpdate]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E99",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/user.model.ts [User.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E100",
+      "type": "model_reference",
+      "summary": "tests/rbac/verify-permission-cache.ts → src/modules/identity/models/user.model.ts [User.deleteOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    },
+    {
+      "id": "E101",
+      "type": "documentary",
+      "summary": "Issue #1: [Infrastructure] Implement Advanced Rate Limiting with Redis Sliding Window",
+      "detail": "…ompatible with existing request context middleware 3. **Redis**: Uses existing cache client - `getCacheClient()` from `@infrastructure/messaging/redis` - Aut…",
+      "source": {
+        "kind": "Issue",
+        "number": 1
+      }
+    },
+    {
+      "id": "E102",
+      "type": "documentary",
+      "summary": "Issue #4: ",
+      "detail": "…Implementation ### Core Infrastructure - **Provider Agnostic**: Abstracted `ICacheService` interface supporting interchangeable backends. - **Redis Implementation…",
+      "source": {
+        "kind": "Issue",
+        "number": 4
+      }
+    },
+    {
+      "id": "E103",
+      "type": "documentary",
+      "summary": "Issue #8: Fix ESM Module Resolution and Redis Connectivity for Cloud Run",
+      "detail": "…ing `.js` extensions which were previously masked by `tsx` in development. 2. **Redis Instability:** The `node-redis` client experienced connection timeouts and \"Rat…",
+      "source": {
+        "kind": "Issue",
+        "number": 8
+      }
+    },
+    {
+      "id": "E104",
+      "type": "documentary",
+      "summary": "Issue #17: Implement Redis-Based Global Permission Caching Infrastructure",
+      "detail": "…ext Our current permission system relies on MongoDB-based caching (`permissionsCache` in User document), which performs poorly under load. We need to transition to…",
+      "source": {
+        "kind": "Issue",
+        "number": 17
+      }
+    },
+    {
+      "id": "E105",
+      "type": "documentary",
+      "summary": "Issue #18: ",
+      "detail": "…- This prevents accidental DB hits and ensures all checks go through the Redis cache. ### 2. Service Implementation (`ResourceMemberService`) Create `src/modules/…",
+      "source": {
+        "kind": "Issue",
+        "number": 18
+      }
+    },
+    {
+      "id": "E106",
+      "type": "documentary",
+      "summary": "Issue #19: Configure Redis Command Timeout to Prevent Grey Failures",
+      "detail": "…ime. ## Objective Configure a strict `commandTimeout` for all Redis clients (`Cache`, `Publisher`, `Subscriber`) to ensure the application fails fast and can trigg…",
+      "source": {
+        "kind": "Issue",
+        "number": 19
+      }
+    },
+    {
+      "id": "E107",
+      "type": "documentary",
+      "summary": "Issue #30: ",
+      "detail": "…re class } ``` --- ## 2. Infrastructure Layer (Caching & Keys) ### A. Update Cache Keys **Location**: `src/infrastructure/caching/cache-keys.ts` Add a new names…",
+      "source": {
+        "kind": "Issue",
+        "number": 30
+      }
+    },
+    {
+      "id": "E108",
+      "type": "documentary",
+      "summary": "Issue #33: ",
+      "detail": "…shield/rules.ts` **Add New Rule**: ```typescript export const isUser = rule({ cache: \"contextual\" })(async ( parent, args, ctx: GraphQLContext, ) => { retu…",
+      "source": {
+        "kind": "Issue",
+        "number": 33
+      }
+    },
+    {
+      "id": "E109",
+      "type": "documentary",
+      "summary": "Issue #34: ",
+      "detail": "…module caching implementation: 1. **Bug Fix**: `testSMTPConnection` uses stale cached data after configuration updates 2. **Enhancement**: Add caching for `Integrat…",
+      "source": {
+        "kind": "Issue",
+        "number": 34
+      }
+    },
+    {
+      "id": "E110",
+      "type": "documentary",
+      "summary": "Issue #35: ",
+      "detail": "…us This data should be fetched from the auth provider (Firebase) on-demand and cached for 3 minutes. --- ## Implementation ### Part 1: Add GraphQL Type **File**…",
+      "source": {
+        "kind": "Issue",
+        "number": 35
+      }
+    },
+    {
+      "id": "E111",
+      "type": "documentary",
+      "summary": "Issue #36: ",
+      "detail": "…l.js\"; import { CurrencyType } from \"../../../common/enum/index.js\"; import { Cacheable, CacheEvict, CacheKeys, } from \"../../../infrastructure/caching/index.j…",
+      "source": {
+        "kind": "Issue",
+        "number": 36
+      }
+    },
+    {
+      "id": "E112",
+      "type": "documentary",
+      "summary": "Issue #37: ",
+      "detail": "…` Method**: Add `active` filter parameter and caching: ```typescript import { Cacheable, CacheEvict } from '@type-cacheable/core'; /** * Get integrations with op…",
+      "source": {
+        "kind": "Issue",
+        "number": 37
+      }
+    },
+    {
+      "id": "E113",
+      "type": "documentary",
+      "summary": "Issue #43: ",
+      "detail": "…Promise<string> { const settings = await this.getSettings(); // Uses existing cache if (applicationType === ApplicationType.ADMIN) { if (!settings.adminFron…",
+      "source": {
+        "kind": "Issue",
+        "number": 43
+      }
+    },
+    {
+      "id": "E114",
+      "type": "documentary",
+      "summary": "Issue #44: ",
+      "detail": "…quest → createContext() → AuthResolver.resolve(token) → getUserByToken() [Cached: 3 min] → resolveUserFromTokenPayload() [NOT CACHED] → User.findOne({ auth…",
+      "source": {
+        "kind": "Issue",
+        "number": 44
+      }
+    },
+    {
+      "id": "E115",
+      "type": "documentary",
+      "summary": "Issue #46: ",
+      "detail": "…tity module** that: - Normalizes the email (e.g., lowercase). - Checks **Redis cache first** using a standardized cache key. - Falls back to **database lookup** onl…",
+      "source": {
+        "kind": "Issue",
+        "number": 46
+      }
+    },
+    {
+      "id": "E116",
+      "type": "documentary",
+      "summary": "Issue #56: ",
+      "detail": "…ee command types have `unknown` payloads, which means the notify service cannot process them: ```ts export type NotifyPayloadMap = { [CommandTypes.Welcome]: Welcome…",
+      "source": {
+        "kind": "Issue",
+        "number": 56
+      }
+    },
+    {
+      "id": "E117",
+      "type": "documentary",
+      "summary": "Issue #57: Minor improvements: auth logging, memory cache limit, subscription dates, daysLeft resolver",
+      "detail": "…on of smaller improvements that improve logging, add a safety net to the memory cache, fix a missing validation, and implement a stub resolver. --- ## 1. Replace `…",
+      "source": {
+        "kind": "Issue",
+        "number": 57
+      }
+    },
+    {
+      "id": "E118",
+      "type": "documentary",
+      "summary": "PR #2: ",
+      "detail": "…ed a production-grade, two-tier rate limiting system (Base + Field level) using Redis Sorted Sets (Sliding Window) with automatic in-memory fallback. ## Key Chang…",
+      "source": {
+        "kind": "PR",
+        "number": 2
+      }
+    },
+    {
+      "id": "E119",
+      "type": "documentary",
+      "summary": "PR #3: fix(redis): prevent infinite reconnection loop",
+      "detail": "### Summary Implemented a **Circuit Breaker** pattern in the Redis connection logic to prevent infinite reconnection loops when credentials are in…",
+      "source": {
+        "kind": "PR",
+        "number": 3
+      }
+    },
+    {
+      "id": "E120",
+      "type": "documentary",
+      "summary": "PR #5: ",
+      "detail": "…ted robust Redis caching with memory fallback and circuit breaker. - Added `ICacheService` with strictly typed `CacheKeys`. - Added `@Cacheable`/`@CacheEvict` de…",
+      "source": {
+        "kind": "PR",
+        "number": 5
+      }
+    },
+    {
+      "id": "E121",
+      "type": "documentary",
+      "summary": "PR #9: Fix ESM imports, Redis IPv4 enforcement, and Deployment Config (#8)",
+      "detail": "…s`, and `src/infrastructure` to comply with native Node.js ESM resolution. - **Redis Stability:** Enforced IPv4 socket resolution (`family: 4`) to bypass Cloud Run…",
+      "source": {
+        "kind": "PR",
+        "number": 9
+      }
+    },
+    {
+      "id": "E122",
+      "type": "documentary",
+      "summary": "PR #20: implemented Redis cache-Aside architecture for global permissions + redis command timeout fix",
+      "detail": "…DB-based permission checking system with a high-performance **Distributed Redis Cache-Aside** architecture (Issue #17). Hardens the entire caching infrastructure aga…",
+      "source": {
+        "kind": "PR",
+        "number": 20
+      }
+    },
+    {
+      "id": "E123",
+      "type": "documentary",
+      "summary": "PR #21: ",
+      "detail": "…:120:2-152:3) specifically for resources. * **Caching**: Implements the \"Cache-Aside\" pattern to seamlessly handle Redis hits/misses. ### 2. O(1) Caching A…",
+      "source": {
+        "kind": "PR",
+        "number": 21
+      }
+    },
+    {
+      "id": "E124",
+      "type": "documentary",
+      "summary": "PR #22: ",
+      "detail": "…he PORT (8080)\" ### Root Causes 1. **Missing MongoDB connection timeout** - Process would hang indefinitely if the database was unavailable or slow, causing Cloud…",
+      "source": {
+        "kind": "PR",
+        "number": 22
+      }
+    },
+    {
+      "id": "E125",
+      "type": "documentary",
+      "summary": "PR #25: Bug fix/update listing mutation and redis fix",
+      "detail": "redis",
+      "source": {
+        "kind": "PR",
+        "number": 25
+      }
+    },
+    {
+      "id": "E126",
+      "type": "documentary",
+      "summary": "PR #28: ",
+      "detail": "…he method failed with `settings.save is not a function`. The method was using a cached result (plain object); it now forces a database fetch (`ensureSettings`) to ge…",
+      "source": {
+        "kind": "PR",
+        "number": 28
+      }
+    },
+    {
+      "id": "E127",
+      "type": "documentary",
+      "summary": "PR #32: ",
+      "detail": "…m/index.ts` | Export new `block-context.enums` | | `src/infrastructure/caching/cache-keys.ts` | Added `CONTENT_BLOCKS.LISTING` and `CONTENT_BLOCKS.SHARE_CLASS` cach…",
+      "source": {
+        "kind": "PR",
+        "number": 32
+      }
+    },
+    {
+      "id": "E128",
+      "type": "documentary",
+      "summary": "PR #38: implemented caching enhancements and testSMTPConnection cache invalidation upon update of config",
+      "detail": "…nts outlined in Issue #34: 1. **Bug Fix**: `testSMTPConnection` now bypasses cache to use fresh credentials 2. **Enhancement**: Added caching for `IntegrationSer…",
+      "source": {
+        "kind": "PR",
+        "number": 38
+      }
+    },
+    {
+      "id": "E129",
+      "type": "documentary",
+      "summary": "PR #40: ",
+      "detail": "…**: Stores `name`, `description`, `issuer`, `subject`, `roles`, and `permissionsCache`. - **Identity**: Unique compound index on `(issuer, subject)` ensures OID…",
+      "source": {
+        "kind": "PR",
+        "number": 40
+      }
+    },
+    {
+      "id": "E130",
+      "type": "documentary",
+      "summary": "PR #41: ",
+      "detail": "…**: Stores `name`, `description`, `issuer`, `subject`, `roles`, and `permissionsCache`. - **Identity**: Unique compound index on `(issuer, subject)` ensures OID…",
+      "source": {
+        "kind": "PR",
+        "number": 41
+      }
+    },
+    {
+      "id": "E131",
+      "type": "documentary",
+      "summary": "PR #42: ",
+      "detail": "…on-demand. It introduces a new `authUser` field on the `User` type, backed by a cached service method that fetches data directly from the Auth Provider. ## Change…",
+      "source": {
+        "kind": "PR",
+        "number": 42
+      }
+    },
+    {
+      "id": "E132",
+      "type": "documentary",
+      "summary": "PR #45: ",
+      "detail": "…ated tokens. 4. **Performance**: Implemented aggressive caching strategies (`@Cacheable`, `@CacheEvict`) to ensure sub-millisecond read performance for high-traffi…",
+      "source": {
+        "kind": "PR",
+        "number": 45
+      }
+    },
+    {
+      "id": "E133",
+      "type": "documentary",
+      "summary": "PR #47: ",
+      "detail": "…**`getIntegrations`**: Supports filtering by `category` and `active` status. Cached. * **`toggleIntegrationStatus`**: Updates `isActive` and populates audit fi…",
+      "source": {
+        "kind": "PR",
+        "number": 47
+      }
+    },
+    {
+      "id": "E134",
+      "type": "documentary",
+      "summary": "PR #52: ",
+      "detail": "…ll mutation boundaries. The implementation also updates the type system to use `CachedUser` (plain object) instead of Mongoose documents in the context, ensuring bet…",
+      "source": {
+        "kind": "PR",
+        "number": 52
+      }
+    },
+    {
+      "id": "E135",
+      "type": "documentary",
+      "summary": "PR #53: ",
+      "detail": "…he registration flow. It introduces a `checkEmailAvailability` mutation that is cached (Redis, 5-min TTL) and rate-limited (10 reqs/min per IP) to prevent abuse whil…",
+      "source": {
+        "kind": "PR",
+        "number": 53
+      }
+    },
+    {
+      "id": "E136",
+      "type": "documentary",
+      "summary": "PR #58: implemented auth logging, memory cache limit, subscription date validation, daysLeft resolver for listings",
+      "detail": "# Issue #57 — Minor Improvements: Auth Logging, Memory Cache Limit, Subscription Dates, `daysLeft` Resolver **Branch:** enhancement/57-au…",
+      "source": {
+        "kind": "PR",
+        "number": 58
+      }
+    },
+    {
+      "id": "E137",
+      "type": "documentary",
+      "summary": "PR #59: ",
+      "detail": "…m B — No transaction The status update was a bare `.save()` with no session. A process crash between the write and the log, or a concurrent update, could leave the do…",
+      "source": {
+        "kind": "PR",
+        "number": 59
+      }
+    },
+    {
+      "id": "E138",
+      "type": "documentary",
+      "summary": "PR #61: ",
+      "detail": "…block (a literal `\\n` embedded in a comment string) that was cleaned up in the process. ### Fix — Imports Three imports added at the top of the file: ```type…",
+      "source": {
+        "kind": "PR",
+        "number": 61
+      }
+    },
+    {
+      "id": "E139",
+      "type": "historical",
+      "summary": "touched 8x: src/infrastructure/caching/cache-keys.ts",
+      "detail": "src/modules/core/services/global-settings.service.ts, src/modules/identity/services/permission.service.ts, src/modules/identity/services/user.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/caching/cache-keys.ts"
+      }
+    },
+    {
+      "id": "E140",
+      "type": "historical",
+      "summary": "touched 8x: src/modules/core/services/global-settings.service.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/services/global-settings.service.ts"
+      }
+    },
+    {
+      "id": "E141",
+      "type": "historical",
+      "summary": "touched 7x: src/modules/identity/services/user.service.ts",
+      "detail": "src/modules/identity/models/user.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/services/user.service.ts"
+      }
+    },
+    {
+      "id": "E142",
+      "type": "historical",
+      "summary": "touched 6x: src/modules/identity/models/user.model.ts",
+      "detail": "src/modules/identity/models/role.model.ts, src/modules/identity/services/user.service.ts, src/modules/identity/models/permission.model.ts, src/modules/identity/services/permission.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/models/user.model.ts"
+      }
+    },
+    {
+      "id": "E143",
+      "type": "historical",
+      "summary": "touched 6x: src/modules/identity/services/permission.service.ts",
+      "detail": "src/modules/identity/models/role.model.ts, src/modules/identity/models/user.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/services/permission.service.ts"
+      }
+    },
+    {
+      "id": "E144",
+      "type": "historical",
+      "summary": "touched 5x: src/infrastructure/messaging/redis/connection.ts",
+      "detail": "src/infrastructure/messaging/pubsub/pubsub.factory.ts, src/infrastructure/messaging/redis/index.ts, src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts, src/modules/identity/models/role.model.ts, src/modules/identity/models/user.model.ts, src/modules/identity/services/user.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/messaging/redis/connection.ts"
+      }
+    },
+    {
+      "id": "E145",
+      "type": "historical",
+      "summary": "touched 4x: src/modules/identity/models/permission.model.ts",
+      "detail": "src/modules/identity/models/role.model.ts, src/modules/identity/models/user.model.ts, src/infrastructure/image-processor/index.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/models/permission.model.ts"
+      }
+    },
+    {
+      "id": "E146",
+      "type": "historical",
+      "summary": "touched 4x: src/modules/identity/models/role.model.ts",
+      "detail": "src/modules/identity/models/user.model.ts, src/modules/identity/models/permission.model.ts, src/modules/identity/services/permission.service.ts, src/infrastructure/image-processor/index.ts, src/infrastructure/messaging/redis/connection.ts, src/infrastructure/storage/storage.factory.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/identity/models/role.model.ts"
+      }
+    },
+    {
+      "id": "E147",
+      "type": "historical",
+      "summary": "touched 2x: src/infrastructure/image-processor/image-processor.service.ts",
+      "detail": "src/modules/core/services/global-settings.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/image-processor/image-processor.service.ts"
+      }
+    },
+    {
+      "id": "E148",
+      "type": "historical",
+      "summary": "touched 2x: src/infrastructure/image-processor/index.ts",
+      "detail": "src/infrastructure/storage/storage.factory.ts, src/modules/identity/models/permission.model.ts, src/modules/identity/models/role.model.ts, src/modules/identity/models/user.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/image-processor/index.ts"
+      }
+    },
+    {
+      "id": "E149",
+      "type": "historical",
+      "summary": "touched 2x: src/infrastructure/messaging/pubsub/pubsub.factory.ts",
+      "detail": "src/infrastructure/messaging/redis/connection.ts, src/infrastructure/messaging/redis/index.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/messaging/pubsub/pubsub.factory.ts"
+      }
+    },
+    {
+      "id": "E150",
+      "type": "historical",
+      "summary": "touched 2x: src/infrastructure/messaging/redis/index.ts",
+      "detail": "src/infrastructure/messaging/pubsub/pubsub.factory.ts, src/infrastructure/messaging/redis/connection.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/messaging/redis/index.ts"
+      }
+    },
+    {
+      "id": "E151",
+      "type": "historical",
+      "summary": "touched 2x: src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts",
+      "detail": "src/infrastructure/messaging/redis/connection.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts"
+      }
+    },
+    {
+      "id": "E152",
+      "type": "historical",
+      "summary": "touched 2x: src/infrastructure/storage/storage.factory.ts",
+      "detail": "src/infrastructure/image-processor/index.ts, src/modules/identity/models/permission.model.ts, src/modules/identity/models/role.model.ts, src/modules/identity/models/user.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/storage/storage.factory.ts"
+      }
+    },
+    {
+      "id": "E153",
+      "type": "historical",
+      "summary": "touched 1x: scripts/verify-auth-user-cache.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "scripts/verify-auth-user-cache.ts"
+      }
+    },
+    {
+      "id": "E154",
+      "type": "historical",
+      "summary": "touched 1x: src/infrastructure/caching/cache.factory.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/caching/cache.factory.ts"
+      }
+    },
+    {
+      "id": "E155",
+      "type": "historical",
+      "summary": "touched 1x: src/infrastructure/caching/cache.interface.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/caching/cache.interface.ts"
+      }
+    },
+    {
+      "id": "E156",
+      "type": "historical",
+      "summary": "touched 1x: src/infrastructure/caching/cache.manager.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/caching/cache.manager.ts"
+      }
+    },
+    {
+      "id": "E157",
+      "type": "historical",
+      "summary": "touched 1x: src/infrastructure/caching/decorators/cache-evict.decorator.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/caching/decorators/cache-evict.decorator.ts"
+      }
+    },
+    {
+      "id": "E158",
+      "type": "historical",
+      "summary": "touched 1x: src/infrastructure/caching/decorators/cacheable.decorator.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/caching/decorators/cacheable.decorator.ts"
+      }
+    },
+    {
+      "id": "E159",
+      "type": "historical",
+      "summary": "touched 1x: src/infrastructure/caching/implementations/memory-cache.service.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/caching/implementations/memory-cache.service.ts"
+      }
+    },
+    {
+      "id": "E160",
+      "type": "historical",
+      "summary": "touched 1x: src/infrastructure/caching/implementations/redis-cache.service.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/caching/implementations/redis-cache.service.ts"
+      }
+    },
+    {
+      "id": "E161",
+      "type": "historical",
+      "summary": "touched 1x: src/infrastructure/logger/logger.factory.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/logger/logger.factory.ts"
+      }
+    },
+    {
+      "id": "E162",
+      "type": "historical",
+      "summary": "touched 1x: src/infrastructure/rate-limiting/rate-limiter.factory.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/rate-limiting/rate-limiter.factory.ts"
+      }
+    },
+    {
+      "id": "E163",
+      "type": "historical",
+      "summary": "touched 1x: src/infrastructure/secret-manager/secret-manager.factory.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/infrastructure/secret-manager/secret-manager.factory.ts"
+      }
+    },
+    {
+      "id": "E164",
+      "type": "historical",
+      "summary": "touched 1x: tests/rbac/verify-permission-cache.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "tests/rbac/verify-permission-cache.ts"
+      }
+    }
+  ]
+}

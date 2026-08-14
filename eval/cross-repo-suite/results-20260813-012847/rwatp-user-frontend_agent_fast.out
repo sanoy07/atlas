@@ -1,0 +1,93 @@
+atlas agent → /home/sanoy/projects/atlas/agent/atlas_agent.py  model=qwen3:4b  repo=/home/sanoy/Vesta/rwatp-user-frontend
+[2m[fast path: atlas investigate --no-ai][0m
+ATLAS INVESTIGATE EVIDENCE PACKET (deterministic C5.1 + C4)
+QUESTION: SIWE login
+MODE: deterministic_only
+
+RANKED_FILES (highest weight first — prefer these):
+  #1 w=1.18  src/features/auth/hooks/useSiweLogin.ts
+      core_candidate rank_index=0; c5.1_pagerank=1.000
+  #2 w=0.82  src/features/auth/components/login/FirebaseLoginFlow.tsx
+      core_candidate rank_index=2; c5.1_pagerank=0.765
+  #3 w=0.82  src/features/auth/components/login/OtpForm.tsx
+      core_candidate rank_index=4; c5.1_pagerank=0.758
+  #4 w=0.82  src/features/auth/components/login/LoginForm.tsx
+      core_candidate rank_index=3; c5.1_pagerank=0.758
+  #5 w=0.82  src/features/auth/components/login/WalletLoginFlow.tsx
+      core_candidate rank_index=5; c5.1_pagerank=0.755
+  #6 w=0.81  src/app/auth/login/page.tsx
+      core_candidate rank_index=1; c5.1_pagerank=0.744
+  #7 w=0.69  src/features/auth/utils/login/index.ts
+      core_candidate rank_index=11; c5.1_pagerank=0.425
+  #8 w=0.65  src/features/auth/providers/siwePrivy.ts
+      core_candidate rank_index=10; c5.1_pagerank=0.314
+  #12 w=0.61  src/features/auth/components/login/index.ts
+      core_candidate rank_index=6; c5.1_pagerank=0.211
+  #13 w=0.61  src/features/auth/components/login/utils/LoginValidation.ts
+      core_candidate rank_index=7; c5.1_pagerank=0.397
+  #14 w=0.61  src/features/auth/components/login/utils/OtpFormValidation.ts
+      core_candidate rank_index=8; c5.1_pagerank=0.397
+  #15 w=0.59  src/lib/firebase/index.ts
+      core_candidate rank_index=15; c5.1_pagerank=0.428
+  #16 w=0.54  src/features/auth/components/login/utils/index.ts
+      core_candidate rank_index=9; c5.1_pagerank=0.211
+  #18 w=0.46  src/features/auth/config.ts
+      core_candidate rank_index=12; c5.1_pagerank=0.092
+
+CORE_CANDIDATES:
+  - src/features/auth/hooks/useSiweLogin.ts
+  - src/features/auth/components/login/FirebaseLoginFlow.tsx
+  - src/features/auth/components/login/OtpForm.tsx
+  - src/features/auth/components/login/LoginForm.tsx
+  - src/features/auth/components/login/WalletLoginFlow.tsx
+  - src/app/auth/login/page.tsx
+  - src/features/auth/utils/login/index.ts
+  - src/features/auth/providers/siwePrivy.ts
+  - src/features/auth/components/login/index.ts
+  - src/features/auth/components/login/utils/LoginValidation.ts
+  - src/features/auth/components/login/utils/OtpFormValidation.ts
+  - src/lib/firebase/index.ts
+
+LIKELY_AREA: src/features/auth/hooks, src/features/auth/components/login, app, components
+
+HYPOTHESES (already C4-gated by Atlas — status is authoritative):
+  [PLAUSIBLE] Deterministic retrieval associates this question with `src/features/auth/hooks/useSiweLogin.ts` and its neighborhood.
+      evidence: file:src/features/auth/hooks/useSiweLogin.ts
+
+CHRONOLOGY (sample):
+  implementation ca6cdda1121b — ca6cdda — first commit (src/app/auth/login/page.tsx)
+  implementation 0d44dac7d450 — 0d44dac — feat/authseetupdone (src/app/auth/login/page.tsx)
+  implementation 0aa37c0b8de4 — 0aa37c0 — feat/2fa_Account_Setting (src/features/auth/components/login/LoginForm.tsx)
+  implementation 43e62712b341 — 43e6271 — fix/recaptche (src/features/auth/components/login/OtpForm.tsx)
+  implementation 354be4415695 — 354be44 — refactor/2fa (src/features/auth/components/login/OtpForm.tsx)
+  implementation 9e1c8eb66e78 — 9e1c8eb — Project restructure (#4) (src/app/auth/login/page.tsx)
+  implementation 262f695bb310 — 262f695 — feat(auth): add SIWE + Privy as a selectable auth provider (#9) (src/features/auth/hooks/useSiweLogin.ts)
+  implementation 2ab8965c526e — 2ab8965 — fix(auth): stop a Privy build booting Firebase, and give sign-in wallet context… (src/features/auth/components
+
+C4_VERIFICATION_POLICY:
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+WHAT_ATLAS_KNOWS:
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 10 chronology event(s) assembled (intent + implementation)
+
+WHAT_ATLAS_DOES_NOT_KNOW:
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=20 top=src/features/auth/hooks/useSiweLogin.ts
+  · c5.1e_concept_fragments domain=Auth flow=false n=19
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+NEXT_INVESTIGATION:
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+RULE: Existence of a ranked file is NOT causal support. Do not upgrade [PLAUSIBLE]/[UNRESOLVED] to factual cause language. Prefer ranked files over map hot-files alone for localization.

@@ -1,0 +1,1 @@
+{"id":"gt-batch","repo_key":"gigatoken","workflow":"architecture","question":"How does batch encoding and parallel chunking work?","notes":"batch.rs is center; may touch pretokenize/parallel.","gold_files":["src/batch.rs"],"gold_optional":["src/pretokenize/mod.rs","src/lib.rs","src/token.rs"],"hard_negatives":["src/bpe/pretoken_cache.rs","src/load_tokenizer/hub.rs"]}

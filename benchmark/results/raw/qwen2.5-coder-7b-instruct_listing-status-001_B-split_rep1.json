@@ -1,0 +1,195 @@
+{
+  "runId": "qwen2.5-coder-7b-instruct_listing-status-001_B-split_rep1",
+  "model": "qwen2.5-coder:7b-instruct",
+  "caseId": "listing-status-001",
+  "condition": "B-split",
+  "repetition": 1,
+  "decisions": [
+    {
+      "id": "E15",
+      "class": "RELEVANT",
+      "reason": "Implements listing management, which is likely involved in validating listing readiness."
+    },
+    {
+      "id": "E37",
+      "class": "RELEVANT",
+      "reason": "Implemented listing management, which is likely involved in validating listing readiness."
+    },
+    {
+      "id": "E58",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Implements various validations including subscription date validation and daysLeft resolver for listings, which may be relevant to validating listing readiness."
+    },
+    {
+      "id": "E62",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E63",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E64",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E65",
+      "class": "RELEVANT",
+      "reason": "Contains constants that might be used in validation logic."
+    },
+    {
+      "id": "E66",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E67",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E68",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E69",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E70",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E71",
+      "class": "RELEVANT",
+      "reason": "Contains enums that might be used in validation logic."
+    },
+    {
+      "id": "E72",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E73",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E74",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E75",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E76",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E77",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E78",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E79",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E80",
+      "class": "RELEVANT",
+      "reason": "Contains validation logic for listings."
+    },
+    {
+      "id": "E81",
+      "class": "UNKNOWN",
+      "reason": "Not directly related to listing readiness validation."
+    },
+    {
+      "id": "E1",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E2",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "May contain enums related to listing statuses."
+    },
+    {
+      "id": "E3",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E4",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E5",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "May contain types related to listing statuses."
+    },
+    {
+      "id": "E6",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E7",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E8",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Not related to validation of listing readiness."
+    },
+    {
+      "id": "E9",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E10",
+      "class": "RELEVANT",
+      "reason": "Contains validations related to listings."
+    },
+    {
+      "id": "E11",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E12",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E82",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E83",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    }
+  ],
+  "rawOutput": "\n\n// --- documentary batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E15\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Implements listing management, which is likely involved in validating listing readiness.\"\n    },\n    {\n      \"id\": \"E37\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Implemented listing management, which is likely involved in validating listing readiness.\"\n    },\n    {\n      \"id\": \"E58\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Implements various validations including subscription date validation and daysLeft resolver for listings, which may be relevant to validating listing readiness.\"\n    }\n  ]\n}\n```\n\n// --- historical batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E62\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E63\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E64\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E65\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains constants that might be used in validation logic.\"\n    },\n    {\n      \"id\": \"E66\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E67\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E68\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E69\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E70\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E71\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains enums that might be used in validation logic.\"\n    },\n    {\n      \"id\": \"E72\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E73\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E74\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E75\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E76\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E77\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E78\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E79\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    },\n    {\n      \"id\": \"E80\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains validation logic for listings.\"\n    },\n    {\n      \"id\": \"E81\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not directly related to listing readiness validation.\"\n    }\n  ]\n}\n```\n\n// --- source batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E1\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E2\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"May contain enums related to listing statuses.\"\n    },\n    {\n      \"id\": \"E3\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E4\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E5\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"May contain types related to listing statuses.\"\n    },\n    {\n      \"id\": \"E6\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E7\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E8\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Not related to validation of listing readiness.\"\n    },\n    {\n      \"id\": \"E9\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E10\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains validations related to listings.\"\n    },\n    {\n      \"id\": \"E11\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E12\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E82\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E83\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    }\n  ]\n}\n```"
+}

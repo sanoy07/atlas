@@ -1,0 +1,25 @@
+{
+  "runId": "qwen2.5-coder-7b-instruct_listing-status-001_B-combined_rep3",
+  "model": "qwen2.5-coder:7b-instruct",
+  "caseId": "listing-status-001",
+  "condition": "B-combined",
+  "repetition": 3,
+  "decisions": [
+    {
+      "id": "E10",
+      "class": "RELEVANT",
+      "reason": "Contains validation logic for listings."
+    },
+    {
+      "id": "E11",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "May contain validation logic related to share classes."
+    },
+    {
+      "id": "E29",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    }
+  ],
+  "rawOutput": "```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E10\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains validation logic for listings.\"\n    },\n    {\n      \"id\": \"E11\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"May contain validation logic related to share classes.\"\n    },\n    {\n      \"id\": \"E29\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    }\n  ]\n}\n```"
+}

@@ -1,0 +1,85 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+ATLAS MAP
+  repo: /home/sanoy/Vesta/rwatp-user-frontend
+  git_head: 09fde9c
+  modules_subject: src
+  modules (9): app, components, config, constants, features, graphql, lib, providers, types
+
+CLAIMS  (observed | derived | inferred | unknown)
+  [OBSERVED] map-001 — Module/layer inventory under `src` has 9 child directories.
+    method: compute_modules immediate children of subject from files table
+    evidence: [method] compute_modules — total_modules=9
+    limitation: Names are path segments, not business-domain labels.
+    limitation: Historical paths in files table may appear as modules.
+
+  [DERIVED] map-002 — `features` has the highest observed commit touch count under the inventory (35 commits).
+    method: max(observed_commit_count) over ModuleEntry
+    evidence: [module] src/features — commits=35
+    limitation: Commit count is not ownership or importance.
+
+  [OBSERVED] map-003 — Strongest observed cross-module coupling cell: features → components (137 structural edges).
+    method: compute_module_coupling sparse cells sorted by edge_count
+    evidence: [structural] features→components — 137 edges
+    limitation: Static edges only; snapshot of working tree at last structural ingest.
+
+  [OBSERVED] map-004 — Hottest file by commit touches: `src/graphql/codegen/graphql.ts` (16 commits).
+    method: hot_files(repo, 15)
+    evidence: [file] src/graphql/codegen/graphql.ts — touches=16
+    limitation: Path-scoped hot files; identity-aware hot files not used in map v1.
+
+  [DERIVED] map-005 — Most prevalent peer structural pattern: `auth/` in 2/9 peers.
+    method: detect_peer_structure patterns prevalence
+    evidence: [pattern] auth/ — 2/9
+    limitation: Prevalence is not a style judgment.
+
+  [DERIVED] map-006 — Dependency linkage: 57 declared, 44 observed via structural edges, 41 both.
+    method: compute_dependency_linkage
+    evidence: [config] package.json — working-tree package.json (not present in configuration_artifacts)
+    limitation: OBSERVED ≠ runtime usage.
+
+  [DERIVED] map-007 — Test↔module links: 16 links from 16 test files under path rules (0 unlinked).
+    method: compute_test_module_links
+    evidence: [method] test_linkage — links=16
+    limitation: Path rules only; unlinked is not 'orphan ownership'.
+
+HOT FILES
+    16  src/graphql/codegen/graphql.ts
+    15  package.json
+    13  src/graphql/codegen/gql.ts
+    11  package-lock.json
+    10  src/app/(protected)/platform/layout.tsx
+     9  src/app/(protected)/platform/account-settings/page.tsx
+     8  src/app/globals.css
+     7  src/app/(protected)/platform/home/page.tsx
+     7  src/features/auth/components/login/OtpForm.tsx
+     6  src/app/(protected)/platform/listings/[id]/page.tsx
+     6  src/graphql/client/apolloClient.ts
+     6  src/providers/ClientProvider.tsx
+     5  .gitignore
+     5  codegen.ts
+     5  src/app/auth/recover-password/page.tsx
+
+TOP COUPLING CELLS
+   137  features → components
+    91  features → graphql
+    47  app → features
+    45  features → lib
+    30  components → lib
+    19  app → components
+     7  app → lib
+     6  providers → features
+     4  features → constants
+     2  app → graphql
+     2  app → providers
+     2  graphql → features
+
+COVERAGE
+  · commits_in_db≈39
+  · structural_edges=1523
+  · modules_subject=src
+
+LIMITATIONS
+  · Map is orientation, not architectural meaning or quality judgment.
+  · Structural data is a working-tree snapshot from last structural ingest.
+  · Git history scope depends on last ingest (often HEAD-only).
+  · No runtime DI, dynamic dispatch, or production traffic.

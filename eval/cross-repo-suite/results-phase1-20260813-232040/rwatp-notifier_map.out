@@ -1,0 +1,99 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+ATLAS MAP
+  repo: /home/sanoy/Vesta/rwatp-notifier
+  git_head: eacd602
+  modules_subject: src
+  modules (15): common, config, contracts, email, enum, handlers, infrastructure, lib, middleware, models, routes, scripts, services, types, utils
+
+CLAIMS  (observed | derived | inferred | unknown)
+  [OBSERVED] map-001 — Module/layer inventory under `src` has 15 child directories.
+    method: compute_modules immediate children of subject from files table
+    evidence: [method] compute_modules — total_modules=15
+    limitation: Names are path segments, not business-domain labels.
+    limitation: Historical paths in files table may appear as modules.
+
+  [DERIVED] map-002 — `handlers` has the highest observed commit touch count under the inventory (7 commits).
+    method: max(observed_commit_count) over ModuleEntry
+    evidence: [module] src/handlers — commits=7
+    limitation: Commit count is not ownership or importance.
+
+  [OBSERVED] map-003 — Strongest observed cross-module coupling cell: handlers → services (23 structural edges).
+    method: compute_module_coupling sparse cells sorted by edge_count
+    evidence: [structural] handlers→services — 23 edges
+    limitation: Static edges only; snapshot of working tree at last structural ingest.
+
+  [OBSERVED] map-004 — Hottest file by commit touches: `src/handlers/notify.handler.ts` (6 commits).
+    method: hot_files(repo, 15)
+    evidence: [file] src/handlers/notify.handler.ts — touches=6
+    limitation: Path-scoped hot files; identity-aware hot files not used in map v1.
+
+  [DERIVED] map-005 — Most prevalent peer structural pattern: `commands/` in 2/15 peers.
+    method: detect_peer_structure patterns prevalence
+    evidence: [pattern] commands/ — 2/15
+    limitation: Prevalence is not a style judgment.
+
+  [DERIVED] map-006 — Dependency linkage: 24 declared, 17 observed via structural edges, 14 both.
+    method: compute_dependency_linkage
+    evidence: [config] package.json — configuration_artifacts (package.json)
+    limitation: OBSERVED ≠ runtime usage.
+
+  [DERIVED] map-007 — Test↔module links: 0 links from 0 test files under path rules (0 unlinked).
+    method: compute_test_module_links
+    evidence: [method] test_linkage — links=0
+    limitation: Path rules only; unlinked is not 'orphan ownership'.
+
+  [OBSERVED] map-008 — 5 configuration artifact(s) in configuration_artifacts.
+    method: compute_config_inventory
+    evidence: [config] .gitignore — ingested artifact
+    evidence: [config] Dockerfile — ingested artifact
+    evidence: [config] package-lock.json — ingested artifact
+    limitation: Current content only; no historical config bodies.
+
+HOT FILES
+     6  src/handlers/notify.handler.ts
+     5  src/services/notification.service.ts
+     5  src/services/template.service.ts
+     4  package.json
+     4  src/server.ts
+     3  package-lock.json
+     3  src/app.ts
+     3  src/contracts/commands/notify/constants.ts
+     3  src/contracts/commands/notify/contracts.ts
+     3  src/lib/commands/handler.ts
+     3  src/middleware/request-context.middleware.ts
+     2  src/contracts/commands/notify/index.ts
+     2  src/contracts/commands/registry.ts
+     2  src/handlers/index.ts
+     2  src/infrastructure/email/adapters/nodemailer.adapter.ts
+
+TOP COUPLING CELLS
+    23  handlers → services
+     9  services → models
+     6  infrastructure → config
+     6  infrastructure → services
+     6  services → infrastructure
+     5  models → enum
+     5  scripts → models
+     3  scripts → contracts
+     3  scripts → email
+     3  scripts → infrastructure
+     3  scripts → services
+     2  handlers → contracts
+
+CONFIG ARTIFACTS
+  · .gitignore
+  · Dockerfile
+  · package-lock.json
+  · package.json
+  · tsconfig.json
+
+COVERAGE
+  · commits_in_db≈9
+  · structural_edges=175
+  · modules_subject=src
+
+LIMITATIONS
+  · Map is orientation, not architectural meaning or quality judgment.
+  · Structural data is a working-tree snapshot from last structural ingest.
+  · Git history scope depends on last ingest (often HEAD-only).
+  · No runtime DI, dynamic dispatch, or production traffic.

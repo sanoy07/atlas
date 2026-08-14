@@ -1,0 +1,80 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+ATLAS MAP
+  repo: /home/sanoy/Vesta/vestascan-blockchain
+  git_head: b430869
+  modules_subject: src
+  modules (11): cache, cli, common, config, infrastructure, lib, middleware, models, routes, services, utils
+
+CLAIMS  (observed | derived | inferred | unknown)
+  [OBSERVED] map-001 — Module/layer inventory under `src` has 11 child directories.
+    method: compute_modules immediate children of subject from files table
+    evidence: [method] compute_modules — total_modules=11
+    limitation: Names are path segments, not business-domain labels.
+    limitation: Historical paths in files table may appear as modules.
+
+  [DERIVED] map-002 — `services` has the highest observed commit touch count under the inventory (8 commits).
+    method: max(observed_commit_count) over ModuleEntry
+    evidence: [module] src/services — commits=8
+    limitation: Commit count is not ownership or importance.
+
+  [OBSERVED] map-003 — Strongest observed cross-module coupling cell: services → models (48 structural edges).
+    method: compute_module_coupling sparse cells sorted by edge_count
+    evidence: [structural] services→models — 48 edges
+    limitation: Static edges only; snapshot of working tree at last structural ingest.
+
+  [OBSERVED] map-004 — Hottest file by commit touches: `src/services/chain-indexer.service.ts` (6 commits).
+    method: hot_files(repo, 15)
+    evidence: [file] src/services/chain-indexer.service.ts — touches=6
+    limitation: Path-scoped hot files; identity-aware hot files not used in map v1.
+
+  [DERIVED] map-005 — Dependency linkage: 22 declared, 20 observed via structural edges, 13 both.
+    method: compute_dependency_linkage
+    evidence: [config] package.json — working-tree package.json (not present in configuration_artifacts)
+    limitation: OBSERVED ≠ runtime usage.
+
+  [DERIVED] map-006 — Test↔module links: 0 links from 0 test files under path rules (0 unlinked).
+    method: compute_test_module_links
+    evidence: [method] test_linkage — links=0
+    limitation: Path rules only; unlinked is not 'orphan ownership'.
+
+HOT FILES
+     6  src/services/chain-indexer.service.ts
+     5  src/services/event-processor.service.ts
+     4  src/constants.ts
+     4  src/routes/index.route.ts
+     4  src/routes/reconcile.route.ts
+     4  src/routes/snapshot.route.ts
+     4  src/services/cursor.service.ts
+     4  src/services/event-fetcher.service.ts
+     4  src/services/reconciliation.service.ts
+     4  src/services/snapshot.service.ts
+     3  package.json
+     3  src/config/default.ts
+     3  src/config/secrets.ts
+     3  src/index.ts
+     3  src/infrastructure/caching/implementations/memory-cache.service.ts
+
+TOP COUPLING CELLS
+    48  services → models
+    19  services → infrastructure
+    15  routes → infrastructure
+    15  routes → models
+     8  services → cache
+     5  cli → models
+     5  infrastructure → config
+     4  cli → infrastructure
+     3  cli → config
+     3  routes → services
+     3  routes → utils
+     3  services → utils
+
+COVERAGE
+  · commits_in_db≈10
+  · structural_edges=311
+  · modules_subject=src
+
+LIMITATIONS
+  · Map is orientation, not architectural meaning or quality judgment.
+  · Structural data is a working-tree snapshot from last structural ingest.
+  · Git history scope depends on last ingest (often HEAD-only).
+  · No runtime DI, dynamic dispatch, or production traffic.

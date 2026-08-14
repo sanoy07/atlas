@@ -1,0 +1,380 @@
+{
+  "runId": "qwen2.5-coder-7b-instruct_kyc-notification-001_B-split_rep2",
+  "model": "qwen2.5-coder:7b-instruct",
+  "caseId": "kyc-notification-001",
+  "condition": "B-split",
+  "repetition": 2,
+  "decisions": [
+    {
+      "id": "E22",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a call to ComplianceService.getKycMethods, which is likely involved in the KYC process."
+    },
+    {
+      "id": "E23",
+      "class": "RELEVANT",
+      "reason": "This evidence indicates a call to ComplianceService.getMyKycState, which could be used to check the status of the KYC process."
+    },
+    {
+      "id": "E24",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "This evidence shows a call to ComplianceService.getKycApplicantInspection, which might provide details about the applicant's inspection status."
+    },
+    {
+      "id": "E25",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "This evidence refers to ComplianceService.initializeKyc, which is not directly related to checking KYC approval status."
+    },
+    {
+      "id": "E26",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E27",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E28",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E29",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this model reference and the task is unclear from the given information."
+    },
+    {
+      "id": "E30",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this call and the task is unclear from the given information."
+    },
+    {
+      "id": "E31",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this call and the task is unclear from the given information."
+    },
+    {
+      "id": "E32",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E33",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E34",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E35",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E36",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this call and the task is unclear from the given information."
+    },
+    {
+      "id": "E37",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this call and the task is unclear from the given information."
+    },
+    {
+      "id": "E38",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E39",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E40",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E41",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this model reference and the task is unclear from the given information."
+    },
+    {
+      "id": "E42",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this model reference and the task is unclear from the given information."
+    },
+    {
+      "id": "E43",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this model reference and the task is unclear from the given information."
+    },
+    {
+      "id": "E44",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this model reference and the task is unclear from the given information."
+    },
+    {
+      "id": "E45",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this model reference and the task is unclear from the given information."
+    },
+    {
+      "id": "E46",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E47",
+      "class": "RELEVANT",
+      "reason": "This evidence shows a call to ComplianceService.handleWebhook, which might be involved in handling webhooks related to KYC events."
+    },
+    {
+      "id": "E48",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E49",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E50",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this import and the task is unclear from the given information."
+    },
+    {
+      "id": "E51",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this model reference and the task is unclear from the given information."
+    },
+    {
+      "id": "E52",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this model reference and the task is unclear from the given information."
+    },
+    {
+      "id": "E53",
+      "class": "UNKNOWN",
+      "reason": "The relationship between this model reference and the task is unclear from the given information."
+    },
+    {
+      "id": "E54",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E55",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E56",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E57",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E58",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E59",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E60",
+      "class": "RELEVANT",
+      "reason": "Contains information about KYC notification commands."
+    },
+    {
+      "id": "E61",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E62",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E63",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E64",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E65",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E66",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E67",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E68",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E69",
+      "class": "RELEVANT",
+      "reason": "Contains information about complete notify command payloads and KYC notifications."
+    },
+    {
+      "id": "E70",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without context."
+    },
+    {
+      "id": "E74",
+      "class": "RELEVANT",
+      "reason": "It contains the KYC-profile model, which is likely related to the user's KYC status."
+    },
+    {
+      "id": "E83",
+      "class": "RELEVANT",
+      "reason": "It defines notification templates, which could be used for sending emails after KYC approval."
+    },
+    {
+      "id": "E71",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "It contains integration services that might handle the email sending process."
+    },
+    {
+      "id": "E80",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "It defines GraphQL resolvers, which could be used to trigger email notifications."
+    },
+    {
+      "id": "E93",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "It is a utility for handling webhook responses and does not directly relate to email sending."
+    },
+    {
+      "id": "E1",
+      "class": "RELEVANT",
+      "reason": "Contains enum definitions related to KYC documents."
+    },
+    {
+      "id": "E2",
+      "class": "RELEVANT",
+      "reason": "Contains enum definitions related to KYC statuses."
+    },
+    {
+      "id": "E3",
+      "class": "RELEVANT",
+      "reason": "Contains GraphQL resolvers for compliance operations."
+    },
+    {
+      "id": "E4",
+      "class": "RELEVANT",
+      "reason": "Defines type definitions for compliance-related data."
+    },
+    {
+      "id": "E5",
+      "class": "RELEVANT",
+      "reason": "Models the KYC flow, which is crucial for understanding the approval process."
+    },
+    {
+      "id": "E6",
+      "class": "RELEVANT",
+      "reason": "Models the KYC profile, which contains user information relevant to the task."
+    },
+    {
+      "id": "E7",
+      "class": "RELEVANT",
+      "reason": "Provides internal provider functions that might be involved in the approval process."
+    },
+    {
+      "id": "E8",
+      "class": "RELEVANT",
+      "reason": "Factory for creating KYC providers, which could handle email notifications."
+    },
+    {
+      "id": "E9",
+      "class": "RELEVANT",
+      "reason": "Defines the interface for KYC providers, including methods that might send emails."
+    },
+    {
+      "id": "E10",
+      "class": "RELEVANT",
+      "reason": "Contains service functions related to compliance operations, which could include email sending logic."
+    },
+    {
+      "id": "E13",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Defines enums for notification types, which might be used in the email process."
+    },
+    {
+      "id": "E14",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Models notification messages, which could include email content."
+    },
+    {
+      "id": "E15",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Defines templates for notifications, which might be used to create email templates."
+    },
+    {
+      "id": "E16",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Handles KYC webhooks, which are not directly related to the email sending process."
+    },
+    {
+      "id": "E17",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Middleware for logging webhook events, unrelated to the task at hand."
+    },
+    {
+      "id": "E18",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Models webhook events, which are not directly related to email sending."
+    },
+    {
+      "id": "E19",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Utility for handling webhook idempotency, unrelated to the task at hand."
+    },
+    {
+      "id": "E20",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Utility for handling webhook responses, unrelated to the task at hand."
+    },
+    {
+      "id": "E21",
+      "class": "UNKNOWN",
+      "reason": "Validation logic for compliance operations, cannot determine relevance without more context."
+    },
+    {
+      "id": "E94",
+      "class": "UNKNOWN",
+      "reason": "Unresolved model reference, cannot determine relevance without more context."
+    }
+  ],
+  "rawOutput": "\n\n// --- structural batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E22\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a call to ComplianceService.getKycMethods, which is likely involved in the KYC process.\"\n    },\n    {\n      \"id\": \"E23\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence indicates a call to ComplianceService.getMyKycState, which could be used to check the status of the KYC process.\"\n    },\n    {\n      \"id\": \"E24\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"This evidence shows a call to ComplianceService.getKycApplicantInspection, which might provide details about the applicant's inspection status.\"\n    },\n    {\n      \"id\": \"E25\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"This evidence refers to ComplianceService.initializeKyc, which is not directly related to checking KYC approval status.\"\n    },\n    {\n      \"id\": \"E26\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E27\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E28\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E29\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this model reference and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E30\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this call and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E31\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this call and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E32\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E33\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E34\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E35\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E36\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this call and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E37\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this call and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E38\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E39\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E40\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E41\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this model reference and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E42\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this model reference and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E43\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this model reference and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E44\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this model reference and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E45\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this model reference and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E46\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E47\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This evidence shows a call to ComplianceService.handleWebhook, which might be involved in handling webhooks related to KYC events.\"\n    },\n    {\n      \"id\": \"E48\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E49\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E50\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this import and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E51\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this model reference and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E52\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this model reference and the task is unclear from the given information.\"\n    },\n    {\n      \"id\": \"E53\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The relationship between this model reference and the task is unclear from the given information.\"\n    }\n  ]\n}\n```\n\n// --- documentary batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E54\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E55\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E56\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E57\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E58\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E59\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E60\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains information about KYC notification commands.\"\n    },\n    {\n      \"id\": \"E61\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E62\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E63\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E64\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E65\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E66\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E67\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E68\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    },\n    {\n      \"id\": \"E69\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains information about complete notify command payloads and KYC notifications.\"\n    },\n    {\n      \"id\": \"E70\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without context.\"\n    }\n  ]\n}\n```\n\n// --- historical batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E74\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"It contains the KYC-profile model, which is likely related to the user's KYC status.\"\n    },\n    {\n      \"id\": \"E83\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"It defines notification templates, which could be used for sending emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E71\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"It contains integration services that might handle the email sending process.\"\n    },\n    {\n      \"id\": \"E80\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"It defines GraphQL resolvers, which could be used to trigger email notifications.\"\n    },\n    {\n      \"id\": \"E93\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"It is a utility for handling webhook responses and does not directly relate to email sending.\"\n    }\n  ]\n}\n```\n\n// --- source batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E1\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains enum definitions related to KYC documents.\"\n    },\n    {\n      \"id\": \"E2\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains enum definitions related to KYC statuses.\"\n    },\n    {\n      \"id\": \"E3\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains GraphQL resolvers for compliance operations.\"\n    },\n    {\n      \"id\": \"E4\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Defines type definitions for compliance-related data.\"\n    },\n    {\n      \"id\": \"E5\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Models the KYC flow, which is crucial for understanding the approval process.\"\n    },\n    {\n      \"id\": \"E6\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Models the KYC profile, which contains user information relevant to the task.\"\n    },\n    {\n      \"id\": \"E7\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Provides internal provider functions that might be involved in the approval process.\"\n    },\n    {\n      \"id\": \"E8\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Factory for creating KYC providers, which could handle email notifications.\"\n    },\n    {\n      \"id\": \"E9\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Defines the interface for KYC providers, including methods that might send emails.\"\n    },\n    {\n      \"id\": \"E10\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains service functions related to compliance operations, which could include email sending logic.\"\n    },\n    {\n      \"id\": \"E13\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Defines enums for notification types, which might be used in the email process.\"\n    },\n    {\n      \"id\": \"E14\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Models notification messages, which could include email content.\"\n    },\n    {\n      \"id\": \"E15\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Defines templates for notifications, which might be used to create email templates.\"\n    },\n    {\n      \"id\": \"E16\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Handles KYC webhooks, which are not directly related to the email sending process.\"\n    },\n    {\n      \"id\": \"E17\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Middleware for logging webhook events, unrelated to the task at hand.\"\n    },\n    {\n      \"id\": \"E18\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Models webhook events, which are not directly related to email sending.\"\n    },\n    {\n      \"id\": \"E19\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Utility for handling webhook idempotency, unrelated to the task at hand.\"\n    },\n    {\n      \"id\": \"E20\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Utility for handling webhook responses, unrelated to the task at hand.\"\n    },\n    {\n      \"id\": \"E21\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Validation logic for compliance operations, cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E94\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Unresolved model reference, cannot determine relevance without more context.\"\n    }\n  ]\n}\n```"
+}

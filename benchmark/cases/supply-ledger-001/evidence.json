@@ -1,0 +1,1533 @@
+{
+  "case_id": "supply-ledger-001",
+  "task": "What writes to SupplyLedger and when is the available quantity updated?",
+  "repo": "RWATP",
+  "repo_commit": "b21260594c0e8d66be01d6a24b7b79e428fcc947",
+  "generated_by": "atlas atlas 0.1.0",
+  "evidence": [
+    {
+      "id": "E1",
+      "type": "source_signal",
+      "summary": "src/common/enum/share-class.enums.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"share-class\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/enum/share-class.enums.ts"
+      }
+    },
+    {
+      "id": "E2",
+      "type": "source_signal",
+      "summary": "src/common/enum/supply-ledger.enums.ts",
+      "detail": "anchor \"ledger\" via file_path; anchor \"supply\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/enum/supply-ledger.enums.ts"
+      }
+    },
+    {
+      "id": "E3",
+      "type": "source_signal",
+      "summary": "src/common/types/share-class.types.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"share-class\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/types/share-class.types.ts"
+      }
+    },
+    {
+      "id": "E4",
+      "type": "source_signal",
+      "summary": "src/common/types/supply-ledger.types.ts",
+      "detail": "anchor \"ledger\" via file_path; anchor \"supply\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/common/types/supply-ledger.types.ts"
+      }
+    },
+    {
+      "id": "E5",
+      "type": "source_signal",
+      "summary": "src/modules/core/graphql/content-block-permissions.ts",
+      "detail": "references_model neighbor from src/modules/core/models/share-class.model.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E6",
+      "type": "source_signal",
+      "summary": "src/modules/core/graphql/share-class-permissions.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"share-class\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/graphql/share-class-permissions.ts"
+      }
+    },
+    {
+      "id": "E7",
+      "type": "source_signal",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"share-class\" via file_path; calls_static neighbor from src/modules/core/services/share-class.service.ts; calls_static neighbor from src/modules/core/services/share-class.service.ts; calls_static neighbor from src/modules/core/services/share-class.service.ts; calls_static neighbor from src/modules/core/services/share-class.service.ts; calls_static neighbor from src/modules/core/services/share-class.service.ts; calls_static neighbor from src/modules/core/services/share-class.service.ts; calls_static neighbor from src/modules/core/services/share-class.service.ts; calls_static neighbor from src/modules/core/services/share-class.service.ts;",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E8",
+      "type": "source_signal",
+      "summary": "src/modules/core/graphql/share-class.typeDefs.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"share-class\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/graphql/share-class.typeDefs.ts"
+      }
+    },
+    {
+      "id": "E9",
+      "type": "source_signal",
+      "summary": "src/modules/core/models/currency.model.ts",
+      "detail": "references_model neighbor from scripts/migrations/migrate-currency-blockchain-to-chainid.ts; references_model neighbor from scripts/migrations/migrate-currency-blockchain-to-chainid.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/models/currency.model.ts"
+      }
+    },
+    {
+      "id": "E10",
+      "type": "source_signal",
+      "summary": "src/modules/core/models/listing.model.ts",
+      "detail": "references_model neighbor from src/modules/core/services/share-class.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/models/listing.model.ts"
+      }
+    },
+    {
+      "id": "E11",
+      "type": "source_signal",
+      "summary": "src/modules/core/models/share-class.model.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"share-class\" via file_path; references_model neighbor from src/modules/core/services/share-class.service.ts; references_model neighbor from src/modules/core/services/share-class.service.ts; references_model neighbor from src/modules/core/services/share-class.service.ts; references_model neighbor from src/modules/core/services/share-class.service.ts; references_model neighbor from src/modules/core/services/share-class.service.ts; references_model neighbor from src/modules/core/services/share-class.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/models/share-class.model.ts"
+      }
+    },
+    {
+      "id": "E12",
+      "type": "source_signal",
+      "summary": "src/modules/core/models/supply-ledger.model.ts",
+      "detail": "anchor \"ledger\" via file_path; anchor \"supply\" via file_path; references_model neighbor from src/modules/core/services/supply-ledger.service.ts; references_model neighbor from src/modules/core/services/supply-ledger.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/models/supply-ledger.model.ts"
+      }
+    },
+    {
+      "id": "E13",
+      "type": "source_signal",
+      "summary": "src/modules/core/services/content-block.service.ts",
+      "detail": "references_model neighbor from src/modules/core/models/share-class.model.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E14",
+      "type": "source_signal",
+      "summary": "src/modules/core/services/listing.service.ts",
+      "detail": "references_model neighbor from src/modules/core/models/share-class.model.ts; calls_static neighbor from src/modules/core/services/share-class.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E15",
+      "type": "source_signal",
+      "summary": "src/modules/core/services/share-class.service.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"share-class\" via file_path; calls_static neighbor from src/modules/core/graphql/share-class.resolvers.ts; calls_static neighbor from src/modules/core/graphql/share-class.resolvers.ts; calls_static neighbor from src/modules/core/graphql/share-class.resolvers.ts; calls_static neighbor from src/modules/core/graphql/share-class.resolvers.ts; calls_static neighbor from src/modules/core/graphql/share-class.resolvers.ts; calls_static neighbor from src/modules/core/graphql/share-class.resolvers.ts; calls_static neighbor from src/modules/core/graphql/share-class.resolvers.ts; calls_static neighbor from src/modules/core/graphql/share-class.resolvers.ts;",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E16",
+      "type": "source_signal",
+      "summary": "src/modules/core/services/supply-ledger.service.ts",
+      "detail": "anchor \"ledger\" via file_path; anchor \"supply\" via file_path; references_model neighbor from src/modules/core/models/supply-ledger.model.ts; references_model neighbor from src/modules/core/models/supply-ledger.model.ts; calls_static neighbor from src/modules/core/services/share-class.service.ts",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/services/supply-ledger.service.ts"
+      }
+    },
+    {
+      "id": "E17",
+      "type": "source_signal",
+      "summary": "[migration] scripts/migrations/migrate-currency-blockchain-to-chainid.ts",
+      "detail": "anchor \"currency\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts"
+      }
+    },
+    {
+      "id": "E18",
+      "type": "source_signal",
+      "summary": "[validation] src/modules/core/validations/share-class-management.validation.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"share-class\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/validations/share-class-management.validation.ts"
+      }
+    },
+    {
+      "id": "E19",
+      "type": "source_signal",
+      "summary": "[validation] src/modules/core/validations/share-class.validation.ts",
+      "detail": "anchor \"share\" via file_path; anchor \"share-class\" via file_path",
+      "source": {
+        "kind": "file_path",
+        "file": "src/modules/core/validations/share-class.validation.ts"
+      }
+    },
+    {
+      "id": "E20",
+      "type": "observed_import",
+      "summary": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts → src/modules/core/models/currency.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts"
+      }
+    },
+    {
+      "id": "E21",
+      "type": "model_reference",
+      "summary": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts → src/modules/core/models/currency.model.ts [Currency.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts"
+      }
+    },
+    {
+      "id": "E22",
+      "type": "model_reference",
+      "summary": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts → src/modules/core/models/currency.model.ts [Currency.updateOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts"
+      }
+    },
+    {
+      "id": "E23",
+      "type": "observed_import",
+      "summary": "src/modules/core/graphql/content-block-permissions.ts → src/modules/core/models/share-class.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E24",
+      "type": "model_reference",
+      "summary": "src/modules/core/graphql/content-block-permissions.ts → src/modules/core/models/share-class.model.ts [ShareClass.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E25",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts [ShareClassService.getShareClass]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E26",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts [ShareClassService.getShareClassesByListing]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E27",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts [ShareClassService.createShareClass]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E28",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts [ShareClassService.updateShareClass]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E29",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts [ShareClassService.deleteShareClass]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E30",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts [ShareClassService.adjustShareClassSupply]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E31",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts [ShareClassService.reserveShares]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E32",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts [ShareClassService.releaseReservedShares]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E33",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts [ShareClassService.updateShareClassPrice]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E34",
+      "type": "observed_call",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts [ShareClassService.updateInvestmentLimits]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E35",
+      "type": "observed_import",
+      "summary": "src/modules/core/graphql/share-class.resolvers.ts → src/modules/core/services/share-class.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E36",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/listing.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E37",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/share-class.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E38",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/listing.model.ts [Listing.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E39",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/content-block.service.ts → src/modules/core/models/share-class.model.ts [ShareClass.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E40",
+      "type": "observed_call",
+      "summary": "src/modules/core/services/listing.service.ts → src/modules/core/services/share-class.service.ts [ShareClassService.createDefaultClass]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E41",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/listing.service.ts → src/modules/core/models/currency.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E42",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/listing.service.ts → src/modules/core/models/listing.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E43",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/listing.service.ts → src/modules/core/models/share-class.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E44",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/listing.service.ts → src/modules/core/services/share-class.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E45",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/listing.service.ts → src/modules/core/models/listing.model.ts [Listing.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E46",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/listing.service.ts → src/modules/core/models/listing.model.ts [Listing.create]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E47",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/listing.service.ts → src/modules/core/models/listing.model.ts [Listing.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E48",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/listing.service.ts → src/modules/core/models/listing.model.ts [Listing.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E49",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/listing.service.ts → src/modules/core/models/share-class.model.ts [ShareClass.countDocuments]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E50",
+      "type": "observed_call",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/services/supply-ledger.service.ts [SupplyLedgerService.createEntry]",
+      "detail": "kind=calls_static",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E51",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/models/listing.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E52",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/models/share-class.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E53",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/services/supply-ledger.service.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E54",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/models/listing.model.ts [Listing.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E55",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/models/share-class.model.ts [ShareClass.findOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E56",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/models/share-class.model.ts [ShareClass.create]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E57",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/models/share-class.model.ts [ShareClass.countDocuments]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E58",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/models/share-class.model.ts [ShareClass.findById]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E59",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/models/share-class.model.ts [ShareClass.deleteOne]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E60",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/share-class.service.ts → src/modules/core/models/share-class.model.ts [ShareClass.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E61",
+      "type": "observed_import",
+      "summary": "src/modules/core/services/supply-ledger.service.ts → src/modules/core/models/supply-ledger.model.ts",
+      "detail": "kind=imports",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/supply-ledger.service.ts"
+      }
+    },
+    {
+      "id": "E62",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/supply-ledger.service.ts → src/modules/core/models/supply-ledger.model.ts [SupplyLedger.create]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/supply-ledger.service.ts"
+      }
+    },
+    {
+      "id": "E63",
+      "type": "model_reference",
+      "summary": "src/modules/core/services/supply-ledger.service.ts → src/modules/core/models/supply-ledger.model.ts [SupplyLedger.find]",
+      "detail": "kind=references_model",
+      "source": {
+        "kind": "AST",
+        "file": "src/modules/core/services/supply-ledger.service.ts"
+      }
+    },
+    {
+      "id": "E64",
+      "type": "documentary",
+      "summary": "Issue #1: ",
+      "detail": "…nce**: ~1-2ms overhead per request. ### 5. **Graceful Degradation** ``` Redis Available → Use Redis rate limiter ↓ (connection fails) Redis Unavailable → Auto-…",
+      "source": {
+        "kind": "Issue",
+        "number": 1
+      }
+    },
+    {
+      "id": "E65",
+      "type": "documentary",
+      "summary": "Issue #4: ",
+      "detail": "…aning up business logic. - **Cache Manager**: Singleton facade for manual cache operations when decorators are not suitable. ### Integration - **Global Settings**: Int…",
+      "source": {
+        "kind": "Issue",
+        "number": 4
+      }
+    },
+    {
+      "id": "E66",
+      "type": "documentary",
+      "summary": "Issue #6: ",
+      "detail": "The current custom implementation of `AsyncLocalStorage` for request context propagation is non-standard and requires manual handling for outgoing requests…",
+      "source": {
+        "kind": "Issue",
+        "number": 6
+      }
+    },
+    {
+      "id": "E67",
+      "type": "documentary",
+      "summary": "Issue #10: ",
+      "detail": "…rument # Entities issuerEntity: IssuerEntityInput # Configuration baseCurrency: ID targetRaiseAmount: String hardCapAmount: String softCapAmount: String…",
+      "source": {
+        "kind": "Issue",
+        "number": 10
+      }
+    },
+    {
+      "id": "E68",
+      "type": "documentary",
+      "summary": "Issue #12: feat(core): implement share class management & auto-creation logic",
+      "detail": "…Supply: Float # Optional (Cap) # Pricing pricePerShare: String! # Decimal currency: ID! # Rights (Stored as metadata or distinct fields) votingRight: Boolean…",
+      "source": {
+        "kind": "Issue",
+        "number": 12
+      }
+    },
+    {
+      "id": "E69",
+      "type": "documentary",
+      "summary": "Issue #14: feat(core): implement share class management & supply operations",
+      "detail": "…us.DRAFT, // Supply totalSupply: validatedData.initialSupply || 0, availableSupply: validatedData.initialSupply || 0, reservedSupply: 0, issuedSuppl…",
+      "source": {
+        "kind": "Issue",
+        "number": 14
+      }
+    },
+    {
+      "id": "E70",
+      "type": "documentary",
+      "summary": "Issue #17: ",
+      "detail": "**Branch Name:** `feature/global-permission-caching` ## Context Our current permission system relies on MongoDB-based caching (`permissionsCac…",
+      "source": {
+        "kind": "Issue",
+        "number": 17
+      }
+    },
+    {
+      "id": "E71",
+      "type": "documentary",
+      "summary": "Issue #18: ",
+      "detail": "…y button._ #### Existing Queries (Usage) - `getPermissions`: Use to fetch all available permissions (metadata). - `getRoles`: Use to fetch all available roles (metadat…",
+      "source": {
+        "kind": "Issue",
+        "number": 18
+      }
+    },
+    {
+      "id": "E72",
+      "type": "documentary",
+      "summary": "Issue #19: ",
+      "detail": "## Context Our current Redis configuration in `src/infrastructure/messaging/redis/connect…",
+      "source": {
+        "kind": "Issue",
+        "number": 19
+      }
+    },
+    {
+      "id": "E73",
+      "type": "documentary",
+      "summary": "Issue #23: ",
+      "detail": "…`` **Resolver:** ```typescript getMyGlobalPermissions: async (_parent, _args, context) => { return await PermissionService.getOrComputePermissions(context.user); }…",
+      "source": {
+        "kind": "Issue",
+        "number": 23
+      }
+    },
+    {
+      "id": "E74",
+      "type": "documentary",
+      "summary": "Issue #24: ",
+      "detail": "…configuration fetching to `isAuthenticated`. 4. Implement `testSMTPConnection` mutation to verify the **existing** saved configuration. --- ## Files to Modify - `sr…",
+      "source": {
+        "kind": "Issue",
+        "number": 24
+      }
+    },
+    {
+      "id": "E75",
+      "type": "documentary",
+      "summary": "Issue #29: ",
+      "detail": "…UI, and frontend This issue focuses only on setup and structure. Queries and mutations will be handled in a separate issue. --- ## Attachments - [Block Registry E…",
+      "source": {
+        "kind": "Issue",
+        "number": 29
+      }
+    },
+    {
+      "id": "E76",
+      "type": "documentary",
+      "summary": "Issue #30: ",
+      "detail": "…Id; // ref: 'Listing' shareClass?: Types.ObjectId; // ref: 'ShareClass' // Context Helper contextType: BlockContextType; // Enum: LISTING | SHARE_CLASS // Co…",
+      "source": {
+        "kind": "Issue",
+        "number": 30
+      }
+    },
+    {
+      "id": "E77",
+      "type": "documentary",
+      "summary": "Issue #33: ",
+      "detail": "…suer).some((allowed) => iss.startsWith(allowed), ); } } ``` ### 5. Context Updates **Location**: `src/graphql/context.ts` **Update Interface**: ```type…",
+      "source": {
+        "kind": "Issue",
+        "number": 33
+      }
+    },
+    {
+      "id": "E78",
+      "type": "documentary",
+      "summary": "Issue #34: ",
+      "detail": "…cheable` to `getContentBlocks()` (line 54): ```typescript @Cacheable({ key: (contextType: BlockContextType, contextId: string) => { return contextType === Block…",
+      "source": {
+        "kind": "Issue",
+        "number": 34
+      }
+    },
+    {
+      "id": "E79",
+      "type": "documentary",
+      "summary": "Issue #35: ",
+      "detail": "…esn't expose this }, }; } ``` **Provider-specific handling**: Fields not available in Firebase return `undefined` or defaults. Other providers may populate these…",
+      "source": {
+        "kind": "Issue",
+        "number": 35
+      }
+    },
+    {
+      "id": "E80",
+      "type": "documentary",
+      "summary": "Issue #36: Implement Currency Management APIs",
+      "detail": "…isStable: true, paymentAllowed: false, isEnabled: true, availableChainIds: [], chains: [], createdBy: new mongoose.Types.ObjectId(act…",
+      "source": {
+        "kind": "Issue",
+        "number": 36
+      }
+    },
+    {
+      "id": "E81",
+      "type": "documentary",
+      "summary": "Issue #37: ",
+      "detail": "…ue, message: `${provider} configured successfully. Activate it to make it available.` }; }, toggleIntegrationStatus: async ( _: any, { provider, i…",
+      "source": {
+        "kind": "Issue",
+        "number": 37
+      }
+    },
+    {
+      "id": "E82",
+      "type": "documentary",
+      "summary": "Issue #43: Implement Password Reset and Email Verification Mutations",
+      "detail": "…olvers.ts`: ```typescript requestPasswordReset: async (_, { applicationType }, context) => { assertAuthenticated(context); return await UserService.requestPasswor…",
+      "source": {
+        "kind": "Issue",
+        "number": 43
+      }
+    },
+    {
+      "id": "E83",
+      "type": "documentary",
+      "summary": "Issue #44: Implement User Document Caching in GraphQL Context",
+      "detail": "…increases response latency. ## Current Behavior ``` GraphQL Request → createContext() → AuthResolver.resolve(token) → getUserByToken() [Cached: 3 min] → reso…",
+      "source": {
+        "kind": "Issue",
+        "number": 44
+      }
+    },
+    {
+      "id": "E84",
+      "type": "documentary",
+      "summary": "Issue #46: ",
+      "detail": "…Scope should be based on: - Client IP **or** - Auth/session identifier (if available). --- ## Acceptance Criteria - A mutation exists to check email availability…",
+      "source": {
+        "kind": "Issue",
+        "number": 46
+      }
+    },
+    {
+      "id": "E85",
+      "type": "documentary",
+      "summary": "Issue #48: ",
+      "detail": "…\"errors\": [ { \"message\": \"Cannot return null for non-nullable field Currency.id.\", \"extensions\": { \"code\": \"INTERNAL_SERVER_ERROR\" } } ], \"dat…",
+      "source": {
+        "kind": "Issue",
+        "number": 48
+      }
+    },
+    {
+      "id": "E86",
+      "type": "documentary",
+      "summary": "Issue #49: GraphQL Currency Query Returns Null ID Error",
+      "detail": "…\"errors\": [ { \"message\": \"Cannot return null for non-nullable field Currency.id.\", \"extensions\": { \"code\": \"INTERNAL_SERVER_ERROR\" }…",
+      "source": {
+        "kind": "Issue",
+        "number": 49
+      }
+    },
+    {
+      "id": "E87",
+      "type": "documentary",
+      "summary": "Issue #54: Fix critical data integrity issues in share class and listing services",
+      "detail": "…racks four supply fields: `totalSupply`, `issuedSupply`, `reservedSupply`, and `availableSupply`. The core invariant is: ``` availableSupply = totalSupply - issuedSuppl…",
+      "source": {
+        "kind": "Issue",
+        "number": 54
+      }
+    },
+    {
+      "id": "E88",
+      "type": "documentary",
+      "summary": "Issue #55: Fix error handling and audit trail in currency service and user search",
+      "detail": "…mpty ObjectId: ```ts createdBy: new Types.ObjectId(), // TODO: Pass user ID if available in context ``` This means there is no record of who created or modified a curr…",
+      "source": {
+        "kind": "Issue",
+        "number": 55
+      }
+    },
+    {
+      "id": "E89",
+      "type": "documentary",
+      "summary": "Issue #56: ",
+      "detail": "## Summary The notify service contracts are partially defined. Three command payloads are still `unknown`, and KYC sta…",
+      "source": {
+        "kind": "Issue",
+        "number": 56
+      }
+    },
+    {
+      "id": "E90",
+      "type": "documentary",
+      "summary": "Issue #57: ",
+      "detail": "…d on size. This is mainly used in development and as a fallback when Redis is unavailable. While the risk is low in production (Redis handles caching), if Redis goes do…",
+      "source": {
+        "kind": "Issue",
+        "number": 57
+      }
+    },
+    {
+      "id": "E91",
+      "type": "documentary",
+      "summary": "Issue #62: Record Smart Contract Deployment — solid ShareClass + Listing linking with DEPLOYED status",
+      "detail": "## Context The `SmartContract` collection/model exists (`src/modules/blockchain/models/sm…",
+      "source": {
+        "kind": "Issue",
+        "number": 62
+      }
+    },
+    {
+      "id": "E92",
+      "type": "documentary",
+      "summary": "PR #2: ",
+      "detail": "…*GraphQL**: Integrated `GraphQLRateLimitPlugin` to enforce limits on `didResolveOperation`. - **Registry**: Created type-safe limit configurations (`base-limits.ts`, `f…",
+      "source": {
+        "kind": "PR",
+        "number": 2
+      }
+    },
+    {
+      "id": "E93",
+      "type": "documentary",
+      "summary": "PR #7: ",
+      "detail": "This PR replaces the legacy manual request context implementation with the official OpenTelemetry SDK to enable automatic distribu…",
+      "source": {
+        "kind": "PR",
+        "number": 7
+      }
+    },
+    {
+      "id": "E94",
+      "type": "documentary",
+      "summary": "PR #9: ",
+      "detail": "…ded `.js` extensions and `index.js` references to all local imports across `src/contracts`, `src/modules`, and `src/infrastructure` to comply with native Node.js ESM re…",
+      "source": {
+        "kind": "PR",
+        "number": 9
+      }
+    },
+    {
+      "id": "E95",
+      "type": "documentary",
+      "summary": "PR #11: ",
+      "detail": "…th all required fields: - `tokenStandard`, `primaryBlockchain`, `primarySmartContract` - `identityRegistry`, `compliance`, `controllerWallet` - `transferEnforc…",
+      "source": {
+        "kind": "PR",
+        "number": 11
+      }
+    },
+    {
+      "id": "E96",
+      "type": "documentary",
+      "summary": "PR #13: Feature/12 share class backend",
+      "detail": "…mpliance\"`) ### Model Improvements - Made blockchain fields (`chain`, `tokenContractAddress`, `tokenDecimals`, `tokenStandard`) conditionally required based on stat…",
+      "source": {
+        "kind": "PR",
+        "number": 13
+      }
+    },
+    {
+      "id": "E97",
+      "type": "documentary",
+      "summary": "PR #15: Feature/12 share class backend",
+      "detail": "## 🔁 Sync Listing Review Fixes into Share Class Branch ### Summary This PR merges the latest **post-review fixes from…",
+      "source": {
+        "kind": "PR",
+        "number": 15
+      }
+    },
+    {
+      "id": "E98",
+      "type": "documentary",
+      "summary": "PR #16: implementation of share class management & supply operations",
+      "detail": "…rc/modules/core/services/share-class.service.ts:424:2-493:3): Move shares from `Available` to [Reserved](cci:1://file:///home/sanoy/Vesta/rwatp-core/src/modules/core/ser…",
+      "source": {
+        "kind": "PR",
+        "number": 16
+      }
+    },
+    {
+      "id": "E99",
+      "type": "documentary",
+      "summary": "PR #20: ",
+      "detail": "…rsion` instantly invalidates the old cache key. This is a single atomic MongoDB operation (`updateMany`) regardless of user count. ### 🛠 Codebase Modifications 1. *…",
+      "source": {
+        "kind": "PR",
+        "number": 20
+      }
+    },
+    {
+      "id": "E100",
+      "type": "documentary",
+      "summary": "PR #21: ",
+      "detail": "…///home/sanoy/Vesta/rwatp-core/src/common/graphql/shield/rules.ts:113:0-134:4): Contextual cacheable rule. * [isResourceOwner()](cci:1://file:///home/sanoy/Vest…",
+      "source": {
+        "kind": "PR",
+        "number": 21
+      }
+    },
+    {
+      "id": "E101",
+      "type": "documentary",
+      "summary": "PR #22: ",
+      "detail": "…DB connection timeout** - Process would hang indefinitely if the database was unavailable or slow, causing Cloud Run startup timeout 2. **Incomplete Dockerfile** - Scri…",
+      "source": {
+        "kind": "PR",
+        "number": 22
+      }
+    },
+    {
+      "id": "E102",
+      "type": "documentary",
+      "summary": "PR #25: Bug fix/update listing mutation and redis fix",
+      "detail": "…` (OG images, Twitter cards) - `updateEmailConfig` (email logo) - Any GraphQL mutation with file uploads **Root Cause:** Express body-parser default limit is 100K…",
+      "source": {
+        "kind": "PR",
+        "number": 25
+      }
+    },
+    {
+      "id": "E103",
+      "type": "documentary",
+      "summary": "PR #26: ",
+      "detail": "…getMyGlobalPermissions` calls `PermissionService.getOrComputePermissions` with `context.user` - `getMyRoles` calls `UserService.getUserRoles` with `context.user.id`…",
+      "source": {
+        "kind": "PR",
+        "number": 26
+      }
+    },
+    {
+      "id": "E104",
+      "type": "documentary",
+      "summary": "PR #27: ",
+      "detail": "…ose.connect() ❌ GraphQL mounted before DB ready ``` When requests arrived, context resolution tried to query the database before MongoDB was initialized. ## So…",
+      "source": {
+        "kind": "PR",
+        "number": 27
+      }
+    },
+    {
+      "id": "E105",
+      "type": "documentary",
+      "summary": "PR #28: implemented test SMTP mutation and secured core integration queries",
+      "detail": "…ection Failed: Invalid login: 535 5.7.8 Error: authentication failed: (reason unavailable)\" } } } ``` ### 3. Permission Verification * **Unauthorized Use…",
+      "source": {
+        "kind": "PR",
+        "number": 28
+      }
+    },
+    {
+      "id": "E106",
+      "type": "documentary",
+      "summary": "PR #31: ",
+      "detail": "…mas. > **Note**: This issue focuses only on setup and structure. Queries and mutations will be handled in a separate issue. --- ## Changes ### 1. Enum Exten…",
+      "source": {
+        "kind": "PR",
+        "number": 31
+      }
+    },
+    {
+      "id": "E107",
+      "type": "documentary",
+      "summary": "PR #32: ",
+      "detail": "…les | File | Description | |------|-------------| | `src/common/enum/block-context.enums.ts` | `BlockContextType` (LISTING, SHARE_CLASS) and `BlockVisibility` (PR…",
+      "source": {
+        "kind": "PR",
+        "number": 32
+      }
+    },
+    {
+      "id": "E108",
+      "type": "documentary",
+      "summary": "PR #38: ",
+      "detail": "…k()`, `toggleBlockVisibility()` - Added parent Listing cache invalidation when ShareClass blocks are updated ## Testing ### Part 1: SMTP Bug Fix ✅ 1. Updated…",
+      "source": {
+        "kind": "PR",
+        "number": 38
+      }
+    },
+    {
+      "id": "E109",
+      "type": "documentary",
+      "summary": "PR #40: ",
+      "detail": "…ibrary to verify JWT signatures against the provider's JWKS endpoint. ### 3. Context & Authorization Logic - **GraphQL Context** (`src/graphql/context.ts`): -…",
+      "source": {
+        "kind": "PR",
+        "number": 40
+      }
+    },
+    {
+      "id": "E110",
+      "type": "documentary",
+      "summary": "PR #41: ",
+      "detail": "…ibrary to verify JWT signatures against the provider's JWKS endpoint. ### 3. Context & Authorization Logic - **GraphQL Context** (`src/graphql/context.ts`): -…",
+      "source": {
+        "kind": "PR",
+        "number": 41
+      }
+    },
+    {
+      "id": "E111",
+      "type": "documentary",
+      "summary": "PR #42: ",
+      "detail": "…Verification Created `scripts/verify-auth-user-cache.ts` to verify real Redis operations: - ✅ **Connection**: Confirmed connection to remote Redis instance. - ✅ **Ca…",
+      "source": {
+        "kind": "PR",
+        "number": 42
+      }
+    },
+    {
+      "id": "E112",
+      "type": "documentary",
+      "summary": "PR #45: implemented currency management API",
+      "detail": "…➡️ `chains.chainId` (Number): Aligns with standard EIP-155 chain IDs. - `availableChainIds`: Now strictly `number[]` for efficient filtering. - **New Flags**:…",
+      "source": {
+        "kind": "PR",
+        "number": 45
+      }
+    },
+    {
+      "id": "E113",
+      "type": "documentary",
+      "summary": "PR #47: ",
+      "detail": "…mplemented new query/mutation logic. * Added strict `assertAuthenticated(context)` checks. * Implemented `webhookUrl` field resolver. ### 4. Migration…",
+      "source": {
+        "kind": "PR",
+        "number": 47
+      }
+    },
+    {
+      "id": "E114",
+      "type": "documentary",
+      "summary": "PR #50: Fix: GraphQL Currency Null ID Error",
+      "detail": "…\"errors\": [ { \"message\": \"Cannot return null for non-nullable field Currency.id.\", \"extensions\": { \"code\": \"INTERNAL_SERVER_ERROR\" } } ],…",
+      "source": {
+        "kind": "PR",
+        "number": 50
+      }
+    },
+    {
+      "id": "E115",
+      "type": "documentary",
+      "summary": "PR #51: ",
+      "detail": "…ver for `requestPasswordReset` — delegates to `UserService.requestPasswordReset(context.user.id, applicationType)` - Added resolver for `requestEmailVerification` — d…",
+      "source": {
+        "kind": "PR",
+        "number": 51
+      }
+    },
+    {
+      "id": "E116",
+      "type": "documentary",
+      "summary": "PR #52: ",
+      "detail": "…ry Implemented Redis-based caching for user document resolution in the GraphQL context. This reduces database load by serving `context.user` from Redis for authentica…",
+      "source": {
+        "kind": "PR",
+        "number": 52
+      }
+    },
+    {
+      "id": "E117",
+      "type": "documentary",
+      "summary": "PR #53: ",
+      "detail": "…ims and lowercases the input. 3. **Cache Check:** Returns cached result if available. 4. **DB Check:** Falls back to `User.exists()`. 5. **Cache Set:** Ca…",
+      "source": {
+        "kind": "PR",
+        "number": 53
+      }
+    },
+    {
+      "id": "E118",
+      "type": "documentary",
+      "summary": "PR #58: ",
+      "detail": "…ere accessed after expiry or via a periodic cleanup interval. If Redis became unavailable and the fallback memory cache activated, the map could grow without bound and e…",
+      "source": {
+        "kind": "PR",
+        "number": 58
+      }
+    },
+    {
+      "id": "E119",
+      "type": "documentary",
+      "summary": "PR #59: implemented data integrity fix for share class and listing service",
+      "detail": "…odules/core/models/share-class.model.ts` ### Problem The supply invariant (`availableSupply === totalSupply - issuedSupply - reservedSupply`) was enforced only by co…",
+      "source": {
+        "kind": "PR",
+        "number": 59
+      }
+    },
+    {
+      "id": "E120",
+      "type": "documentary",
+      "summary": "PR #60: implemented error handling and audit trail in currency service and user search",
+      "detail": "…d`: ```typescript createdBy: new Types.ObjectId(), // TODO: Pass user ID if available in context ``` None of the mutation methods accepted an `actorId` parameter…",
+      "source": {
+        "kind": "PR",
+        "number": 60
+      }
+    },
+    {
+      "id": "E121",
+      "type": "documentary",
+      "summary": "PR #61: ",
+      "detail": "…y-command-payload --- ## Summary Two gaps identified across the notify contracts and the compliance service: | # | Item | Files changed | |---|------|-----…",
+      "source": {
+        "kind": "PR",
+        "number": 61
+      }
+    },
+    {
+      "id": "E122",
+      "type": "documentary",
+      "summary": "PR #63: implemented smart contract deployement recording, with shareClass and listing linking with deployed status",
+      "detail": "# PR: Record Smart Contract Deployment — Issue #62 **Branch:** `feat/62-Record-smart-contract-deployment…",
+      "source": {
+        "kind": "PR",
+        "number": 63
+      }
+    },
+    {
+      "id": "E123",
+      "type": "historical",
+      "summary": "touched 4x: src/modules/core/models/listing.model.ts",
+      "detail": "src/modules/core/models/share-class.model.ts, src/modules/core/models/supply-ledger.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/models/listing.model.ts"
+      }
+    },
+    {
+      "id": "E124",
+      "type": "historical",
+      "summary": "touched 4x: src/modules/core/models/share-class.model.ts",
+      "detail": "src/modules/core/models/listing.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/models/share-class.model.ts"
+      }
+    },
+    {
+      "id": "E125",
+      "type": "historical",
+      "summary": "touched 3x: src/modules/core/graphql/share-class.resolvers.ts",
+      "detail": "src/modules/core/graphql/share-class.typeDefs.ts, src/modules/core/services/listing.service.ts, src/modules/core/services/share-class.service.ts, src/modules/core/validations/share-class.validation.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/graphql/share-class.resolvers.ts"
+      }
+    },
+    {
+      "id": "E126",
+      "type": "historical",
+      "summary": "touched 3x: src/modules/core/services/listing.service.ts",
+      "detail": "src/modules/core/graphql/share-class.resolvers.ts, src/modules/core/graphql/share-class.typeDefs.ts, src/modules/core/services/share-class.service.ts, src/modules/core/validations/share-class.validation.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/services/listing.service.ts"
+      }
+    },
+    {
+      "id": "E127",
+      "type": "historical",
+      "summary": "touched 2x: docs/role-management-mutations.md",
+      "detail": "docs/user-query-operations.md",
+      "source": {
+        "kind": "git",
+        "file": "docs/role-management-mutations.md"
+      }
+    },
+    {
+      "id": "E128",
+      "type": "historical",
+      "summary": "touched 2x: docs/user-query-operations.md",
+      "detail": "docs/role-management-mutations.md",
+      "source": {
+        "kind": "git",
+        "file": "docs/user-query-operations.md"
+      }
+    },
+    {
+      "id": "E129",
+      "type": "historical",
+      "summary": "touched 2x: examples/frontend/PermissionContext.js",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "examples/frontend/PermissionContext.js"
+      }
+    },
+    {
+      "id": "E130",
+      "type": "historical",
+      "summary": "touched 2x: scripts/test-request-context.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "scripts/test-request-context.ts"
+      }
+    },
+    {
+      "id": "E131",
+      "type": "historical",
+      "summary": "touched 2x: src/common/commands/blockchain/contracts.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/commands/blockchain/contracts.ts"
+      }
+    },
+    {
+      "id": "E132",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/core/graphql/share-class.typeDefs.ts",
+      "detail": "src/modules/core/graphql/share-class.resolvers.ts, src/modules/core/services/listing.service.ts, src/modules/core/services/share-class.service.ts, src/modules/core/validations/share-class.validation.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/graphql/share-class.typeDefs.ts"
+      }
+    },
+    {
+      "id": "E133",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/core/models/currency.model.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/models/currency.model.ts"
+      }
+    },
+    {
+      "id": "E134",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/core/models/supply-ledger.model.ts",
+      "detail": "src/modules/core/models/listing.model.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/models/supply-ledger.model.ts"
+      }
+    },
+    {
+      "id": "E135",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/core/services/content-block.service.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/services/content-block.service.ts"
+      }
+    },
+    {
+      "id": "E136",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/core/services/share-class.service.ts",
+      "detail": "src/modules/core/graphql/share-class.resolvers.ts, src/modules/core/graphql/share-class.typeDefs.ts, src/modules/core/services/listing.service.ts, src/modules/core/validations/share-class.validation.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/services/share-class.service.ts"
+      }
+    },
+    {
+      "id": "E137",
+      "type": "historical",
+      "summary": "touched 2x: src/modules/core/validations/share-class.validation.ts",
+      "detail": "src/modules/core/graphql/share-class.resolvers.ts, src/modules/core/graphql/share-class.typeDefs.ts, src/modules/core/services/listing.service.ts, src/modules/core/services/share-class.service.ts",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/validations/share-class.validation.ts"
+      }
+    },
+    {
+      "id": "E138",
+      "type": "historical",
+      "summary": "touched 1x: scripts/migrations/migrate-currency-blockchain-to-chainid.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "scripts/migrations/migrate-currency-blockchain-to-chainid.ts"
+      }
+    },
+    {
+      "id": "E139",
+      "type": "historical",
+      "summary": "touched 1x: src/common/commands/email/contracts.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/commands/email/contracts.ts"
+      }
+    },
+    {
+      "id": "E140",
+      "type": "historical",
+      "summary": "touched 1x: src/common/enum/share-class.enums.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/enum/share-class.enums.ts"
+      }
+    },
+    {
+      "id": "E141",
+      "type": "historical",
+      "summary": "touched 1x: src/common/enum/supply-ledger.enums.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/enum/supply-ledger.enums.ts"
+      }
+    },
+    {
+      "id": "E142",
+      "type": "historical",
+      "summary": "touched 1x: src/common/types/share-class.types.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/types/share-class.types.ts"
+      }
+    },
+    {
+      "id": "E143",
+      "type": "historical",
+      "summary": "touched 1x: src/common/types/supply-ledger.types.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/common/types/supply-ledger.types.ts"
+      }
+    },
+    {
+      "id": "E144",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/graphql/content-block-permissions.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/graphql/content-block-permissions.ts"
+      }
+    },
+    {
+      "id": "E145",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/graphql/share-class-permissions.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/graphql/share-class-permissions.ts"
+      }
+    },
+    {
+      "id": "E146",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/services/supply-ledger.service.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/services/supply-ledger.service.ts"
+      }
+    },
+    {
+      "id": "E147",
+      "type": "historical",
+      "summary": "touched 1x: src/modules/core/validations/share-class-management.validation.ts",
+      "detail": "",
+      "source": {
+        "kind": "git",
+        "file": "src/modules/core/validations/share-class-management.validation.ts"
+      }
+    },
+    {
+      "id": "E148",
+      "type": "boundary",
+      "summary": "unresolved: src/common/enum/share-class.enums.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E149",
+      "type": "boundary",
+      "summary": "unresolved: src/common/enum/supply-ledger.enums.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E150",
+      "type": "boundary",
+      "summary": "unresolved: src/common/types/share-class.types.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E151",
+      "type": "boundary",
+      "summary": "unresolved: src/common/types/supply-ledger.types.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E152",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/core/graphql/share-class-permissions.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    },
+    {
+      "id": "E153",
+      "type": "boundary",
+      "summary": "unresolved: src/modules/core/graphql/share-class.typeDefs.ts",
+      "detail": "No structural edges to other candidates observed (ES imports, static calls, model references).",
+      "source": {
+        "kind": "inference"
+      }
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  notification publish
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · src/services
+  · src/enum
+  · src/models
+  · src/handlers
+  · common
+  · contracts
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  0.91  implementation  [file] src/services/notification.service.ts — candidate score≈0.90
+  #2  0.89  implementation  [file] src/enum/notification.enums.ts — candidate score≈0.90
+  #3  0.67  implementation  [file] src/models/notification-message.model.ts — candidate score≈0.90
+  #4  0.67  implementation  [file] src/models/notification-template.model.ts — candidate score≈0.90
+  #5  0.57  implementation  [file] src/handlers/notify.handler.ts — candidate score≈0.90
+  #6  0.57  implementation  [file] src/services/template.service.ts — candidate score≈0.90
+  #7  0.51  implementation  [file] src/contracts/commands/notify/constants.ts — candidate score≈0.90
+  #8  0.50  implementation  [file] src/enum/integration.enums.ts — candidate score≈0.90
+  #9  0.50  implementation  [file] src/scripts/seed-templates.ts — candidate score≈0.90
+  #10 0.44  implementation  [file] src/contracts/commands/notify/contracts.ts — candidate score≈0.90
+  #11 0.44  implementation  [file] src/infrastructure/email/index.ts — candidate score≈0.90
+  #12 0.44  implementation  [file] src/infrastructure/logger/index.ts — candidate score≈0.90
+  … 11 more
+
+SUPERSESSION  (not mere recency)
+  1188261dbad5cffd7808fef307b3d18c310f1814 → 3276632f5ba1b57ea3f6ae553133a47bc0bacc06  (implementation_supersedes_implementation)
+  1188261dbad5cffd7808fef307b3d18c310f1814 → 249892f2e4bb0fcb652a8541793449e0989c4749  (implementation_supersedes_implementation)
+  1188261dbad5cffd7808fef307b3d18c310f1814 → df01de8cdc092295b5754d0d4a57850716bed431  (implementation_supersedes_implementation)
+  1188261dbad5cffd7808fef307b3d18c310f1814 → fb240b51b5aab0fbe64cf4a4e976b7be09db3e54  (implementation_supersedes_implementation)
+  1188261dbad5cffd7808fef307b3d18c310f1814 → 81152a7ebbe622a1a233d46583f77e05772bdbcb  (implementation_supersedes_implementation)
+  3276632f5ba1b57ea3f6ae553133a47bc0bacc06 → 249892f2e4bb0fcb652a8541793449e0989c4749  (implementation_supersedes_implementation)
+  … 13 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/services/notification.service.ts` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/services/notification.service.ts — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1776266476  implementation  1188261dbad5cffd7808fef307b3d18c310f1814  1188261 — Initial vestascan-notifier setup with 8 notification types (src/models/notification-message.model.ts)
+  1776471418  implementation  3276632f5ba1b57ea3f6ae553133a47bc0bacc06  3276632 — refactor(notifier): clean stale code, fix Cloud Run startup, and scope to notif… (src/services/notification.service.ts)
+  1776472728  implementation  249892f2e4bb0fcb652a8541793449e0989c4749  249892f — feat(notifier): expand notification contracts from 8 to 23 events (src/services/notification.service.ts)
+  1776496654  implementation  df01de8cdc092295b5754d0d4a57850716bed431  df01de8 — feat(email): unified notification email system with live previewer (src/services/notification.service.ts)
+  1776917052  implementation  fb240b51b5aab0fbe64cf4a4e976b7be09db3e54  fb240b5 — feat(notify): wire six billing notification types with email templates (src/services/notification.service.ts)
+  1777003372  implementation  81152a7ebbe622a1a233d46583f77e05772bdbcb  81152a7 — type safety refactor (#2) (src/services/notification.service.ts)
+  1783664097  implementation  92034bf0a2042d0951034e31046570411a616d1a  92034bf — feat(email): plan-aware InterestShown — hide investor identity for non-entitled… (src/contracts/commands/notify/contracts.ts)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/services/notification.service.ts
+  · src/enum/notification.enums.ts
+  · src/models/notification-message.model.ts
+  · src/models/notification-template.model.ts
+  · src/handlers/notify.handler.ts
+  · src/services/template.service.ts
+  · src/contracts/commands/notify/constants.ts
+  · src/enum/integration.enums.ts
+  · src/scripts/seed-templates.ts
+  · src/contracts/commands/notify/contracts.ts
+  · src/infrastructure/email/index.ts
+  · src/infrastructure/logger/index.ts
+  · src/common/types/errors.types.ts
+  · src/email/builder.ts
+  · src/infrastructure/email/interfaces.ts
+  · src/lib/commands/handler.ts
+
+WHAT ATLAS KNOWS
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 7 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=16 top=src/services/notification.service.ts
+  · c5.1e_concept_fragments domain=Generic flow=false n=11
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

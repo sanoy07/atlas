@@ -4,6 +4,25 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 #[derive(Deserialize)]
+struct RawPrComment {
+    author: RawAuthor,
+    body:   String,
+}
+
+#[derive(Deserialize)]
+struct RawPrReview {
+    author: RawAuthor,
+    state:  String,
+    body:   String,
+}
+
+#[derive(Deserialize)]
+struct RawIssueComment {
+    author: RawAuthor,
+    body:   String,
+}
+
+#[derive(Deserialize)]
 struct RawPr {
     number:       i64,
     title:        String,
@@ -18,6 +37,13 @@ struct RawPr {
     created_at: Option<String>,
     #[serde(rename = "mergedAt", default)]
     merged_at: Option<String>,
+    // Enriched by connector via `gh pr view --json comments,reviews,reviewDecision`
+    #[serde(default)]
+    reviews: Vec<RawPrReview>,
+    #[serde(default)]
+    comments: Vec<RawPrComment>,
+    #[serde(rename = "reviewDecision", default)]
+    review_decision: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -29,6 +55,9 @@ struct RawIssue {
     author: RawAuthor,
     #[serde(rename = "createdAt", default)]
     created_at: Option<String>,
+    // Enriched by connector via `gh issue view --json comments`
+    #[serde(default)]
+    comments: Vec<RawIssueComment>,
 }
 
 #[derive(Deserialize)]
@@ -86,6 +115,65 @@ fn parse_gh_timestamp(s: &Option<String>) -> Option<DateTime<Utc>> {
         .map(|dt| dt.with_timezone(&Utc))
 }
 
+/// Assemble the full documentary body for a PR by concatenating the description,
+/// review decision, review bodies, and comment bodies.  Keeping all text in one
+/// field means `search` and `investigate` surface review/comment content without
+/// a schema change — attribution is preserved via the inline prefix labels.
+fn assemble_pr_body(
+    base: Option<String>,
+    decision: Option<String>,
+    reviews: Vec<RawPrReview>,
+    comments: Vec<RawPrComment>,
+) -> Option<String> {
+    let mut parts: Vec<String> = Vec::new();
+
+    if let Some(b) = base {
+        let trimmed = b.trim().to_string();
+        if !trimmed.is_empty() {
+            parts.push(trimmed);
+        }
+    }
+    if let Some(d) = decision {
+        if !d.is_empty() {
+            parts.push(format!("Review decision: {d}"));
+        }
+    }
+    for r in reviews {
+        let body = r.body.trim().to_string();
+        if !body.is_empty() {
+            parts.push(format!("Review [{}|{}]: {body}", r.author.login, r.state));
+        }
+    }
+    for c in comments {
+        let body = c.body.trim().to_string();
+        if !body.is_empty() {
+            parts.push(format!("Comment [{}]: {body}", c.author.login));
+        }
+    }
+
+    if parts.is_empty() { None } else { Some(parts.join("\n\n")) }
+}
+
+/// Assemble the full documentary body for an issue by appending comment text.
+fn assemble_issue_body(base: Option<String>, comments: Vec<RawIssueComment>) -> Option<String> {
+    let mut parts: Vec<String> = Vec::new();
+
+    if let Some(b) = base {
+        let trimmed = b.trim().to_string();
+        if !trimmed.is_empty() {
+            parts.push(trimmed);
+        }
+    }
+    for c in comments {
+        let body = c.body.trim().to_string();
+        if !body.is_empty() {
+            parts.push(format!("Comment [{}]: {body}", c.author.login));
+        }
+    }
+
+    if parts.is_empty() { None } else { Some(parts.join("\n\n")) }
+}
+
 pub fn parse_prs(json: &str) -> Result<Vec<PullRequest>> {
     let raw: Vec<RawPr> = serde_json::from_str(json)?;
     Ok(raw
@@ -94,7 +182,7 @@ pub fn parse_prs(json: &str) -> Result<Vec<PullRequest>> {
             number:           p.number,
             title:            p.title,
             state:            p.state,
-            body:             p.body,
+            body:             assemble_pr_body(p.body, p.review_decision, p.reviews, p.comments),
             author:           p.author.login,
             merge_commit_sha: p.merge_commit.map(|c| c.oid),
             created_at:       parse_gh_timestamp(&p.created_at),
@@ -125,7 +213,7 @@ pub fn parse_issues(json: &str) -> Result<Vec<Issue>> {
             number:     i.number,
             title:      i.title,
             state:      i.state,
-            body:       i.body,
+            body:       assemble_issue_body(i.body, i.comments),
             author:     i.author.login,
             created_at: parse_gh_timestamp(&i.created_at),
         })

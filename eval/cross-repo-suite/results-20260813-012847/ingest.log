@@ -1,0 +1,83 @@
+Registered 'rwatp-core' in project 'rwatp'.
+  role:      api
+  path:      /home/sanoy/Vesta/rwatp-core
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Registered 'rwatp-notifier' in project 'rwatp'.
+  role:      notifier
+  path:      /home/sanoy/Vesta/rwatp-notifier
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Registered 'rwatp-console' in project 'rwatp'.
+  role:      console
+  path:      /home/sanoy/Vesta/rwatp-console
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Registered 'rwatp-user-frontend' in project 'rwatp'.
+  role:      user-fe
+  path:      /home/sanoy/Vesta/rwatp-user-frontend
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Registered 'vestascan-api' in project 'vestascan'.
+  role:      api
+  path:      /home/sanoy/Vesta/vestascan-api
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Registered 'vestascan-notifier' in project 'vestascan'.
+  role:      notifier
+  path:      /home/sanoy/Vesta/vestascan-notifier
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Registered 'vestascan-blockchain' in project 'vestascan'.
+  role:      chain
+  path:      /home/sanoy/Vesta/vestascan-blockchain
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Registered 'vestascan-user-fe' in project 'vestascan'.
+  role:      user-fe
+  path:      /home/sanoy/Vesta/vestascan-user-fe
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Registered 'vestascan-console' in project 'vestascan'.
+  role:      console
+  path:      /home/sanoy/Vesta/vestascan-console
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Registered 'jj' in project 'research'.
+  role:      vcs
+  path:      /home/sanoy/projects/research/jj
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Registered 'gigatoken' in project 'research'.
+  role:      tokenizer
+  path:      /home/sanoy/projects/research/gigatoken
+  existence: local-observed
+  access:    accessible
+  ingestion: not-ingested
+Ingesting project 'rwatp' …
+  [done] rwatp-console  commits=47 renames=43 identities=44 prs=0 edges=2886 docs=1
+  [done] rwatp-core  commits=104 renames=33 identities=30 prs=0 edges=3455 docs=8
+  [done] rwatp-notifier  commits=9 renames=0 identities=0 prs=0 edges=145 docs=0
+  [done] rwatp-user-frontend  commits=39 renames=19 identities=19 prs=0 edges=1377 docs=2
+Ingested 4 repositories (0 skipped).
+Ingesting project 'vestascan' …
+  [done] vestascan-api  commits=98 renames=3 identities=3 prs=0 edges=1104 docs=4
+  [done] vestascan-blockchain  commits=10 renames=0 identities=0 prs=0 edges=278 docs=6
+  [done] vestascan-console  commits=17 renames=3 identities=3 prs=0 edges=763 docs=1
+  [done] vestascan-notifier  commits=15 renames=0 identities=0 prs=0 edges=162 docs=2
+  [done] vestascan-user-fe  commits=160 renames=10 identities=10 prs=0 edges=2156 docs=40
+Ingested 5 repositories (0 skipped).
+Ingesting project 'research' …
+  [done] gigatoken  commits=363 renames=30 identities=17 prs=0 edges=132 docs=1
+  [done] jj  commits=10000 renames=186 identities=166 prs=0 edges=1291 docs=56
+Ingested 2 repositories (0 skipped).

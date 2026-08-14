@@ -1,0 +1,101 @@
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  SIWE login
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · src/features/auth/hooks
+  · src/features/auth/components/login
+  · app
+  · components
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  1.18  implementation  [file] src/features/auth/hooks/useSiweLogin.ts — candidate score≈1.00
+  #2  0.82  implementation  [file] src/features/auth/components/login/FirebaseLoginFlow.tsx — candidate score≈0.90
+  #3  0.82  implementation  [file] src/features/auth/components/login/OtpForm.tsx — candidate score≈0.90
+  #4  0.82  implementation  [file] src/features/auth/components/login/LoginForm.tsx — candidate score≈0.90
+  #5  0.82  implementation  [file] src/features/auth/components/login/WalletLoginFlow.tsx — candidate score≈0.90
+  #6  0.81  implementation  [file] src/app/auth/login/page.tsx — candidate score≈0.90
+  #7  0.69  implementation  [file] src/features/auth/utils/login/index.ts — candidate score≈0.90
+  #8  0.65  implementation  [file] src/features/auth/providers/siwePrivy.ts — candidate score≈0.90
+  #9  0.62  implementation  [commit] 3d3d3df96ee7e3d65bd6a364cd544b363d2a897d — 3d3d3df — feat(auth): email one-time-code sign-in and the duplicate-account choice (#47) … (src/features/auth/hooks/useSiweLogin.ts)
+  #10 0.62  implementation  [commit] 3dbd1fe70d055623612651b100ca7a8c30ede288 — 3dbd1fe — fix(auth): provision the embedded wallet the headless SIWE flow needs (#30) (src/features/auth/components/login/WalletLoginFlow.tsx)
+  #11 0.61  implementation  [commit] 262f695bb310b219ad974cb6d39817d48e05e73a — 262f695 — feat(auth): add SIWE + Privy as a selectable auth provider (#9) (src/features/auth/hooks/useSiweLogin.ts)
+  #12 0.61  implementation  [file] src/features/auth/components/login/index.ts — candidate score≈0.90
+  … 14 more
+
+SUPERSESSION  (not mere recency)
+  ca6cdda1121b05deb2d81455bd4be1711bfa7917 → 0d44dac7d4502d0a16dcfbcffd6269efabbc2f37  (implementation_supersedes_implementation)
+  ca6cdda1121b05deb2d81455bd4be1711bfa7917 → 0aa37c0b8de444b71049dfb590dd4e6a0a34d321  (implementation_supersedes_implementation)
+  ca6cdda1121b05deb2d81455bd4be1711bfa7917 → 43e62712b3419d7b8c999a61cc69d8549612c1cf  (implementation_supersedes_implementation)
+  ca6cdda1121b05deb2d81455bd4be1711bfa7917 → 354be441569552876426203092b150fefafbb430  (implementation_supersedes_implementation)
+  ca6cdda1121b05deb2d81455bd4be1711bfa7917 → 9e1c8eb66e78c3bae8b17535189a6812bb456edf  (implementation_supersedes_implementation)
+  ca6cdda1121b05deb2d81455bd4be1711bfa7917 → 262f695bb310b219ad974cb6d39817d48e05e73a  (implementation_supersedes_implementation)
+  … 14 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/features/auth/hooks/useSiweLogin.ts` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/features/auth/hooks/useSiweLogin.ts — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1770498327  implementation  ca6cdda1121b05deb2d81455bd4be1711bfa7917  ca6cdda — first commit (src/app/auth/login/page.tsx)
+  1770574868  implementation  0d44dac7d4502d0a16dcfbcffd6269efabbc2f37  0d44dac — feat/authseetupdone (src/app/auth/login/page.tsx)
+  1770660236  implementation  0aa37c0b8de444b71049dfb590dd4e6a0a34d321  0aa37c0 — feat/2fa_Account_Setting (src/features/auth/components/login/LoginForm.tsx)
+  1770703218  implementation  43e62712b3419d7b8c999a61cc69d8549612c1cf  43e6271 — fix/recaptche (src/features/auth/components/login/OtpForm.tsx)
+  1770749960  implementation  354be441569552876426203092b150fefafbb430  354be44 — refactor/2fa (src/features/auth/components/login/OtpForm.tsx)
+  1771092315  implementation  9e1c8eb66e78c3bae8b17535189a6812bb456edf  9e1c8eb — Project restructure (#4) (src/app/auth/login/page.tsx)
+  1785807361  implementation  262f695bb310b219ad974cb6d39817d48e05e73a  262f695 — feat(auth): add SIWE + Privy as a selectable auth provider (#9) (src/features/auth/hooks/useSiweLogin.ts)
+  1785855541  implementation  2ab8965c526e6845daa4d67d79e89ce94837b44a  2ab8965 — fix(auth): stop a Privy build booting Firebase, and give sign-in wallet context… (src/features/auth/components/login/FirebaseLoginFlow.tsx)
+  1785948967  implementation  3dbd1fe70d055623612651b100ca7a8c30ede288  3dbd1fe — fix(auth): provision the embedded wallet the headless SIWE flow needs (#30) (src/features/auth/components/login/WalletLoginFlow.tsx)
+  1786407008  implementation  3d3d3df96ee7e3d65bd6a364cd544b363d2a897d  3d3d3df — feat(auth): email one-time-code sign-in and the duplicate-account choice (#47) … (src/features/auth/hooks/useSiweLogin.ts)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/features/auth/hooks/useSiweLogin.ts
+  · src/features/auth/components/login/FirebaseLoginFlow.tsx
+  · src/features/auth/components/login/OtpForm.tsx
+  · src/features/auth/components/login/LoginForm.tsx
+  · src/features/auth/components/login/WalletLoginFlow.tsx
+  · src/app/auth/login/page.tsx
+  · src/features/auth/utils/login/index.ts
+  · src/features/auth/providers/siwePrivy.ts
+  · src/features/auth/components/login/index.ts
+  · src/features/auth/components/login/utils/LoginValidation.ts
+  · src/features/auth/components/login/utils/OtpFormValidation.ts
+  · src/lib/firebase/index.ts
+  · src/features/auth/components/login/utils/index.ts
+  · src/features/auth/config.ts
+  · src/components/ui/spinner.tsx
+  · src/features/auth/providers/index.ts
+
+WHAT ATLAS KNOWS
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 10 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=20 top=src/features/auth/hooks/useSiweLogin.ts
+  · c5.1e_concept_fragments domain=Auth flow=false n=19
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

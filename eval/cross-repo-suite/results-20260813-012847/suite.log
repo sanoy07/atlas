@@ -1,0 +1,81 @@
+=== Cross-repo suite start 2026-08-13T01:28:47+05:30 ===
+ATLAS=/home/sanoy/.local/bin/atlas
+OUT=/home/sanoy/projects/atlas/eval/cross-repo-suite/results-20260813-012847
+PYTHON=/nix/store/gxzhl7aaiid7zp3y47jqqiq7zg5mqpwp-python3-3.14.6/bin/python3
+=== Ingest rwatp (typescript) ===
+ingest rwatp rc=0 ms=77955
+=== Ingest vestascan (typescript) ===
+ingest vestascan rc=0 ms=85231
+=== Ingest research (git only) ===
+ingest research rc=0 ms=236895
+=== REPO rwatp-core (rwatp) ===
+  OK   rwatp-core/map (47ms)
+  OK   rwatp-core/modules (27ms)
+  OK   rwatp-core/investigate_noai (255ms)
+  OK   rwatp-core/agent_fast (367ms)
+  OK   rwatp-core/ripgrep_tool (73ms)
+=== REPO rwatp-notifier (rwatp) ===
+  OK   rwatp-notifier/map (36ms)
+  OK   rwatp-notifier/modules (11ms)
+  OK   rwatp-notifier/investigate_noai (45ms)
+  OK   rwatp-notifier/agent_fast (122ms)
+  OK   rwatp-notifier/ripgrep_tool (70ms)
+=== REPO rwatp-console (rwatp) ===
+  OK   rwatp-console/map (58ms)
+  OK   rwatp-console/modules (16ms)
+  OK   rwatp-console/investigate_noai (199ms)
+  OK   rwatp-console/agent_fast (286ms)
+  OK   rwatp-console/ripgrep_tool (74ms)
+=== REPO rwatp-user-frontend (rwatp) ===
+  OK   rwatp-user-frontend/map (43ms)
+  OK   rwatp-user-frontend/modules (16ms)
+  OK   rwatp-user-frontend/investigate_noai (113ms)
+  OK   rwatp-user-frontend/agent_fast (203ms)
+  OK   rwatp-user-frontend/ripgrep_tool (68ms)
+=== REPO vestascan-api (vestascan) ===
+  OK   vestascan-api/map (36ms)
+  OK   vestascan-api/modules (17ms)
+  OK   vestascan-api/investigate_noai (100ms)
+  OK   vestascan-api/agent_fast (169ms)
+  OK   vestascan-api/ripgrep_tool (76ms)
+=== REPO vestascan-notifier (vestascan) ===
+  OK   vestascan-notifier/map (28ms)
+  OK   vestascan-notifier/modules (13ms)
+  OK   vestascan-notifier/investigate_noai (52ms)
+  OK   vestascan-notifier/agent_fast (136ms)
+  OK   vestascan-notifier/ripgrep_tool (80ms)
+=== REPO vestascan-blockchain (vestascan) ===
+  OK   vestascan-blockchain/map (33ms)
+  OK   vestascan-blockchain/modules (11ms)
+  OK   vestascan-blockchain/investigate_noai (55ms)
+  OK   vestascan-blockchain/agent_fast (123ms)
+  OK   vestascan-blockchain/ripgrep_tool (69ms)
+=== REPO vestascan-user-fe (vestascan) ===
+  OK   vestascan-user-fe/map (42ms)
+  OK   vestascan-user-fe/modules (26ms)
+  OK   vestascan-user-fe/investigate_noai (246ms)
+  OK   vestascan-user-fe/agent_fast (339ms)
+  OK   vestascan-user-fe/ripgrep_tool (80ms)
+=== REPO vestascan-console (vestascan) ===
+  OK   vestascan-console/map (38ms)
+  OK   vestascan-console/modules (13ms)
+  OK   vestascan-console/investigate_noai (115ms)
+  OK   vestascan-console/agent_fast (189ms)
+  OK   vestascan-console/ripgrep_tool (67ms)
+=== REPO jj (research) ===
+  OK   jj/map (184ms)
+  OK   jj/modules (14ms)
+  OK   jj/investigate_noai (1344ms)
+  OK   jj/agent_fast (1428ms)
+  OK   jj/ripgrep_tool (71ms)
+=== REPO gigatoken (research) ===
+  OK   gigatoken/map (39ms)
+  OK   gigatoken/modules (10ms)
+  OK   gigatoken/investigate_noai (300ms)
+  OK   gigatoken/agent_fast (380ms)
+  OK   gigatoken/ripgrep_tool (74ms)
+=== Full agent samples ===
+  OK   rwatp-core/agent_full (44713ms)
+  OK   jj/agent_full (47010ms)
+=== DONE ok=57 fail=0 skip=0 ===
+Summary: /home/sanoy/projects/atlas/eval/cross-repo-suite/results-20260813-012847/SUMMARY.md

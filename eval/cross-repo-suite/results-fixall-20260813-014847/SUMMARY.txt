@@ -1,0 +1,1 @@
+quality ok=7 fail=0

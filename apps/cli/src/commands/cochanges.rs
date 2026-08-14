@@ -2,11 +2,12 @@ use anyhow::Result;
 use atlas_storage::Store;
 
 pub fn run(file: &str, min_count: i64) -> Result<()> {
-    let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
+    let db_path = super::resolve_db_path();
     let store = Store::open(&db_path)?;
 
     let repo = super::discover_repo_root()?;
-    let co = store.co_changes_for_file(file, &repo, min_count)?;
+    let file = super::resolve_and_notify_historical(&store, file, &repo);
+    let co = store.co_changes_for_file(&file, &repo, min_count)?;
 
     if co.is_empty() {
         if min_count > 1 {

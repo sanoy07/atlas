@@ -1,0 +1,112 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  listing page
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · src/app/(main)/dashboard/deploy
+  · src/app/(main)/dashboard/plans/checkout/success
+  · src/app/(main)/dashboard/plans
+  · src/app/(auth)/login
+  · src/app/(main)/dashboard
+  · app
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  0.91  implementation  [file] src/app/(main)/dashboard/deploy/page.tsx — candidate score≈0.90
+  #2  0.91  implementation  [file] src/app/(main)/dashboard/plans/checkout/success/page.tsx — candidate score≈0.90
+  #3  0.91  implementation  [file] src/app/(main)/dashboard/plans/page.tsx — candidate score≈0.90
+  #4  0.91  implementation  [file] src/app/(auth)/login/page.tsx — candidate score≈0.90
+  #5  0.91  implementation  [file] src/app/(main)/dashboard/page.tsx — candidate score≈0.90
+  #6  0.84  implementation  [file] src/app/(main)/dashboard/plans/checkout/page.tsx — candidate score≈0.90
+  #7  0.66  implementation  [file] src/app/(main)/dashboard/tokens/[contractAddress]/page.tsx — candidate score≈0.90
+  #8  0.66  implementation  [file] src/app/(main)/dashboard/support/page.tsx — candidate score≈0.90
+  #9  0.66  implementation  [file] src/app/(main)/dashboard/settings/page.tsx — candidate score≈0.90
+  #10 0.59  implementation  [file] src/app/(main)/dashboard/settings/kyc/page.tsx — candidate score≈0.90
+  #11 0.59  implementation  [file] src/app/(main)/dashboard/support/new/page.tsx — candidate score≈0.90
+  #12 0.59  implementation  [file] src/app/(main)/dashboard/support/[id]/page.tsx — candidate score≈0.90
+  … 18 more
+
+SUPERSESSION  (not mere recency)
+  b41b3b025018a8a7856b8f37a73f52d1c740ae02 → 6be02fb34c7bdd86cf54710dc102db0358bfaf44  (implementation_supersedes_implementation)
+  b41b3b025018a8a7856b8f37a73f52d1c740ae02 → 7143d71aac04a641a453774f9ee5c6154d5b2f7e  (implementation_supersedes_implementation)
+  b41b3b025018a8a7856b8f37a73f52d1c740ae02 → a9ed03f3ce97d0abcbba582e33c03a12f4e1f0d1  (implementation_supersedes_implementation)
+  b41b3b025018a8a7856b8f37a73f52d1c740ae02 → 3566707e3064931803681fc72793c05b9b7c1d79  (implementation_supersedes_implementation)
+  b41b3b025018a8a7856b8f37a73f52d1c740ae02 → 5d213cd1a9703393084fe11c417cb871af337141  (implementation_supersedes_implementation)
+  b41b3b025018a8a7856b8f37a73f52d1c740ae02 → 068a5c13379ad8b46ff6555b8b6deff1177c5047  (implementation_supersedes_implementation)
+  … 14 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/app/(main)/dashboard/deploy/page.tsx` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/app/(main)/dashboard/deploy/page.tsx — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1768295366  implementation  b41b3b025018a8a7856b8f37a73f52d1c740ae02  b41b3b0 — chore: initial commit - TokOwn project setup (src/app/(main)/dashboard/deploy/page.tsx)
+  1769420448  implementation  6be02fb34c7bdd86cf54710dc102db0358bfaf44  6be02fb — removed the landing page and redirected to the login page (src/app/(main)/dashboard/deploy/page.tsx)
+  1771586398  implementation  7143d71aac04a641a453774f9ee5c6154d5b2f7e  7143d71 — implemented Token transfer functionality (#12) (src/app/(main)/dashboard/page.tsx)
+  1773023864  implementation  a9ed03f3ce97d0abcbba582e33c03a12f4e1f0d1  a9ed03f — Feat/30 alchemy smart wallet migration (#76) (src/app/(main)/dashboard/page.tsx)
+  1773035931  implementation  3566707e3064931803681fc72793c05b9b7c1d79  3566707 — Implemented KYC sumsub integration and adapter style setup for googles secret m… (src/app/(main)/dashboard/settings/kyc/page.tsx)
+  1773112570  implementation  5d213cd1a9703393084fe11c417cb871af337141  5d213cd — implement verification badge through out user name display (#79) (src/app/(main)/dashboard/settings/page.tsx)
+  1773544859  implementation  068a5c13379ad8b46ff6555b8b6deff1177c5047  068a5c1 — visual improvement and email addition to settings page (#93) (src/app/(main)/dashboard/settings/page.tsx)
+  1773641650  implementation  f3efba3ec38ee300682c8d0342477f7dbe042717  f3efba3 — Application-Controlled Gas Sponsorship with Usage Quotas (#96) (src/app/(auth)/login/page.tsx)
+  1773706537  implementation  3ec099fc5091a2035fbc7a41aa8af74709e17630  3ec099f — fix(sca): resolve stuck gas estimation and signer state desync on SCA transacti… (src/app/(main)/dashboard/settings/page.tsx)
+  1774736895  implementation  7d1c3ecad5ee692a10fe7672509bd2b1039ba7b0  7d1c3ec — feat(auth): AppKit wallet integration, login UX polish, and auth lifecycle fixe… (src/app/(auth)/login/page.tsx)
+  1775627945  implementation  2d3f3a28c5b8f999be4f17e39a4a58637b4de9aa  2d3f3a2 — UI redesign standardize chatbot rich response components (#163) (src/app/(auth)/login/page.tsx)
+  1779282932  implementation  a3e456f533257ff25a7446e5ca30a633ca73d3b3  a3e456f — feat: application redesign — full UI overhaul + backend decoupling (#207) (src/app/(auth)/login/page.tsx)
+  1781807803  implementation  aacffd319dd71e18b694063530be1f7b86e2294b  aacffd3 — feat(auth): migrate Alchemy Signer → Privy (embedded + external wallets) (#216)… (src/app/(auth)/login/page.tsx)
+  1783353160  implementation  e371eaa995d77f31259cccfceade397dfd7676bc  e371eaa — Feat/plan checkout page redesign (#193) (src/app/(main)/dashboard/plans/checkout/page.tsx)
+  1783376606  implementation  12590b6f4a03aa478158e1947431b635c3275794  12590b6 — feat(plan): plan-gating UI — entitlements + upgrade prompts (#231) (#232) (src/app/(main)/dashboard/plans/checkout/page.tsx)
+  1783601049  implementation  1f79424028d6a301fb3eb083ed3ce05a4a334fc6  1f79424 — feat(plan): top-tier UX, app-wide nudges, LinkedIn enquiries, Concierge, cap-ta… (src/app/(main)/dashboard/page.tsx)
+  1783672159  implementation  4f6bd9ef6dfedb50b10aaef920621ac9341e8c55  4f6bd9e — feat(plan): close upgrade popups on nav, pitch-deck-only data room, paid verifi… (src/app/(main)/dashboard/page.tsx)
+  1783725610  implementation  1061f12ff73002b767afacdd44cf01183fe452cd  1061f12 — feat(plan): render pricing/checkout cards entirely from the backend (#239) (src/app/(main)/dashboard/plans/checkout/page.tsx)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/app/(main)/dashboard/deploy/page.tsx
+  · src/app/(main)/dashboard/plans/checkout/success/page.tsx
+  · src/app/(main)/dashboard/plans/page.tsx
+  · src/app/(auth)/login/page.tsx
+  · src/app/(main)/dashboard/page.tsx
+  · src/app/(main)/dashboard/plans/checkout/page.tsx
+  · src/app/(main)/dashboard/tokens/[contractAddress]/page.tsx
+  · src/app/(main)/dashboard/support/page.tsx
+  · src/app/(main)/dashboard/settings/page.tsx
+  · src/app/(main)/dashboard/settings/kyc/page.tsx
+  · src/app/(main)/dashboard/support/new/page.tsx
+  · src/app/(main)/dashboard/support/[id]/page.tsx
+  · src/components/ui/button.tsx
+  · src/components/ui/spinner.tsx
+  · src/components/ui/input.tsx
+  · src/components/ui/dialog.tsx
+
+WHAT ATLAS KNOWS
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 18 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=20 top=src/app/(auth)/login/page.tsx
+  · c5.1e_concept_fragments domain=Generic flow=false n=11
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

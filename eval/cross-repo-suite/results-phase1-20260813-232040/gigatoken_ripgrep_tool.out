@@ -1,0 +1,15 @@
+/home/sanoy/projects/research/gigatoken/src/bpe_train.rs-81-    let words_ptr = SendPtr(words.as_mut_ptr());
+/home/sanoy/projects/research/gigatoken/src/bpe_train.rs-82-
+/home/sanoy/projects/research/gigatoken/src/bpe_train.rs:83:    // TODO(perf): There is a lot of contention on this map early in merging, since the updated pairs overlap a lot in the beginning.
+/home/sanoy/projects/research/gigatoken/src/bpe_train.rs-84-    // Pair -> Word, pair was added to the word, make sure to update contained_in_words
+/home/sanoy/projects/research/gigatoken/src/bpe_train.rs-85-    let contained_updates: DashMap<(u32, u32), BTreeSet<u32>, FxBuildHasher> = DashMap::default();
+--
+/home/sanoy/projects/research/gigatoken/src/load_tokenizer/hf.rs-990-    }
+/home/sanoy/projects/research/gigatoken/src/load_tokenizer/hf.rs-991-
+/home/sanoy/projects/research/gigatoken/src/load_tokenizer/hf.rs:992:    /// `ByteLevel(add_prefix_space=true)` (RoBERTa-style exports): every
+/home/sanoy/projects/research/gigatoken/src/load_tokenizer/hf.rs-993-    /// non-empty added-token-split segment gets a leading space; empty
+/home/sanoy/projects/research/gigatoken/src/load_tokenizer/hf.rs-994-    /// segments (adjacent added tokens, leading added token) do not.
+--
+/home/sanoy/projects/research/gigatoken/src/bpe/mod.rs-1096-}
+/home/sanoy/projects/research/gigatoken/src/bpe/mod.rs-1097-
+/home/sanoy/projects/research/gigatoken/src/bpe/mod.rs:1098:// Re-export the main types so existing `use crate::bpe::Tokenizer` stil

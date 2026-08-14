@@ -1,0 +1,510 @@
+{
+  "runId": "qwen2.5-coder-7b-instruct_kyc-notification-001_B-combined_rep3",
+  "model": "qwen2.5-coder:7b-instruct",
+  "caseId": "kyc-notification-001",
+  "condition": "B-combined",
+  "repetition": 3,
+  "decisions": [
+    {
+      "id": "E1",
+      "class": "RELEVANT",
+      "reason": "This file contains enums related to KYC, which may be relevant for understanding the state of KYC processes."
+    },
+    {
+      "id": "E2",
+      "class": "RELEVANT",
+      "reason": "This file contains enums related to KYC, which may be relevant for understanding the state of KYC processes."
+    },
+    {
+      "id": "E3",
+      "class": "RELEVANT",
+      "reason": "This file contains GraphQL resolvers for compliance operations, which are likely involved in handling KYC approvals and notifications."
+    },
+    {
+      "id": "E4",
+      "class": "RELEVANT",
+      "reason": "This file defines type definitions for GraphQL queries and mutations related to compliance, which may be relevant for understanding the flow of data during KYC processes."
+    },
+    {
+      "id": "E5",
+      "class": "RELEVANT",
+      "reason": "This model contains fields related to the KYC flow, which may be relevant for understanding how KYC processes are managed and tracked."
+    },
+    {
+      "id": "E6",
+      "class": "RELEVANT",
+      "reason": "This model contains fields related to the KYC profile, which may be relevant for understanding the data associated with users' KYC statuses."
+    },
+    {
+      "id": "E7",
+      "class": "RELEVANT",
+      "reason": "This provider file is likely involved in internal operations related to KYC, such as fetching or updating KYC profiles."
+    },
+    {
+      "id": "E8",
+      "class": "RELEVANT",
+      "reason": "This factory file may be responsible for creating instances of KYC providers, which are essential for handling different KYC processes."
+    },
+    {
+      "id": "E9",
+      "class": "RELEVANT",
+      "reason": "This interface defines methods that KYC providers must implement, which is crucial for understanding the contract between the system and its KYC providers."
+    },
+    {
+      "id": "E10",
+      "class": "RELEVANT",
+      "reason": "This service file contains business logic related to compliance operations, including handling KYC approvals and notifications."
+    },
+    {
+      "id": "E11",
+      "class": "UNKNOWN",
+      "reason": "This model is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E12",
+      "class": "UNKNOWN",
+      "reason": "This service is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E13",
+      "class": "RELEVANT",
+      "reason": "This file contains enums related to notifications, which may be relevant for understanding how notifications are handled during KYC processes."
+    },
+    {
+      "id": "E14",
+      "class": "UNKNOWN",
+      "reason": "This model is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E15",
+      "class": "UNKNOWN",
+      "reason": "This model is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E16",
+      "class": "RELEVANT",
+      "reason": "This handler file may be responsible for processing webhooks related to KYC, which could involve sending notifications."
+    },
+    {
+      "id": "E17",
+      "class": "UNKNOWN",
+      "reason": "This middleware is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E18",
+      "class": "UNKNOWN",
+      "reason": "This model is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E19",
+      "class": "UNKNOWN",
+      "reason": "This utility file is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E20",
+      "class": "UNKNOWN",
+      "reason": "This utility file is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E21",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E22",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E23",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E24",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E25",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E26",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E27",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E28",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E29",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E30",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E31",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E32",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E33",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E34",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E35",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E36",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E37",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E38",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E39",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E40",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E41",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E42",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E43",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E44",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E45",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E46",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E47",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E48",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E49",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E50",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E51",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E52",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E53",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E54",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E55",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E56",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E57",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E58",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E59",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E60",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E61",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E62",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E63",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E64",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E65",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E66",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E67",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E68",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E69",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E70",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E71",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E72",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E73",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E74",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E75",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E76",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E77",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E78",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E79",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E80",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E81",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E82",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E83",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E84",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E85",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E86",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E87",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E88",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E89",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E90",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E91",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E92",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E93",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E94",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E95",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E96",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E97",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E98",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E99",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    },
+    {
+      "id": "E100",
+      "class": "UNKNOWN",
+      "reason": "This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval."
+    }
+  ],
+  "rawOutput": "```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E1\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This file contains enums related to KYC, which may be relevant for understanding the state of KYC processes.\"\n    },\n    {\n      \"id\": \"E2\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This file contains enums related to KYC, which may be relevant for understanding the state of KYC processes.\"\n    },\n    {\n      \"id\": \"E3\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This file contains GraphQL resolvers for compliance operations, which are likely involved in handling KYC approvals and notifications.\"\n    },\n    {\n      \"id\": \"E4\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This file defines type definitions for GraphQL queries and mutations related to compliance, which may be relevant for understanding the flow of data during KYC processes.\"\n    },\n    {\n      \"id\": \"E5\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This model contains fields related to the KYC flow, which may be relevant for understanding how KYC processes are managed and tracked.\"\n    },\n    {\n      \"id\": \"E6\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This model contains fields related to the KYC profile, which may be relevant for understanding the data associated with users' KYC statuses.\"\n    },\n    {\n      \"id\": \"E7\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This provider file is likely involved in internal operations related to KYC, such as fetching or updating KYC profiles.\"\n    },\n    {\n      \"id\": \"E8\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This factory file may be responsible for creating instances of KYC providers, which are essential for handling different KYC processes.\"\n    },\n    {\n      \"id\": \"E9\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This interface defines methods that KYC providers must implement, which is crucial for understanding the contract between the system and its KYC providers.\"\n    },\n    {\n      \"id\": \"E10\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This service file contains business logic related to compliance operations, including handling KYC approvals and notifications.\"\n    },\n    {\n      \"id\": \"E11\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This model is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E12\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This service is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E13\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This file contains enums related to notifications, which may be relevant for understanding how notifications are handled during KYC processes.\"\n    },\n    {\n      \"id\": \"E14\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This model is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E15\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This model is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E16\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This handler file may be responsible for processing webhooks related to KYC, which could involve sending notifications.\"\n    },\n    {\n      \"id\": \"E17\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This middleware is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E18\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This model is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E19\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This utility file is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E20\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This utility file is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E21\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E22\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E23\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E24\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E25\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E26\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E27\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E28\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E29\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E30\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E31\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E32\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E33\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E34\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E35\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E36\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E37\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E38\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E39\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E40\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E41\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E42\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E43\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E44\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E45\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E46\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E47\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E48\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E49\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E50\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E51\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E52\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E53\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E54\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E55\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E56\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E57\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E58\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E59\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E60\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E61\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E62\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E63\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E64\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E65\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E66\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E67\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E68\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E69\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E70\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E71\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E72\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E73\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E74\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E75\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E76\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E77\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E78\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E79\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E80\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E81\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E82\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E83\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E84\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E85\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E86\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E87\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E88\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E89\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E90\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E91\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E92\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E93\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E94\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E95\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E96\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E97\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E98\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E99\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    },\n    {\n      \"id\": \"E100\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This documentary is not directly related to the task of understanding why users don't receive emails after KYC approval.\"\n    }\n  ]\n}\n```"
+}

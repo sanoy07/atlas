@@ -1,0 +1,93 @@
+atlas agent → /home/sanoy/projects/atlas/agent/atlas_agent.py  model=qwen3:4b  repo=/home/sanoy/Vesta/vestascan-api
+[2m[fast path: atlas investigate --no-ai][0m
+ATLAS INVESTIGATE EVIDENCE PACKET (deterministic C5.1 + C4)
+QUESTION: token deploy
+MODE: deterministic_only
+
+RANKED_FILES (highest weight first — prefer these):
+  #1 w=0.91  src/modules/core/services/token.service.ts
+      core_candidate rank_index=3; c5.1_pagerank=1.000
+  #2 w=0.91  src/modules/core/services/deployment.service.ts
+      core_candidate rank_index=1; c5.1_pagerank=0.992
+  #3 w=0.79  src/modules/core/services/token-image.service.ts
+      core_candidate rank_index=9; c5.1_pagerank=0.681
+  #4 w=0.79  src/modules/core/services/token-verification.service.ts
+      core_candidate rank_index=10; c5.1_pagerank=0.681
+  #5 w=0.78  src/modules/marketing/loaders/tokens-by-deployer.loader.ts
+      core_candidate rank_index=0; c5.1_pagerank=0.264
+  #6 w=0.73  src/common/enums/index.ts
+      core_candidate rank_index=14; c5.1_pagerank=0.795
+  #7 w=0.72  src/modules/core/models/token.model.ts
+      core_candidate rank_index=2; c5.1_pagerank=0.510
+  #8 w=0.67  src/common/constants/restricted-token-symbols.ts
+      core_candidate rank_index=4; c5.1_pagerank=0.358
+  #10 w=0.61  src/common/constants/token-verification.constants.ts
+      core_candidate rank_index=5; c5.1_pagerank=0.200
+  #11 w=0.60  src/modules/core/models/token-holder.model.ts
+      core_candidate rank_index=7; c5.1_pagerank=0.188
+  #12 w=0.59  src/schemas/deployment.schema.ts
+      core_candidate rank_index=13; c5.1_pagerank=0.160
+  #14 w=0.58  src/modules/core/models/token-association.model.ts
+      core_candidate rank_index=6; c5.1_pagerank=0.118
+  #15 w=0.58  src/modules/core/models/token-verification.model.ts
+      core_candidate rank_index=8; c5.1_pagerank=0.115
+  #16 w=0.56  src/modules/marketing/loaders/deploy-count.loader.ts
+      core_candidate rank_index=11; c5.1_pagerank=0.069
+
+CORE_CANDIDATES:
+  - src/modules/core/services/token.service.ts
+  - src/modules/core/services/deployment.service.ts
+  - src/modules/core/services/token-image.service.ts
+  - src/modules/core/services/token-verification.service.ts
+  - src/modules/marketing/loaders/tokens-by-deployer.loader.ts
+  - src/common/enums/index.ts
+  - src/modules/core/models/token.model.ts
+  - src/common/constants/restricted-token-symbols.ts
+  - src/common/constants/token-verification.constants.ts
+  - src/modules/core/models/token-holder.model.ts
+  - src/schemas/deployment.schema.ts
+  - src/modules/core/models/token-association.model.ts
+
+LIKELY_AREA: core, marketing
+
+HYPOTHESES (already C4-gated by Atlas — status is authoritative):
+  [PLAUSIBLE] Deterministic retrieval associates this question with `src/modules/core/services/token.service.ts` and its neighborhood.
+      evidence: file:src/modules/core/services/token.service.ts
+
+CHRONOLOGY (sample):
+  implementation 9b9f787d8dd5 — 9b9f787 — Initial commit for decoupled backend maintaing parity with main branch of vesta… (src/modules/core/services/de
+  implementation 4889ed52e253 — 4889ed5 — Code changes to acheive 100% parity with vestascan-user-fe's development branch… (src/modules/core/models/toke
+  implementation 56a482f23a5a — 56a482f — converted import statements to match google cloud run specs (src/modules/core/services/deployment.service.ts)
+  implementation d981e12bc0c2 — d981e12 — chore: finalize observability refactor replacing console logs with structured l… (src/modules/core/services/de
+  implementation 4224a33b1c34 — 4224a33 — feat(notifications): wire all 23 notify commands to Pub/Sub (#3) (src/modules/core/services/deployment.service
+  implementation 3982094455f0 — 3982094 — feat(schema): add token discoverability, PAUSED fundraising status, and ARCHIVE… (src/modules/core/models/toke
+  implementation 2b8635b41a84 — 2b8635b — fix: attachment deletion, asset classification, URL validation, show interest d… (src/modules/core/models/toke
+  implementation 12b1345f3c13 — 12b1345 — Consume vestascan-blockchain indexer + cap-table endpoint (#16) (src/modules/core/services/token.service.ts)
+
+C4_VERIFICATION_POLICY:
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+WHAT_ATLAS_KNOWS:
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 13 chronology event(s) assembled (intent + implementation)
+
+WHAT_ATLAS_DOES_NOT_KNOW:
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=20 top=src/modules/marketing/loaders/tokens-by-deployer.loader.ts
+  · c5.1e_concept_fragments domain=Generic flow=false n=13
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+NEXT_INVESTIGATION:
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+RULE: Existence of a ranked file is NOT causal support. Do not upgrade [PLAUSIBLE]/[UNRESOLVED] to factual cause language. Prefer ranked files over map hot-files alone for localization.

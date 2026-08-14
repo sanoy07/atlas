@@ -1,0 +1,290 @@
+{
+  "runId": "qwen2.5-coder-7b-instruct_content-block-001_B-split_rep3",
+  "model": "qwen2.5-coder:7b-instruct",
+  "caseId": "content-block-001",
+  "condition": "B-split",
+  "repetition": 3,
+  "decisions": [
+    {
+      "id": "E26",
+      "class": "RELEVANT",
+      "reason": "Directly references the method that validates required content blocks."
+    },
+    {
+      "id": "E31",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Contains constants related to block rules, which might be used in validation logic."
+    },
+    {
+      "id": "E32",
+      "class": "RELEVANT",
+      "reason": "Directly references the content-block model, which is likely involved in managing content blocks."
+    },
+    {
+      "id": "E33",
+      "class": "RELEVANT",
+      "reason": "Directly references the listing model, indicating that content blocks are associated with listings."
+    },
+    {
+      "id": "E34",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "References share-class model, which might be indirectly related to content block validation."
+    },
+    {
+      "id": "E49",
+      "class": "RELEVANT",
+      "reason": "This PR implements the content block logic layer and API, which is directly related to enforcing required content blocks on a listing."
+    },
+    {
+      "id": "E82",
+      "class": "UNKNOWN",
+      "reason": "The evidence does not provide enough information about this item's relevance to the task."
+    },
+    {
+      "id": "E93",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E94",
+      "class": "RELEVANT",
+      "reason": "Touched multiple times, likely contains relevant code for listing models."
+    },
+    {
+      "id": "E95",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched multiple times, may contain relevant code for share class models."
+    },
+    {
+      "id": "E96",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E97",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E98",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched multiple times, may contain relevant code for blockchain contracts."
+    },
+    {
+      "id": "E99",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched multiple times, may contain relevant code for order contracts."
+    },
+    {
+      "id": "E100",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E101",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E102",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched multiple times, may contain relevant code for currency models."
+    },
+    {
+      "id": "E103",
+      "class": "RELEVANT",
+      "reason": "Touched multiple times, likely contains relevant code for content block services."
+    },
+    {
+      "id": "E104",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E105",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E106",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E107",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E108",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E109",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E110",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Touched multiple times, may contain relevant code for smart contract models."
+    },
+    {
+      "id": "E111",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E112",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E113",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E114",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E115",
+      "class": "RELEVANT",
+      "reason": "Touched multiple times, likely contains relevant code for content block models."
+    },
+    {
+      "id": "E116",
+      "class": "UNKNOWN",
+      "reason": "Not provided in the evidence."
+    },
+    {
+      "id": "E1",
+      "class": "RELEVANT",
+      "reason": "Contains constants related to block registry."
+    },
+    {
+      "id": "E2",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "May contain rules related to block enforcement."
+    },
+    {
+      "id": "E3",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E4",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E5",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Not directly related to enforcing required content blocks."
+    },
+    {
+      "id": "E6",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Not directly related to enforcing required content blocks."
+    },
+    {
+      "id": "E7",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E8",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Not directly related to enforcing required content blocks."
+    },
+    {
+      "id": "E9",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E10",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Not directly related to enforcing required content blocks."
+    },
+    {
+      "id": "E11",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E12",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Not directly related to enforcing required content blocks."
+    },
+    {
+      "id": "E13",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E14",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Not directly related to enforcing required content blocks."
+    },
+    {
+      "id": "E15",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E16",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Not directly related to enforcing required content blocks."
+    },
+    {
+      "id": "E17",
+      "class": "NOT_NEEDED_NOW",
+      "reason": "Not directly related to enforcing required content blocks."
+    },
+    {
+      "id": "E18",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E19",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E117",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E118",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E119",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E120",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E121",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    },
+    {
+      "id": "E122",
+      "class": "UNKNOWN",
+      "reason": "Cannot determine relevance without more context."
+    }
+  ],
+  "rawOutput": "\n\n// --- structural batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E26\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Directly references the method that validates required content blocks.\"\n    },\n    {\n      \"id\": \"E31\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Contains constants related to block rules, which might be used in validation logic.\"\n    },\n    {\n      \"id\": \"E32\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Directly references the content-block model, which is likely involved in managing content blocks.\"\n    },\n    {\n      \"id\": \"E33\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Directly references the listing model, indicating that content blocks are associated with listings.\"\n    },\n    {\n      \"id\": \"E34\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"References share-class model, which might be indirectly related to content block validation.\"\n    }\n  ]\n}\n```\n\n// --- documentary batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E49\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This PR implements the content block logic layer and API, which is directly related to enforcing required content blocks on a listing.\"\n    },\n    {\n      \"id\": \"E82\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The evidence does not provide enough information about this item's relevance to the task.\"\n    }\n  ]\n}\n```\n\n// --- historical batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E93\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E94\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Touched multiple times, likely contains relevant code for listing models.\"\n    },\n    {\n      \"id\": \"E95\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched multiple times, may contain relevant code for share class models.\"\n    },\n    {\n      \"id\": \"E96\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E97\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E98\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched multiple times, may contain relevant code for blockchain contracts.\"\n    },\n    {\n      \"id\": \"E99\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched multiple times, may contain relevant code for order contracts.\"\n    },\n    {\n      \"id\": \"E100\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E101\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E102\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched multiple times, may contain relevant code for currency models.\"\n    },\n    {\n      \"id\": \"E103\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Touched multiple times, likely contains relevant code for content block services.\"\n    },\n    {\n      \"id\": \"E104\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E105\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E106\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E107\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E108\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E109\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E110\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Touched multiple times, may contain relevant code for smart contract models.\"\n    },\n    {\n      \"id\": \"E111\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E112\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E113\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E114\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    },\n    {\n      \"id\": \"E115\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Touched multiple times, likely contains relevant code for content block models.\"\n    },\n    {\n      \"id\": \"E116\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Not provided in the evidence.\"\n    }\n  ]\n}\n```\n\n// --- source batch ---\n```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E1\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"Contains constants related to block registry.\"\n    },\n    {\n      \"id\": \"E2\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"May contain rules related to block enforcement.\"\n    },\n    {\n      \"id\": \"E3\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E4\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E5\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Not directly related to enforcing required content blocks.\"\n    },\n    {\n      \"id\": \"E6\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Not directly related to enforcing required content blocks.\"\n    },\n    {\n      \"id\": \"E7\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E8\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Not directly related to enforcing required content blocks.\"\n    },\n    {\n      \"id\": \"E9\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E10\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Not directly related to enforcing required content blocks.\"\n    },\n    {\n      \"id\": \"E11\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E12\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Not directly related to enforcing required content blocks.\"\n    },\n    {\n      \"id\": \"E13\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E14\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Not directly related to enforcing required content blocks.\"\n    },\n    {\n      \"id\": \"E15\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E16\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Not directly related to enforcing required content blocks.\"\n    },\n    {\n      \"id\": \"E17\",\n      \"class\": \"NOT_NEEDED_NOW\",\n      \"reason\": \"Not directly related to enforcing required content blocks.\"\n    },\n    {\n      \"id\": \"E18\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E19\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E117\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E118\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E119\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E120\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E121\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    },\n    {\n      \"id\": \"E122\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"Cannot determine relevance without more context.\"\n    }\n  ]\n}\n```"
+}

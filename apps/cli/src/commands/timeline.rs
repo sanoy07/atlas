@@ -3,21 +3,22 @@ use atlas_storage::Store;
 use chrono::{DateTime, Utc};
 
 pub fn run(file: &str) -> Result<()> {
-    let db_path = std::env::var("ATLAS_DB").unwrap_or_else(|_| "./atlas.db".to_string());
+    let db_path = super::resolve_db_path();
     let store = Store::open(&db_path)?;
 
     let repo = super::discover_repo_root()?;
-    let commits = store.commits_for_file_asc(file, &repo)?;
-    let prs     = store.prs_for_file(file, &repo)?;
-    let issues  = store.issues_for_file(file, &repo)?;
+    let file = super::resolve_and_notify_historical(&store, file, &repo);
+    let commits = store.commits_for_file_asc(&file, &repo)?;
+    let prs     = store.prs_for_file(&file, &repo)?;
+    let issues  = store.issues_for_file(&file, &repo)?;
 
     if commits.is_empty() && prs.is_empty() && issues.is_empty() {
-        println!("No data found for '{}'.", file);
+        println!("No data found for '{}'.", &file);
         println!("Hint: run `atlas ingest .` first.");
         return Ok(());
     }
 
-    println!("Timeline for {}\n{}\n", file, "─".repeat(60));
+    println!("Timeline for {}\n{}\n", &file, "─".repeat(60));
 
     // ── Issues (motivation) ─────────────────────────────────────────────────
     if !issues.is_empty() {

@@ -1,0 +1,16 @@
+RIPGREP symbol='TODO|FIXME|export'  (definition beats import)
+NOTE: TypeScript often imports `foo.js` while the source file is `foo.ts` — prefer [DEFINITION] paths ending in .ts/.tsx over .js import strings.
+
+IMPORTS / requires (10) — not definitions:
+  [IMPORT]     cli/tests/test_op_revert_command.rs:229:    // TODO: decide if this is the better behavior, and whether import of
+  [IMPORT]     lib/src/lib.rs:100:// TODO: This file is mostly used for testing, whenever we no longer require it
+  [IMPORT]     cli/tests/test_identical_commits.rs:101:    // TODO: Test `jj op diff --from @--`
+  [IMPORT]     lib/src/diff_presentation/mod.rs:38:// TODO: colored_diffs utils should also be moved from `jj_cli::diff_utils` to
+  [IMPORT]     cli/tests/test_bookmark_command.rs:1319:    Hint: Bookmarks marked as deleted will be deleted from the underlying Git repo on the next `jj git export`.
+  [IMPORT]     cli/tests/test_workspaces.rs:1366:    // Update and export the bookmark from the secondary workspace.
+  [IMPORT]     cli/tests/test_metaedit_command.rs:77:    // TODO: Require an argument?
+  [IMPORT]     cli/src/commands/run.rs:323:            // TODO: read from current wc/settings
+  [IMPORT]     cli/src/commands/operation/diff.rs:859:                    // TODO: It's technically wrong to show diffs from the first
+  [IMPORT]     cli/src/commands/git/init.rs:279:/// Imports branches and tags from the underlying Git repo, exports changes if
+
+OTHER (no export class/function match — may be com

@@ -1,0 +1,46 @@
+# Atlas investigation benchmarks — DwarfStar 4 (ds4)
+# Repository: https://github.com/antirez/ds4
+#
+# Each [[case]] runs `atlas investigate <anchors>` and scores the result.
+# expected_center / supporting_evidence / false_positive_alert are matched
+# as *substrings* of candidate file paths.
+
+[[case]]
+id          = "ds4-inference"
+description = "Core inference engine and model loading"
+repo        = "/home/sanoy/projects/research/ds4"
+db          = "/home/sanoy/projects/research/ds4/atlas.db"
+anchors     = ["inference", "model"]
+expected_center      = ["ds4.c", "ds4.h", "ds4_cli.c"]
+supporting_evidence  = ["download_model.sh", "MODEL_CARD.md"]
+false_positive_alert = []
+
+[[case]]
+id          = "ds4-kvstore"
+description = "Key-value store used for caching attention states"
+repo        = "/home/sanoy/projects/research/ds4"
+db          = "/home/sanoy/projects/research/ds4/atlas.db"
+anchors     = ["kv", "store"]
+expected_center      = ["ds4_kvstore.c", "ds4_kvstore.h"]
+supporting_evidence  = []
+false_positive_alert = []
+
+[[case]]
+id          = "ds4-server"
+description = "HTTP server and KV integration"
+repo        = "/home/sanoy/projects/research/ds4"
+db          = "/home/sanoy/projects/research/ds4/atlas.db"
+anchors     = ["server", "kv"]
+expected_center      = ["ds4_server.c", "ds4_kvstore.c", "ds4_kvstore.h"]
+supporting_evidence  = ["tests/test_server_batching.py"]
+false_positive_alert = []
+
+[[case]]
+id          = "ds4-agent"
+description = "Agent and distributed multi-node execution"
+repo        = "/home/sanoy/projects/research/ds4"
+db          = "/home/sanoy/projects/research/ds4/atlas.db"
+anchors     = ["agent", "distributed"]
+expected_center      = ["ds4_agent.c", "ds4_distributed.c", "ds4_distributed.h"]
+supporting_evidence  = []
+false_positive_alert = []

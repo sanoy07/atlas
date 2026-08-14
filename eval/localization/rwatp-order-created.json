@@ -1,0 +1,27 @@
+{
+  "id": "rwatp-order-created",
+  "repository": "rwatp-core",
+  "workflow": "system_flow",
+  "question": "What happens when an order is created?",
+  "notes": "Create-path focus: quote/create mutations, eligibility, pricing, reserve share class, order model.",
+  "gold_files": [
+    "src/modules/core/services/order.service.ts",
+    "src/modules/core/graphql/order.resolvers.ts",
+    "src/modules/core/models/order.model.ts",
+    "src/modules/core/services/order-eligibility.ts",
+    "src/modules/core/services/pricing-engine.service.ts",
+    "src/modules/core/services/share-class.service.ts"
+  ],
+  "gold_optional": [
+    "src/modules/core/validations/order.validation.ts",
+    "src/modules/payment/services/payment.service.ts",
+    "tests/core/test-quote-order.ts",
+    "tests/core/test-order-lifecycle.ts"
+  ],
+  "hard_negatives": [
+    "src/infrastructure/messaging/redis/connection.ts",
+    "src/infrastructure/image-processor/index.ts",
+    "src/modules/blockchain/services/smart-contract.service.ts"
+  ],
+  "metrics": { "top_k": [1, 5, 10] }
+}

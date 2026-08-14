@@ -1,0 +1,6 @@
+{
+  "case_id": "content-block-001",
+  "essential": ["E1", "E2", "E4", "E11", "E15", "E19", "E31", "E35", "E48", "E49", "E77", "E78"],
+  "distractors": ["E5", "E6", "E7", "E16", "E96"],
+  "notes": "E1 (block-registry.constants.ts) and E2 (block-rules.constants.ts) define what is required and when. E15 (content-block.service.ts) + E31/E35 (its import of the registry and model references) are the enforcement layer. E19 (listing.validation.ts) is where readiness checks use the block registry before status transitions. E48/E49 (Issues #29/#30) and E77/E78 (PRs #31/#32) document the design intent. Critical distractors: E5 (contracts/commands/registry.ts) and E6 (contracts/events/registry.ts) are strong keyword matches on 'registry' but are the PubSub command/event registries, not block registries — highest risk of confusion. E96 (history: contracts/commands/registry.ts touched 3x) amplifies this distractor. E7 (smart-contract.model.ts) and E16 (blockchain migration) match 'block' but are blockchain infrastructure."
+}

@@ -1,7 +1,8 @@
 use anyhow::Result;
 use atlas_ir::{
-    AccessState, Commit, ExistenceSource, IngestionState, Issue, ProfileClaim, ProfileClaimKind,
-    ProjectRecord, PullRequest, RenameEvidence, RepositoryRecord, StructuralEdge, StructuralEdgeKind,
+    AccessState, Commit, ExistenceSource, IngestionState, Issue, LexiconRelationship,
+    ProfileClaim, ProfileClaimKind, ProjectRecord, PullRequest, RenameEvidence, RepositoryRecord,
+    StructuralEdge, StructuralEdgeKind,
 };
 use rusqlite::{params, Connection, OptionalExtension};
 use tracing::debug;
@@ -27,6 +28,21 @@ impl Store {
             "ALTER TABLE pull_requests ADD COLUMN created_at INTEGER",
             "ALTER TABLE pull_requests ADD COLUMN merged_at  INTEGER",
             "ALTER TABLE issues        ADD COLUMN created_at INTEGER",
+            // P1-3: ingested_at provenance timestamps.  Nullable so existing
+            // rows migrate cleanly; new inserts populate them.  Value is the
+            // unix second when Atlas observed/recorded the fact — NOT the
+            // timestamp of the underlying event.
+            "ALTER TABLE commits             ADD COLUMN ingested_at INTEGER",
+            "ALTER TABLE pull_requests       ADD COLUMN ingested_at INTEGER",
+            "ALTER TABLE issues              ADD COLUMN ingested_at INTEGER",
+            "ALTER TABLE structural_edges    ADD COLUMN ingested_at INTEGER",
+            "ALTER TABLE documents           ADD COLUMN ingested_at INTEGER",
+            "ALTER TABLE rename_evidence     ADD COLUMN ingested_at INTEGER",
+            "ALTER TABLE lexicon_relationships ADD COLUMN ingested_at INTEGER",
+            // P2-1: parser version per structural edge row.
+            "ALTER TABLE structural_edges    ADD COLUMN extractor_version TEXT",
+            // P1-5 preparation (used in Commit 5): analysis status per file.
+            "ALTER TABLE files ADD COLUMN analysis_status TEXT",
         ] {
             let _ = self.conn.execute(stmt, []);
         }
@@ -34,11 +50,108 @@ impl Store {
         Ok(())
     }
 
+    /// Return current unix seconds — the canonical source of `ingested_at`
+    /// values.  Extracted to a helper so tests can override in principle.
+    fn now_ts() -> i64 {
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_secs() as i64)
+            .unwrap_or(0)
+    }
+
+    /// Record the analysis outcome for a file.  Idempotent: repeated calls
+    /// for the same (repo_path, path) overwrite the status.
+    ///
+    /// Valid statuses (validated by convention, not schema):
+    ///   `analyzed`             — extractor ran and produced 0 or more edges
+    ///   `not_analyzed_language` — no extractor exists for this language
+    ///   `parser_failure`       — extractor ran but hit an error on this file
+    ///   `not_source_file`      — file is not a source file (docs, images, etc.)
+    ///
+    /// A file with `analysis_status = 'analyzed'` and zero rows in
+    /// `structural_edges` genuinely has zero edges — NOT missing coverage.
+    pub fn set_analysis_status(&self, path: &str, repo_path: &str, status: &str) -> Result<()> {
+        self.conn.execute(
+            "INSERT INTO files (path, repo_path, analysis_status) VALUES (?1, ?2, ?3)
+             ON CONFLICT(path, repo_path) DO UPDATE SET analysis_status = excluded.analysis_status",
+            params![path, repo_path, status],
+        )?;
+        Ok(())
+    }
+
+    /// Set analysis_status only if it is currently NULL.  Used by the final
+    /// `stamp_analysis_status` sweep so files already stamped by a language
+    /// extractor (analyzed / parser_failure) keep their authoritative value.
+    pub fn set_analysis_status_if_unset(
+        &self,
+        path: &str,
+        repo_path: &str,
+        status: &str,
+    ) -> Result<()> {
+        self.conn.execute(
+            "INSERT INTO files (path, repo_path, analysis_status) VALUES (?1, ?2, ?3)
+             ON CONFLICT(path, repo_path) DO UPDATE SET analysis_status = excluded.analysis_status
+             WHERE files.analysis_status IS NULL",
+            params![path, repo_path, status],
+        )?;
+        Ok(())
+    }
+
+    /// Return the analysis status for a file, or None if unknown.
+    pub fn analysis_status(&self, path: &str, repo_path: &str) -> Result<Option<String>> {
+        Ok(self.conn.query_row(
+            "SELECT analysis_status FROM files WHERE path = ?1 AND repo_path = ?2",
+            params![path, repo_path],
+            |r| r.get::<_, Option<String>>(0),
+        ).optional()?.flatten())
+    }
+
+    /// Count files per analysis_status for a repo (for CLI coverage display).
+    pub fn analysis_status_counts(&self, repo_path: &str) -> Result<Vec<(String, i64)>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT COALESCE(analysis_status, 'unknown'), COUNT(*)
+             FROM files WHERE repo_path = ?1
+             GROUP BY analysis_status ORDER BY 1",
+        )?;
+        let rows = stmt.query_map(params![repo_path], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, i64>(1)?))
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Run `body` inside a SQLite transaction.
+    ///
+    /// P1-6: each ingestion stage is atomic — a mid-stage crash rolls back
+    /// every row that stage would have written, so the DB never contains
+    /// half-a-stage's data.  Failure of one stage does NOT roll back earlier
+    /// stages (each stage is its own transaction).
+    ///
+    /// Non-transactional writes elsewhere in the codebase remain valid; this
+    /// helper is opt-in.
+    pub fn with_transaction<T>(
+        &self,
+        body: impl FnOnce(&Store) -> Result<T>,
+    ) -> Result<T> {
+        self.conn.execute("BEGIN IMMEDIATE", [])?;
+        match body(self) {
+            Ok(v) => {
+                self.conn.execute("COMMIT", [])?;
+                Ok(v)
+            }
+            Err(e) => {
+                // Best-effort rollback; if it also errors we still surface the original.
+                let _ = self.conn.execute("ROLLBACK", []);
+                Err(e)
+            }
+        }
+    }
+
     pub fn insert_commit(&self, commit: &Commit, repo_path: &str) -> Result<()> {
+        let now = Self::now_ts();
         self.conn.execute(
             "INSERT OR IGNORE INTO commits
-               (hash, short_hash, message, author_name, author_email, timestamp, repo_path)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+               (hash, short_hash, message, author_name, author_email, timestamp, repo_path, ingested_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
             params![
                 commit.hash,
                 commit.short_hash,
@@ -47,8 +160,48 @@ impl Store {
                 commit.author_email,
                 commit.timestamp.timestamp(),
                 repo_path,
+                now,
             ],
         )?;
+
+        // Cross-repo isolation for shared commit hashes.
+        //
+        // `commits.hash` is a global PK — the same SHA appearing under two
+        // registered repositories is treated as "belongs to whichever
+        // repo ingested first".  Neither `commit_files` nor `commit_parents`
+        // carries a `repo_path` column, so a naive INSERT OR IGNORE from the
+        // second repo would contaminate the first repo's view (its
+        // `atlas show <hash>` would return a merged file list).
+        //
+        // Verify this commit actually belongs to `repo_path` before writing
+        // any secondary rows.  If it doesn't (i.e. the commits row was
+        // IGNOREd because the hash already existed under another repo),
+        // skip the file/parent inserts.  Under repeated ingest of the SAME
+        // repo, the row exists AND belongs to this repo, so this check
+        // passes and the INSERT OR IGNORE on parents/files is idempotent.
+        let belongs_here: bool = self.conn.query_row(
+            "SELECT 1 FROM commits WHERE hash = ?1 AND repo_path = ?2",
+            params![commit.hash, repo_path],
+            |_| Ok(true),
+        ).optional()?.unwrap_or(false);
+        if !belongs_here {
+            debug!(
+                "insert_commit: skipping {} secondary rows for {} (commit already \
+                 belongs to a different repo_path — same-hash cross-repo isolation)",
+                commit.files_changed.len(), commit.hash
+            );
+            return Ok(());
+        }
+
+        // Commit DAG edges — INSERT OR IGNORE so repeated ingests do not duplicate.
+        for parent_hash in &commit.parents {
+            self.conn.execute(
+                "INSERT OR IGNORE INTO commit_parents
+                   (commit_hash, parent_hash, repo_path)
+                 VALUES (?1, ?2, ?3)",
+                params![commit.hash, parent_hash, repo_path],
+            )?;
+        }
 
         for path in &commit.files_changed {
             self.conn.execute(
@@ -64,11 +217,275 @@ impl Store {
         Ok(())
     }
 
+    /// Fetch one commit row by full hash.  Returns `None` when no row exists.
+    /// Distinct from `commits_for_file` which joins through `commit_files`.
+    /// Message is included here because drill-down callers want it.
+    pub fn commit_by_hash(&self, hash: &str, repo_path: &str) -> Result<Option<CommitRowFull>> {
+        Ok(self.conn.query_row(
+            "SELECT hash, short_hash, message, author_name, author_email, timestamp
+             FROM commits WHERE hash = ?1 AND repo_path = ?2",
+            params![hash, repo_path],
+            |r| Ok(CommitRowFull {
+                hash:         r.get(0)?,
+                short_hash:   r.get(1)?,
+                message:      r.get(2)?,
+                author_name:  r.get(3)?,
+                author_email: r.get(4)?,
+                timestamp:    r.get(5)?,
+            }),
+        ).optional()?)
+    }
+
+    /// Resolve a commit-hash prefix to the full hash(es) that begin with it.
+    /// Returns every match; the caller decides how to disambiguate.
+    /// Accepts prefixes of any length; matches are anchored at the start.
+    pub fn resolve_commit_prefix(&self, prefix: &str, repo_path: &str) -> Result<Vec<String>> {
+        let like = format!("{}%", prefix);
+        let mut stmt = self.conn.prepare(
+            "SELECT hash FROM commits WHERE hash LIKE ?1 AND repo_path = ?2 ORDER BY hash",
+        )?;
+        let rows = stmt
+            .query_map(params![like, repo_path], |r| r.get::<_, String>(0))?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        Ok(rows)
+    }
+
+    /// Fetch the raw body + sha256 of one configuration artifact for
+    /// drill-down.  `list_configuration_artifacts` only returns summaries.
+    pub fn configuration_artifact(
+        &self,
+        file_path: &str,
+        repo_path: &str,
+    ) -> Result<Option<ConfigurationArtifactRow>> {
+        Ok(self.conn.query_row(
+            "SELECT file_path, artifact_kind, raw_content, sha256, ingested_at
+             FROM configuration_artifacts
+             WHERE repo_path = ?1 AND file_path = ?2",
+            params![repo_path, file_path],
+            |r| Ok(ConfigurationArtifactRow {
+                file_path:     r.get(0)?,
+                artifact_kind: r.get(1)?,
+                raw_content:   r.get(2)?,
+                sha256:        r.get(3)?,
+                ingested_at:   r.get(4)?,
+            }),
+        ).optional()?)
+    }
+
+    /// Fetch one ingest run by id, scoped to `repo_path`.
+    ///
+    /// The repo scope is required (not optional): `atlas show run:<id>`
+    /// operates within one repository, and a run whose id belongs to
+    /// another repository must not be returned.  Repository isolation
+    /// invariant applies here the same way it does to every other read.
+    pub fn ingest_run_by_id(&self, id: i64, repo_path: &str) -> Result<Option<IngestRunRow>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, repo_path, started_at, ended_at, atlas_version, git_head,
+                    git_branch, requested_scope, exit_status, stages_json, warnings_json
+             FROM ingest_runs WHERE id = ?1 AND repo_path = ?2",
+        )?;
+        let row = stmt.query_row(params![id, repo_path], |r| {
+            Ok(IngestRunRow {
+                id:              r.get(0)?,
+                repo_path:       r.get(1)?,
+                started_at:      r.get(2)?,
+                ended_at:        r.get(3)?,
+                atlas_version:   r.get(4)?,
+                git_head:        r.get(5)?,
+                git_branch:      r.get(6)?,
+                requested_scope: r.get(7)?,
+                exit_status:     r.get(8)?,
+                stages_json:     r.get(9)?,
+                warnings_json:   r.get(10)?,
+            })
+        }).optional()?;
+        Ok(row)
+    }
+
+    /// PRs whose merge_commit_sha equals `commit_hash`.  Used by `atlas show`
+    /// to link a commit back to its merging PR.
+    pub fn prs_for_merge_commit(
+        &self,
+        commit_hash: &str,
+        repo_path: &str,
+    ) -> Result<Vec<PrRow>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT number, title, state, author, merge_commit_sha, created_at, merged_at
+             FROM pull_requests
+             WHERE repo_path = ?1 AND merge_commit_sha = ?2
+             ORDER BY number",
+        )?;
+        let rows = stmt.query_map(params![repo_path, commit_hash], |r| {
+            Ok(PrRow {
+                number:           r.get(0)?,
+                title:            r.get(1)?,
+                state:            r.get(2)?,
+                author:           r.get(3)?,
+                merge_commit_sha: r.get(4)?,
+                created_at:       r.get(5)?,
+                merged_at:        r.get(6)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Fetch the changed files for one commit, sorted alphabetically.
+    ///
+    /// Repo-scoped: joins through `commits` so a commit hash that exists
+    /// under a different `repo_path` cannot leak its files into this
+    /// query.  Preserves the repository-isolation invariant.
+    pub fn commit_changed_files(&self, hash: &str, repo_path: &str) -> Result<Vec<String>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT cf.file_path
+             FROM commit_files cf
+             JOIN commits c ON c.hash = cf.commit_hash
+             WHERE cf.commit_hash = ?1 AND c.repo_path = ?2
+             ORDER BY cf.file_path",
+        )?;
+        let rows = stmt
+            .query_map(params![hash, repo_path], |r| r.get::<_, String>(0))?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        Ok(rows)
+    }
+
+    /// Fetch a PR by number.  Returns None when no such row exists.
+    pub fn pr_by_number(&self, number: i64, repo_path: &str) -> Result<Option<PrRow>> {
+        Ok(self.conn.query_row(
+            "SELECT number, title, state, author, merge_commit_sha, created_at, merged_at
+             FROM pull_requests WHERE number = ?1 AND repo_path = ?2",
+            params![number, repo_path],
+            |r| Ok(PrRow {
+                number:           r.get(0)?,
+                title:            r.get(1)?,
+                state:            r.get(2)?,
+                author:           r.get(3)?,
+                merge_commit_sha: r.get(4)?,
+                created_at:       r.get(5)?,
+                merged_at:        r.get(6)?,
+            }),
+        ).optional()?)
+    }
+
+    /// Fetch a PR body (may be NULL).  Separate from `pr_by_number` because
+    /// bodies can be long and most callers don't want them.
+    pub fn pr_body(&self, number: i64, repo_path: &str) -> Result<Option<String>> {
+        Ok(self.conn.query_row(
+            "SELECT body FROM pull_requests WHERE number = ?1 AND repo_path = ?2",
+            params![number, repo_path],
+            |r| r.get::<_, Option<String>>(0),
+        ).optional()?.flatten())
+    }
+
+    /// Fetch a full issue row by number, including author + body + timestamps.
+    /// Introduced for B3 drill-down; `get_issue` returns a narrower shape
+    /// (title, state) and stays untouched for existing callers.
+    pub fn issue_by_number(&self, number: i64, repo_path: &str) -> Result<Option<IssueRow>> {
+        Ok(self.conn.query_row(
+            "SELECT number, title, state, author, created_at
+             FROM issues WHERE number = ?1 AND repo_path = ?2",
+            params![number, repo_path],
+            |r| Ok(IssueRow {
+                number:     r.get(0)?,
+                title:      r.get(1)?,
+                state:      r.get(2)?,
+                author:     r.get(3)?,
+                created_at: r.get(4)?,
+            }),
+        ).optional()?)
+    }
+
+    /// Fetch an issue body (may be NULL).
+    pub fn issue_body(&self, number: i64, repo_path: &str) -> Result<Option<String>> {
+        Ok(self.conn.query_row(
+            "SELECT body FROM issues WHERE number = ?1 AND repo_path = ?2",
+            params![number, repo_path],
+            |r| r.get::<_, Option<String>>(0),
+        ).optional()?.flatten())
+    }
+
+    /// Reverse pr_issues lookup: which PRs close a given issue?
+    pub fn prs_closing_issue(&self, issue_number: i64, repo_path: &str) -> Result<Vec<i64>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT pr_number FROM pr_issues
+             WHERE issue_number = ?1 AND repo_path = ?2 ORDER BY pr_number",
+        )?;
+        let rows = stmt
+            .query_map(params![issue_number, repo_path], |r| r.get::<_, i64>(0))?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        Ok(rows)
+    }
+
+    /// Full document row (including body) by file_path.
+    pub fn document_full_by_path(
+        &self,
+        file_path: &str,
+        repo_path: &str,
+    ) -> Result<Option<(String, String, String)>> {
+        // Returns (doc_type, title, body).
+        Ok(self.conn.query_row(
+            "SELECT doc_type, title, body FROM documents WHERE file_path = ?1 AND repo_path = ?2",
+            params![file_path, repo_path],
+            |r| Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?)),
+        ).optional()?)
+    }
+
+    /// Full identity metadata: identity row + current path + counts.
+    /// Returns (identity_id, current_path, path_history_count, commit_count).
+    pub fn identity_summary(
+        &self,
+        identity_id: i64,
+        repo_path: &str,
+    ) -> Result<Option<(i64, Option<String>, i64, i64)>> {
+        // Check identity exists.
+        let exists: Option<i64> = self.conn.query_row(
+            "SELECT id FROM file_identities WHERE id = ?1 AND repo_path = ?2",
+            params![identity_id, repo_path],
+            |r| r.get(0),
+        ).optional()?;
+        if exists.is_none() { return Ok(None); }
+
+        let current: Option<String> = self.conn.query_row(
+            "SELECT path FROM file_path_observations
+             WHERE file_identity_id = ?1 AND repo_path = ?2 AND superseded_by_commit IS NULL
+             LIMIT 1",
+            params![identity_id, repo_path],
+            |r| r.get(0),
+        ).optional()?;
+
+        let hist: i64 = self.conn.query_row(
+            "SELECT COUNT(*) FROM file_path_observations WHERE file_identity_id = ?1 AND repo_path = ?2",
+            params![identity_id, repo_path],
+            |r| r.get(0),
+        )?;
+        let commits: i64 = self.conn.query_row(
+            "SELECT COUNT(*) FROM file_identity_commits WHERE file_identity_id = ?1 AND repo_path = ?2",
+            params![identity_id, repo_path],
+            |r| r.get(0),
+        )?;
+        Ok(Some((identity_id, current, hist, commits)))
+    }
+
+    /// Fetch the parent commit hashes of a given commit, in insertion order.
+    /// Empty for root commits; single hash for normal commits; two or more
+    /// for merges.
+    pub fn commit_parents(&self, commit_hash: &str, repo_path: &str) -> Result<Vec<String>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT parent_hash FROM commit_parents
+             WHERE commit_hash = ?1 AND repo_path = ?2
+             ORDER BY rowid",
+        )?;
+        let rows = stmt
+            .query_map(params![commit_hash, repo_path], |r| r.get::<_, String>(0))?
+            .collect::<rusqlite::Result<Vec<_>>>()?;
+        Ok(rows)
+    }
+
     pub fn insert_pull_request(&self, pr: &PullRequest, repo_path: &str) -> Result<()> {
+        let now = Self::now_ts();
         self.conn.execute(
             "INSERT OR REPLACE INTO pull_requests
-               (number, title, state, body, author, merge_commit_sha, repo_path, created_at, merged_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+               (number, title, state, body, author, merge_commit_sha, repo_path, created_at, merged_at, ingested_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)",
             params![
                 pr.number,
                 pr.title,
@@ -79,16 +496,18 @@ impl Store {
                 repo_path,
                 pr.created_at.as_ref().map(|dt| dt.timestamp()),
                 pr.merged_at.as_ref().map(|dt| dt.timestamp()),
+                now,
             ],
         )?;
         Ok(())
     }
 
     pub fn insert_issue(&self, issue: &Issue, repo_path: &str) -> Result<()> {
+        let now = Self::now_ts();
         self.conn.execute(
             "INSERT OR REPLACE INTO issues
-               (number, title, state, body, author, repo_path, created_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+               (number, title, state, body, author, repo_path, created_at, ingested_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8)",
             params![
                 issue.number,
                 issue.title,
@@ -97,6 +516,7 @@ impl Store {
                 issue.author,
                 repo_path,
                 issue.created_at.as_ref().map(|dt| dt.timestamp()),
+                now,
             ],
         )?;
         Ok(())
@@ -309,6 +729,22 @@ impl Store {
         )?)
     }
 
+    /// Fetch a single issue by number, returning (title, body).
+    pub fn get_issue(&self, number: i64, repo_path: &str) -> Result<Option<(String, String)>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT title, body FROM issues WHERE number = ?1 AND repo_path = ?2",
+        )?;
+        let mut rows = stmt.query_map(params![number, repo_path], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, Option<String>>(1)?))
+        })?;
+        match rows.next() {
+            Some(Ok((title, body))) => Ok(Some((title, body.unwrap_or_default()))),
+            Some(Err(e))            => Err(e.into()),
+            None                    => Ok(None),
+        }
+    }
+
+
     /// Issue numbers closed by a specific PR.
     pub fn issue_numbers_for_pr(&self, pr_number: i64, repo_path: &str) -> Result<Vec<i64>> {
         let mut stmt = self.conn.prepare(
@@ -332,8 +768,8 @@ impl Store {
     pub fn insert_rename_evidence(&self, ev: &RenameEvidence, repo_path: &str) -> Result<()> {
         self.conn.execute(
             "INSERT OR IGNORE INTO rename_evidence
-               (commit_hash, old_path, new_path, similarity_score, detection_source, repo_path)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+               (commit_hash, old_path, new_path, similarity_score, detection_source, repo_path, ingested_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
             params![
                 ev.commit_hash,
                 ev.old_path,
@@ -341,6 +777,7 @@ impl Store {
                 ev.similarity_score as i64,
                 ev.detection_source,
                 repo_path,
+                Self::now_ts(),
             ],
         )?;
         Ok(())
@@ -845,9 +1282,9 @@ impl Store {
         repo_path: &str,
     ) -> Result<()> {
         self.conn.execute(
-            "INSERT OR REPLACE INTO documents (file_path, doc_type, title, body, repo_path)
-             VALUES (?1, ?2, ?3, ?4, ?5)",
-            params![file_path, doc_type, title, body, repo_path],
+            "INSERT OR REPLACE INTO documents (file_path, doc_type, title, body, repo_path, ingested_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+            params![file_path, doc_type, title, body, repo_path, Self::now_ts()],
         )?;
         Ok(())
     }
@@ -868,6 +1305,28 @@ impl Store {
         ).optional()?)
     }
 
+    /// Return every document ingested for `repo_path`, as (file_path, doc_type, title),
+    /// sorted by file_path for deterministic iteration.
+    pub fn list_documents(&self, repo_path: &str) -> Result<Vec<(String, String, String)>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT file_path, doc_type, title FROM documents
+             WHERE repo_path = ?1 ORDER BY file_path",
+        )?;
+        let rows = stmt
+            .query_map(params![repo_path], |r| {
+                Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?))
+            })?
+            .collect::<std::result::Result<Vec<_>, _>>()?;
+        Ok(rows)
+    }
+
+    /// Delete every structural edge for a repository.
+    ///
+    /// Every language ingest stage (`ingest_typescript`, `ingest_c`, etc.)
+    /// calls this before re-parsing.  It is the mechanism that gives the
+    /// `structural_edges` table its **snapshot semantics** — the graph
+    /// always reflects the tree state at the end of the most recent ingest,
+    /// nothing older.  See the schema comment in this file.
     pub fn clear_structural_edges(&self, repo_path: &str) -> Result<()> {
         self.conn.execute(
             "DELETE FROM structural_edges WHERE repo_path = ?1",
@@ -877,17 +1336,36 @@ impl Store {
     }
 
     pub fn insert_structural_edge(&self, edge: &StructuralEdge, repo_path: &str) -> Result<()> {
+        self.insert_structural_edge_versioned(edge, repo_path, "unversioned")
+    }
+
+    /// Insert a structural edge with an explicit extractor version.  Callers that
+    /// know their extractor's semver should use this variant so that rows
+    /// produced by different versions can be told apart (P2-1).
+    ///
+    /// **Snapshot semantics** — this table is repopulated from a fresh parse
+    /// of the working tree each ingest.  A rename that has not been followed
+    /// by a re-ingest will show edges under the OLD path.  Rows never
+    /// accumulate across historical revisions.  See the `structural_edges`
+    /// schema comment in this file for the full contract.
+    pub fn insert_structural_edge_versioned(
+        &self,
+        edge:              &StructuralEdge,
+        repo_path:         &str,
+        extractor_version: &str,
+    ) -> Result<()> {
         let kind = match edge.kind {
             StructuralEdgeKind::Imports          => "imports",
             StructuralEdgeKind::CallsStatic      => "calls_static",
             StructuralEdgeKind::CallsInstance    => "calls_instance",
             StructuralEdgeKind::ReferencesModel  => "references_model",
+            StructuralEdgeKind::Implements       => "implements",
         };
         self.conn.execute(
             "INSERT OR IGNORE INTO structural_edges
                (repo_path, source_file, source_symbol, target_file, target_symbol,
-                kind, evidence_line, evidence_snippet, extractor)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)",
+                kind, evidence_line, evidence_snippet, extractor, ingested_at, extractor_version)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11)",
             params![
                 repo_path,
                 edge.source_file,
@@ -898,6 +1376,8 @@ impl Store {
                 edge.evidence.line.map(|l| l as i64),
                 edge.evidence.snippet,
                 edge.evidence.extractor,
+                Self::now_ts(),
+                extractor_version,
             ],
         )?;
         Ok(())
@@ -958,12 +1438,435 @@ impl Store {
         Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
     }
 
+    /// Edges whose `target_symbol` equals or ends with `symbol` (callers of a method).
+    ///
+    /// Matches exact symbol, `Class.method`, or suffix `.method` so
+    /// `tryEnqueue` finds `OrderFulfillmentService.tryEnqueue`.
+    pub fn structural_edges_by_target_symbol(
+        &self,
+        symbol: &str,
+        repo_path: &str,
+        limit: usize,
+    ) -> Result<Vec<StructuralEdgeRow>> {
+        let lim = limit.max(1).min(500) as i64;
+        let exact = symbol.trim();
+        let suffix = format!(".{}", exact);
+        let mut stmt = self.conn.prepare(
+            "SELECT source_file, source_symbol, target_file, target_symbol,
+                    kind, evidence_line, evidence_snippet, extractor
+             FROM structural_edges
+             WHERE repo_path = ?1
+               AND target_symbol IS NOT NULL
+               AND (
+                 target_symbol = ?2
+                 OR target_symbol LIKE '%' || ?3
+                 OR target_symbol LIKE ?2 || '.%'
+               )
+             ORDER BY
+               CASE WHEN source_file LIKE 'tests/%' OR source_file LIKE '%/tests/%'
+                    THEN 1 ELSE 0 END,
+               kind, source_file
+             LIMIT ?4",
+        )?;
+        let rows = stmt.query_map(params![repo_path, exact, suffix, lim], map_structural_edge_row)?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Edges whose `source_symbol` matches `symbol` (outgoing from a known method body).
+    pub fn structural_edges_by_source_symbol(
+        &self,
+        symbol: &str,
+        repo_path: &str,
+        limit: usize,
+    ) -> Result<Vec<StructuralEdgeRow>> {
+        let lim = limit.max(1).min(500) as i64;
+        let exact = symbol.trim();
+        let suffix = format!(".{}", exact);
+        let mut stmt = self.conn.prepare(
+            "SELECT source_file, source_symbol, target_file, target_symbol,
+                    kind, evidence_line, evidence_snippet, extractor
+             FROM structural_edges
+             WHERE repo_path = ?1
+               AND source_symbol IS NOT NULL
+               AND (
+                 source_symbol = ?2
+                 OR source_symbol LIKE '%' || ?3
+               )
+             ORDER BY kind, target_file
+             LIMIT ?4",
+        )?;
+        let rows = stmt.query_map(params![repo_path, exact, suffix, lim], map_structural_edge_row)?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Symbol substring search across target_symbol and source_symbol (definition-ranked).
+    pub fn structural_edges_symbol_search(
+        &self,
+        needle: &str,
+        repo_path: &str,
+        limit: usize,
+    ) -> Result<Vec<StructuralEdgeRow>> {
+        let lim = limit.max(1).min(500) as i64;
+        let like = format!("%{}%", needle.trim());
+        let mut stmt = self.conn.prepare(
+            "SELECT source_file, source_symbol, target_file, target_symbol,
+                    kind, evidence_line, evidence_snippet, extractor
+             FROM structural_edges
+             WHERE repo_path = ?1
+               AND (
+                 (target_symbol IS NOT NULL AND target_symbol LIKE ?2 ESCAPE '\\')
+                 OR (source_symbol IS NOT NULL AND source_symbol LIKE ?2 ESCAPE '\\')
+                 OR target_file LIKE ?2 ESCAPE '\\'
+                 OR source_file LIKE ?2 ESCAPE '\\'
+               )
+             ORDER BY
+               CASE
+                 WHEN target_symbol = ?3 OR source_symbol = ?3 THEN 0
+                 WHEN target_symbol LIKE ?3 || '.%' OR source_symbol LIKE ?3 || '.%' THEN 1
+                 WHEN source_file LIKE 'tests/%' OR source_file LIKE '%/tests/%' THEN 3
+                 ELSE 2
+               END,
+               kind, source_file
+             LIMIT ?4",
+        )?;
+        let exact = needle.trim();
+        let rows = stmt.query_map(params![repo_path, like, exact, lim], map_structural_edge_row)?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Files that import a given path (or path prefix) — used for "who uses this interface/module".
+    pub fn structural_importers_of(
+        &self,
+        target_file_or_prefix: &str,
+        repo_path: &str,
+        limit: usize,
+    ) -> Result<Vec<StructuralEdgeRow>> {
+        let lim = limit.max(1).min(500) as i64;
+        let prefix = target_file_or_prefix.trim_end_matches('/');
+        let like = format!("{}%", prefix);
+        let mut stmt = self.conn.prepare(
+            "SELECT source_file, source_symbol, target_file, target_symbol,
+                    kind, evidence_line, evidence_snippet, extractor
+             FROM structural_edges
+             WHERE repo_path = ?1
+               AND kind = 'imports'
+               AND (target_file = ?2 OR target_file LIKE ?3 ESCAPE '\\')
+             ORDER BY
+               CASE WHEN source_file LIKE 'tests/%' OR source_file LIKE '%/tests/%'
+                    THEN 1 ELSE 0 END,
+               source_file
+             LIMIT ?4",
+        )?;
+        let rows =
+            stmt.query_map(params![repo_path, prefix, like, lim], map_structural_edge_row)?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
     pub fn structural_edge_count(&self, repo_path: &str) -> Result<i64> {
         Ok(self.conn.query_row(
             "SELECT COUNT(*) FROM structural_edges WHERE repo_path = ?1",
             params![repo_path],
             |row| row.get(0),
         )?)
+    }
+
+    /// All structural edges whose `source_file` starts with `prefix`.
+    /// For a file subject pass the exact path plus no trailing '/';
+    /// for a directory subject pass the directory path followed by '/'.
+    /// Callers partition boundary vs internal edges themselves.
+    pub fn structural_edges_from_prefix(
+        &self,
+        prefix:    &str,
+        repo_path: &str,
+    ) -> Result<Vec<StructuralEdgeRow>> {
+        let like = format!("{}%", prefix);
+        let mut stmt = self.conn.prepare(
+            "SELECT source_file, source_symbol, target_file, target_symbol,
+                    kind, evidence_line, evidence_snippet, extractor
+             FROM structural_edges
+             WHERE repo_path = ?1 AND source_file LIKE ?2 ESCAPE '\\'
+             ORDER BY source_file, kind, target_file",
+        )?;
+        let rows = stmt.query_map(params![repo_path, like], |row| {
+            Ok(StructuralEdgeRow {
+                source_file:      row.get(0)?,
+                source_symbol:    row.get(1)?,
+                target_file:      row.get(2)?,
+                target_symbol:    row.get(3)?,
+                kind:             row.get(4)?,
+                evidence_line:    row.get::<_, Option<i64>>(5)?.map(|l| l as u32),
+                evidence_snippet: row.get(6)?,
+                extractor:        row.get(7)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// All structural edges whose `target_file` starts with `prefix`.
+    pub fn structural_edges_to_prefix(
+        &self,
+        prefix:    &str,
+        repo_path: &str,
+    ) -> Result<Vec<StructuralEdgeRow>> {
+        let like = format!("{}%", prefix);
+        let mut stmt = self.conn.prepare(
+            "SELECT source_file, source_symbol, target_file, target_symbol,
+                    kind, evidence_line, evidence_snippet, extractor
+             FROM structural_edges
+             WHERE repo_path = ?1 AND target_file LIKE ?2 ESCAPE '\\'
+             ORDER BY target_file, source_file",
+        )?;
+        let rows = stmt.query_map(params![repo_path, like], |row| {
+            Ok(StructuralEdgeRow {
+                source_file:      row.get(0)?,
+                source_symbol:    row.get(1)?,
+                target_file:      row.get(2)?,
+                target_symbol:    row.get(3)?,
+                kind:             row.get(4)?,
+                evidence_line:    row.get::<_, Option<i64>>(5)?.map(|l| l as u32),
+                evidence_snippet: row.get(6)?,
+                extractor:        row.get(7)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Distinct commits that touched at least one file whose path starts with
+    /// `prefix`.  Sorted newest first.  Callers pass the subject path with
+    /// trailing '/' for directories or the exact path for files.
+    pub fn commits_under_prefix(
+        &self,
+        prefix:    &str,
+        repo_path: &str,
+    ) -> Result<Vec<CommitRow>> {
+        let like = format!("{}%", prefix);
+        let mut stmt = self.conn.prepare(
+            "SELECT DISTINCT c.hash, c.short_hash, c.message, c.author_name, c.timestamp
+             FROM commits c
+             JOIN commit_files cf ON cf.commit_hash = c.hash
+             WHERE c.repo_path = ?1 AND cf.file_path LIKE ?2 ESCAPE '\\'
+             ORDER BY c.timestamp DESC",
+        )?;
+        let rows = stmt.query_map(params![repo_path, like], |row| {
+            Ok(CommitRow {
+                hash:        row.get(0)?,
+                short_hash:  row.get(1)?,
+                message:     row.get(2)?,
+                author_name: row.get(3)?,
+                timestamp:   row.get(4)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// B4 — authors of commits that touched any file under `prefix`.
+    ///
+    /// Repo-isolation invariant: filter is `c.repo_path = ?1`.  A subject
+    /// under repo A can never surface an author from repo B, even when the
+    /// two repos share a commit hash (see the `insert_commit` `belongs_here`
+    /// check that keeps `commit_files` rows attributable to the owning
+    /// repo only).
+    ///
+    /// Denominator note: `COUNT(DISTINCT c.hash)` — a commit that touched
+    /// N files in the subtree counts as 1, not N.
+    ///
+    /// Caller passes `prefix` WITH trailing '/' for directories, or "" for
+    /// the whole repo.  The `%` wildcard is appended here.
+    pub fn authors_for_prefix(
+        &self,
+        prefix:    &str,
+        repo_path: &str,
+    ) -> Result<Vec<AuthorAggregateRow>> {
+        let like = format!("{}%", prefix);
+        let mut stmt = self.conn.prepare(
+            "SELECT c.author_name, c.author_email,
+                    COUNT(DISTINCT c.hash) AS commits,
+                    MIN(c.timestamp)       AS first_ts,
+                    MAX(c.timestamp)       AS last_ts
+             FROM commits c
+             JOIN commit_files cf ON cf.commit_hash = c.hash
+             WHERE c.repo_path = ?1
+               AND cf.file_path LIKE ?2 ESCAPE '\\'
+             GROUP BY c.author_name, c.author_email
+             ORDER BY commits DESC, c.author_name ASC",
+        )?;
+        let rows = stmt.query_map(params![repo_path, like], |row| {
+            Ok(AuthorAggregateRow {
+                author_name:  row.get(0)?,
+                author_email: row.get(1)?,
+                commit_count: row.get::<_, i64>(2)? as usize,
+                first_touch:  row.get(3)?,
+                last_touch:   row.get(4)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// B4 — authors of commits that touched exactly this file path.
+    /// Used when the subject is a file with NO FileIdentity chain.
+    /// See `authors_for_prefix` for the repo-isolation and denominator notes.
+    pub fn authors_for_file(
+        &self,
+        file_path: &str,
+        repo_path: &str,
+    ) -> Result<Vec<AuthorAggregateRow>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT c.author_name, c.author_email,
+                    COUNT(DISTINCT c.hash) AS commits,
+                    MIN(c.timestamp)       AS first_ts,
+                    MAX(c.timestamp)       AS last_ts
+             FROM commits c
+             JOIN commit_files cf ON cf.commit_hash = c.hash
+             WHERE c.repo_path = ?1
+               AND cf.file_path = ?2
+             GROUP BY c.author_name, c.author_email
+             ORDER BY commits DESC, c.author_name ASC",
+        )?;
+        let rows = stmt.query_map(params![repo_path, file_path], |row| {
+            Ok(AuthorAggregateRow {
+                author_name:  row.get(0)?,
+                author_email: row.get(1)?,
+                commit_count: row.get::<_, i64>(2)? as usize,
+                first_touch:  row.get(3)?,
+                last_touch:   row.get(4)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// B4 — authors of commits that touched ANY path in the identity chain.
+    /// Rename-safe: joins through the materialised `file_identity_commits`
+    /// table so an author whose commit predated the rename still counts.
+    ///
+    /// Repo-isolation invariant: filter is `fic.repo_path = ?2` AND
+    /// `fic.file_identity_id = ?1`.  `file_identity_commits` is already
+    /// repo-scoped (identity IDs are also repo-scoped), so a bad caller
+    /// passing another repo's identity would either find no rows or match
+    /// the wrong repo — the `repo_path` filter closes that door.
+    pub fn authors_for_identity(
+        &self,
+        identity_id: i64,
+        repo_path:   &str,
+    ) -> Result<Vec<AuthorAggregateRow>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT c.author_name, c.author_email,
+                    COUNT(DISTINCT c.hash) AS commits,
+                    MIN(c.timestamp)       AS first_ts,
+                    MAX(c.timestamp)       AS last_ts
+             FROM commits c
+             JOIN file_identity_commits fic
+               ON fic.commit_hash = c.hash AND fic.repo_path = c.repo_path
+             WHERE fic.file_identity_id = ?1
+               AND fic.repo_path        = ?2
+             GROUP BY c.author_name, c.author_email
+             ORDER BY commits DESC, c.author_name ASC",
+        )?;
+        let rows = stmt.query_map(params![identity_id, repo_path], |row| {
+            Ok(AuthorAggregateRow {
+                author_name:  row.get(0)?,
+                author_email: row.get(1)?,
+                commit_count: row.get::<_, i64>(2)? as usize,
+                first_touch:  row.get(3)?,
+                last_touch:   row.get(4)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Number of distinct path observations recorded for `identity_id` in
+    /// `repo_path` (used by `atlas authors` to display "spans N path
+    /// observations" in the scope note).  Repo-scoped.
+    pub fn identity_path_observation_count(
+        &self,
+        identity_id: i64,
+        repo_path:   &str,
+    ) -> Result<usize> {
+        let count: i64 = self.conn.query_row(
+            "SELECT COUNT(*) FROM file_path_observations
+             WHERE file_identity_id = ?1 AND repo_path = ?2",
+            params![identity_id, repo_path],
+            |r| r.get(0),
+        )?;
+        Ok(count as usize)
+    }
+
+    /// Documents whose `file_path` starts with `prefix`.
+    pub fn documents_under_prefix(
+        &self,
+        prefix:    &str,
+        repo_path: &str,
+    ) -> Result<Vec<(String, String, String)>> {
+        let like = format!("{}%", prefix);
+        let mut stmt = self.conn.prepare(
+            "SELECT file_path, doc_type, title FROM documents
+             WHERE repo_path = ?1 AND file_path LIKE ?2 ESCAPE '\\'
+             ORDER BY file_path",
+        )?;
+        let rows = stmt
+            .query_map(params![repo_path, like], |r| {
+                Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?))
+            })?
+            .collect::<std::result::Result<Vec<_>, _>>()?;
+        Ok(rows)
+    }
+
+    /// Distinct pull requests whose merge commit touched at least one file
+    /// under `prefix`.  Sorted newest merged first.
+    pub fn prs_under_prefix(
+        &self,
+        prefix:    &str,
+        repo_path: &str,
+    ) -> Result<Vec<PrRow>> {
+        let like = format!("{}%", prefix);
+        let mut stmt = self.conn.prepare(
+            "SELECT DISTINCT pr.number, pr.title, pr.state, pr.author,
+                             pr.merge_commit_sha, pr.created_at, pr.merged_at
+             FROM pull_requests pr
+             JOIN commit_files cf ON cf.commit_hash = pr.merge_commit_sha
+             WHERE pr.repo_path = ?1 AND cf.file_path LIKE ?2 ESCAPE '\\'
+             ORDER BY COALESCE(pr.merged_at, pr.created_at, 0) DESC, pr.number DESC",
+        )?;
+        let rows = stmt.query_map(params![repo_path, like], |row| {
+            Ok(PrRow {
+                number:           row.get(0)?,
+                title:            row.get(1)?,
+                state:            row.get(2)?,
+                author:           row.get(3)?,
+                merge_commit_sha: row.get(4)?,
+                created_at:       row.get(5)?,
+                merged_at:        row.get(6)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Distinct issues linked to any PR whose merge commit touched a file
+    /// under `prefix`.  Sorted by issue number descending.
+    pub fn issues_under_prefix(
+        &self,
+        prefix:    &str,
+        repo_path: &str,
+    ) -> Result<Vec<IssueRow>> {
+        let like = format!("{}%", prefix);
+        let mut stmt = self.conn.prepare(
+            "SELECT DISTINCT i.number, i.title, i.state, i.author, i.created_at
+             FROM issues i
+             JOIN pr_issues pi ON pi.issue_number = i.number AND pi.repo_path = i.repo_path
+             JOIN pull_requests pr ON pr.number = pi.pr_number AND pr.repo_path = pi.repo_path
+             JOIN commit_files cf ON cf.commit_hash = pr.merge_commit_sha
+             WHERE i.repo_path = ?1 AND cf.file_path LIKE ?2 ESCAPE '\\'
+             ORDER BY i.number DESC",
+        )?;
+        let rows = stmt.query_map(params![repo_path, like], |row| {
+            Ok(IssueRow {
+                number:     row.get(0)?,
+                title:      row.get(1)?,
+                state:      row.get(2)?,
+                author:     row.get(3)?,
+                created_at: row.get(4)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
     }
 
     /// Fetch all (sibling_file, target_file, target_symbol) triples for peer files
@@ -1209,6 +2112,369 @@ impl Store {
 
         Ok((claims, inspected_at))
     }
+
+    // ── Lexicon ───────────────────────────────────────────────────────────────
+
+    /// Remove all lexicon entries for a repo before rebuilding.
+    pub fn clear_lexicon(&self, repo_path: &str) -> Result<()> {
+        self.conn.execute(
+            "DELETE FROM lexicon_relationships WHERE repo_path = ?1",
+            params![repo_path],
+        )?;
+        Ok(())
+    }
+
+    /// Upsert a lexicon relationship (merge co_occurrence_count).
+    pub fn upsert_lexicon_relationship(&self, rel: &LexiconRelationship, repo_path: &str) -> Result<()> {
+        self.conn.execute(
+            "INSERT INTO lexicon_relationships
+               (repo_path, from_term, to_term, kind, confidence, co_occurrence_count, ingested_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+             ON CONFLICT(repo_path, from_term, to_term, kind) DO UPDATE SET
+               confidence          = MAX(confidence, excluded.confidence),
+               co_occurrence_count = co_occurrence_count + excluded.co_occurrence_count,
+               ingested_at         = excluded.ingested_at",
+            params![
+                repo_path,
+                rel.from_term,
+                rel.to_term,
+                rel.kind.as_str(),
+                rel.confidence as f64,
+                rel.co_occurrence_count as i64,
+                Self::now_ts(),
+            ],
+        )?;
+        Ok(())
+    }
+
+    /// All relationships where `from_term` matches the query (case-insensitive).
+    pub fn lexicon_expand(&self, term: &str, repo_path: &str) -> Result<Vec<LexiconRow>> {
+        let term_lower = term.to_lowercase();
+        let mut stmt = self.conn.prepare(
+            "SELECT from_term, to_term, kind, confidence, co_occurrence_count
+             FROM lexicon_relationships
+             WHERE repo_path = ?1 AND LOWER(from_term) = ?2
+             ORDER BY confidence DESC",
+        )?;
+        let rows = stmt.query_map(params![repo_path, term_lower], |row| {
+            Ok(LexiconRow {
+                from_term:           row.get(0)?,
+                to_term:             row.get(1)?,
+                kind:                row.get(2)?,
+                confidence:          row.get(3)?,
+                co_occurrence_count: row.get(4)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Count of lexicon relationships for a repo (for status display).
+    pub fn lexicon_count(&self, repo_path: &str) -> Result<i64> {
+        Ok(self.conn.query_row(
+            "SELECT COUNT(*) FROM lexicon_relationships WHERE repo_path = ?1",
+            params![repo_path],
+            |r| r.get(0),
+        )?)
+    }
+
+    /// All commit subject lines and their file paths for a repo.
+    /// Used by the lexicon builder to compute commit-bridge relationships.
+    pub fn all_commits_with_files(&self, repo_path: &str) -> Result<Vec<CommitWithFiles>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT c.hash, c.message, GROUP_CONCAT(cf.file_path, '|') AS files
+             FROM commits c
+             JOIN commit_files cf ON cf.commit_hash = c.hash
+             WHERE c.repo_path = ?1
+             GROUP BY c.hash",
+        )?;
+        let rows = stmt.query_map(params![repo_path], |row| {
+            let files_concat: String = row.get(2)?;
+            Ok(CommitWithFiles {
+                hash:    row.get(0)?,
+                message: row.get(1)?,
+                files:   files_concat.split('|').map(str::to_string).collect(),
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// All distinct file paths for a repo.
+    pub fn all_file_paths(&self, repo_path: &str) -> Result<Vec<String>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT DISTINCT path FROM files WHERE repo_path = ?1 ORDER BY path ASC",
+        )?;
+        let rows = stmt.query_map(params![repo_path], |row| row.get(0))?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    // ── Investigations ────────────────────────────────────────────────────────
+
+    /// Store an investigation result. Replaces any prior result for the same
+    /// (repo_path, anchors_key, git_head) triple.
+    pub fn store_investigation(
+        &self,
+        repo_path:     &str,
+        anchors_key:   &str,
+        git_head:      &str,
+        ran_at:        i64,
+        document_json: &str,
+    ) -> Result<i64> {
+        self.conn.execute(
+            "INSERT INTO investigations (repo_path, anchors_key, git_head, ran_at, document_json)
+             VALUES (?1, ?2, ?3, ?4, ?5)
+             ON CONFLICT(repo_path, anchors_key, git_head) DO UPDATE SET
+               ran_at        = excluded.ran_at,
+               document_json = excluded.document_json",
+            params![repo_path, anchors_key, git_head, ran_at, document_json],
+        )?;
+        Ok(self.conn.last_insert_rowid())
+    }
+
+    /// Look up a cached investigation. Returns JSON if found.
+    pub fn get_investigation(
+        &self,
+        repo_path:   &str,
+        anchors_key: &str,
+        git_head:    &str,
+    ) -> Result<Option<String>> {
+        let result = self.conn.query_row(
+            "SELECT document_json FROM investigations
+             WHERE repo_path = ?1 AND anchors_key = ?2 AND git_head = ?3",
+            params![repo_path, anchors_key, git_head],
+            |row| row.get::<_, String>(0),
+        );
+        match result {
+            Ok(json)                            => Ok(Some(json)),
+            Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+            Err(e)                              => Err(e.into()),
+        }
+    }
+
+    /// List stored investigations for a repo, newest first.
+    pub fn list_investigations(
+        &self,
+        repo_path: &str,
+        limit:     i64,
+    ) -> Result<Vec<InvestigationRecord>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, anchors_key, git_head, ran_at
+             FROM investigations
+             WHERE repo_path = ?1
+             ORDER BY ran_at DESC
+             LIMIT ?2",
+        )?;
+        let rows = stmt.query_map(params![repo_path, limit], |row| {
+            Ok(InvestigationRecord {
+                id:          row.get(0)?,
+                anchors_key: row.get(1)?,
+                git_head:    row.get(2)?,
+                ran_at:      row.get(3)?,
+            })
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    /// Fetch a stored investigation by row ID. Returns JSON if found.
+    pub fn get_investigation_by_id(&self, id: i64) -> Result<Option<String>> {
+        let result = self.conn.query_row(
+            "SELECT document_json FROM investigations WHERE id = ?1",
+            params![id],
+            |row| row.get::<_, String>(0),
+        );
+        match result {
+            Ok(json)                                  => Ok(Some(json)),
+            Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+            Err(e)                                    => Err(e.into()),
+        }
+    }
+
+    /// If `path` has a materialised file-identity chain and the path is
+    /// *historical* (superseded by a rename), return the current canonical
+    /// path.  Returns `None` if the path is already current or has no chain.
+    ///
+    /// Used by CLI read commands to redirect historical-path queries to the
+    /// current path and surface the redirect to the user, so path-scoped
+    /// queries do not silently return zero-result for renamed files.  (P1-10)
+    pub fn current_path_if_historical(
+        &self,
+        path: &str,
+        repo_path: &str,
+    ) -> Result<Option<String>> {
+        // If this path is the current occupant of its identity, no redirect.
+        if self.resolve_current_path(path, repo_path)?.is_some() {
+            return Ok(None);
+        }
+        // Otherwise, if the path resolves to an identity, find that identity's
+        // current path via path history.
+        let Some(identity_id) = self.resolve_path_to_identity(path, repo_path)? else {
+            return Ok(None);
+        };
+        let history = self.path_history_for_identity(identity_id, repo_path)?;
+        Ok(history
+            .into_iter()
+            .find(|obs| obs.superseded_by_commit.is_none())
+            .map(|obs| obs.path))
+    }
+
+    // ─── Configuration artifacts (P1-8) ─────────────────────────────────────
+
+    /// Upsert a raw configuration artifact.  `sha256` should be the hex
+    /// SHA-256 of `raw_content` — callers compute it so this API stays
+    /// hash-algorithm-agnostic.
+    pub fn insert_configuration_artifact(
+        &self,
+        repo_path:     &str,
+        file_path:     &str,
+        artifact_kind: &str,
+        raw_content:   &str,
+        sha256:        &str,
+    ) -> Result<()> {
+        self.conn.execute(
+            "INSERT INTO configuration_artifacts
+               (repo_path, file_path, artifact_kind, raw_content, sha256, ingested_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+             ON CONFLICT(repo_path, file_path) DO UPDATE SET
+               artifact_kind = excluded.artifact_kind,
+               raw_content   = excluded.raw_content,
+               sha256        = excluded.sha256,
+               ingested_at   = excluded.ingested_at",
+            params![repo_path, file_path, artifact_kind, raw_content, sha256, Self::now_ts()],
+        )?;
+        Ok(())
+    }
+
+    /// List every configuration artifact for a repo as (file_path, artifact_kind, sha256).
+    pub fn list_configuration_artifacts(
+        &self,
+        repo_path: &str,
+    ) -> Result<Vec<(String, String, String)>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT file_path, artifact_kind, sha256 FROM configuration_artifacts
+             WHERE repo_path = ?1 ORDER BY file_path",
+        )?;
+        let rows = stmt.query_map(params![repo_path], |r| {
+            Ok((r.get::<_, String>(0)?, r.get::<_, String>(1)?, r.get::<_, String>(2)?))
+        })?;
+        Ok(rows.collect::<rusqlite::Result<Vec<_>>>()?)
+    }
+
+    // ─── Ingest runs (P1-4) ─────────────────────────────────────────────────
+
+    /// Open a new run row for `repo_path` at `atlas_version` with the given
+    /// requested scope.  Returns the new run's rowid; the caller updates the
+    /// row with per-stage results and `finish_ingest_run` when done.
+    pub fn start_ingest_run(
+        &self,
+        repo_path:       &str,
+        atlas_version:   &str,
+        git_head:        Option<&str>,
+        git_branch:      Option<&str>,
+        requested_scope: &str,
+    ) -> Result<i64> {
+        self.conn.execute(
+            "INSERT INTO ingest_runs
+               (repo_path, started_at, atlas_version, git_head, git_branch,
+                requested_scope, exit_status)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, 'in_progress')",
+            params![
+                repo_path,
+                Self::now_ts(),
+                atlas_version,
+                git_head,
+                git_branch,
+                requested_scope,
+            ],
+        )?;
+        Ok(self.conn.last_insert_rowid())
+    }
+
+    /// Finalise a run: set `ended_at`, `exit_status`, `stages_json`, `warnings_json`.
+    /// `exit_status` is one of "ok" | "partial" | "failed".
+    pub fn finish_ingest_run(
+        &self,
+        run_id:        i64,
+        exit_status:   &str,
+        stages_json:   &str,
+        warnings_json: &str,
+    ) -> Result<()> {
+        self.conn.execute(
+            "UPDATE ingest_runs
+               SET ended_at    = ?1,
+                   exit_status = ?2,
+                   stages_json = ?3,
+                   warnings_json = ?4
+             WHERE id = ?5",
+            params![Self::now_ts(), exit_status, stages_json, warnings_json, run_id],
+        )?;
+        Ok(())
+    }
+
+    /// Most recent ingest run for a repository, or None.
+    pub fn latest_ingest_run(&self, repo_path: &str) -> Result<Option<IngestRunRow>> {
+        let mut stmt = self.conn.prepare(
+            "SELECT id, repo_path, started_at, ended_at, atlas_version, git_head,
+                    git_branch, requested_scope, exit_status, stages_json, warnings_json
+             FROM ingest_runs
+             WHERE repo_path = ?1
+             ORDER BY started_at DESC
+             LIMIT 1",
+        )?;
+        let row = stmt.query_row(params![repo_path], |r| {
+            Ok(IngestRunRow {
+                id:              r.get(0)?,
+                repo_path:       r.get(1)?,
+                started_at:      r.get(2)?,
+                ended_at:        r.get(3)?,
+                atlas_version:   r.get(4)?,
+                git_head:        r.get(5)?,
+                git_branch:      r.get(6)?,
+                requested_scope: r.get(7)?,
+                exit_status:     r.get(8)?,
+                stages_json:     r.get(9)?,
+                warnings_json:   r.get(10)?,
+            })
+        }).optional()?;
+        Ok(row)
+    }
+}
+
+/// Snapshot of an `ingest_runs` row.  Exposed for CLI display in `atlas status`.
+#[derive(Debug, Clone)]
+pub struct IngestRunRow {
+    pub id:              i64,
+    pub repo_path:       String,
+    pub started_at:      i64,
+    pub ended_at:        Option<i64>,
+    pub atlas_version:   String,
+    pub git_head:        Option<String>,
+    pub git_branch:      Option<String>,
+    pub requested_scope: String,
+    pub exit_status:     String,
+    pub stages_json:     String,
+    pub warnings_json:   String,
+}
+
+/// Full commit row for `atlas show` — includes author_email that `CommitRow`
+/// omits.  Introduced for B3 drill-down; existing callers keep using
+/// `CommitRow` which is narrower.
+#[derive(Debug, Clone)]
+pub struct CommitRowFull {
+    pub hash:         String,
+    pub short_hash:   String,
+    pub message:      String,
+    pub author_name:  String,
+    pub author_email: String,
+    pub timestamp:    i64,
+}
+
+/// Full raw configuration artifact row for `atlas show`.
+#[derive(Debug, Clone)]
+pub struct ConfigurationArtifactRow {
+    pub file_path:     String,
+    pub artifact_kind: String,
+    pub raw_content:   String,
+    pub sha256:        String,
+    pub ingested_at:   i64,
 }
 
 #[derive(Debug, Clone)]
@@ -1218,6 +2484,18 @@ pub struct CommitRow {
     pub message:     String,
     pub author_name: String,
     pub timestamp:   i64,
+}
+
+/// One (author_name, author_email) → aggregated commit stats row.  Emitted
+/// by `authors_for_prefix`, `authors_for_file`, and `authors_for_identity`.
+/// SQL-side GROUP BY — no in-Rust rollup.  See `AuthorsReport` in `atlas-ir`.
+#[derive(Debug, Clone)]
+pub struct AuthorAggregateRow {
+    pub author_name:  String,
+    pub author_email: String,
+    pub commit_count: usize,
+    pub first_touch:  i64,
+    pub last_touch:   i64,
 }
 
 #[derive(Debug)]
@@ -1264,7 +2542,7 @@ pub struct SiblingEdgeRow {
 
 /// Row returned from structural_edges queries.
 /// `kind` is the raw string stored in DB ("imports", "calls_static", "references_model").
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct StructuralEdgeRow {
     pub source_file:      String,
     pub source_symbol:    Option<String>,
@@ -1274,6 +2552,19 @@ pub struct StructuralEdgeRow {
     pub evidence_line:    Option<u32>,
     pub evidence_snippet: String,
     pub extractor:        String,
+}
+
+fn map_structural_edge_row(row: &rusqlite::Row<'_>) -> rusqlite::Result<StructuralEdgeRow> {
+    Ok(StructuralEdgeRow {
+        source_file:      row.get(0)?,
+        source_symbol:    row.get(1)?,
+        target_file:      row.get(2)?,
+        target_symbol:    row.get(3)?,
+        kind:             row.get(4)?,
+        evidence_line:    row.get::<_, Option<i64>>(5)?.map(|l| l as u32),
+        evidence_snippet: row.get(6)?,
+        extractor:        row.get(7)?,
+    })
 }
 
 #[derive(Debug)]
@@ -1326,6 +2617,30 @@ pub struct PathObservationRow {
     pub superseded_by_commit: Option<String>,
 }
 
+#[derive(Debug)]
+pub struct CommitWithFiles {
+    pub hash:    String,
+    pub message: String,
+    pub files:   Vec<String>,
+}
+
+#[derive(Debug)]
+pub struct LexiconRow {
+    pub from_term:           String,
+    pub to_term:             String,
+    pub kind:                String,
+    pub confidence:          f64,
+    pub co_occurrence_count: i64,
+}
+
+#[derive(Debug)]
+pub struct InvestigationRecord {
+    pub id:          i64,
+    pub anchors_key: String,
+    pub git_head:    String,
+    pub ran_at:      i64,
+}
+
 const SCHEMA: &str = "
 CREATE TABLE IF NOT EXISTS commits (
     hash         TEXT PRIMARY KEY,
@@ -1350,6 +2665,18 @@ CREATE TABLE IF NOT EXISTS commit_files (
     PRIMARY KEY (commit_hash, file_path),
     FOREIGN KEY (commit_hash) REFERENCES commits(hash)
 );
+
+-- Commit DAG (P1-2).  One row per parent per commit.  Two rows on a merge
+-- commit, one on a normal commit, zero on a root commit.
+CREATE TABLE IF NOT EXISTS commit_parents (
+    commit_hash TEXT NOT NULL,
+    parent_hash TEXT NOT NULL,
+    repo_path   TEXT NOT NULL,
+    PRIMARY KEY (commit_hash, parent_hash, repo_path),
+    FOREIGN KEY (commit_hash) REFERENCES commits(hash)
+);
+CREATE INDEX IF NOT EXISTS idx_commit_parents_parent
+    ON commit_parents(repo_path, parent_hash);
 
 CREATE TABLE IF NOT EXISTS pull_requests (
     number           INTEGER NOT NULL,
@@ -1417,12 +2744,39 @@ CREATE TABLE IF NOT EXISTS file_identity_commits (
     FOREIGN KEY (file_identity_id) REFERENCES file_identities(id)
 );
 
+-- ─── structural_edges ───────────────────────────────────────────────────────
+--
+-- SNAPSHOT SEMANTICS — read this before writing any query against this table.
+--
+-- Each row represents ONE structural relationship as observed in the
+-- CURRENT WORKING TREE at the moment `ingest_*_structural` last ran.
+-- This table is deliberately NOT identity-scoped:
+--
+--   * `source_file` and `target_file` are path strings.  They are NOT
+--     foreign keys into `file_identities`.
+--   * Every `ingest_typescript` (and the analogous C / Rust / Python
+--     stages) begins by calling `clear_structural_edges(repo_path)`.
+--     The table is then repopulated from a fresh parse of the on-disk
+--     tree.  Rows do not accumulate across ingest runs.
+--   * If a file is renamed, its edges disappear from the old path and
+--     reappear under the new path on the NEXT ingest -- not the moment of
+--     the rename.  Historical structural queries (what did file X import
+--     before commit Y renamed it) are NOT answerable from this table.
+--
+-- This is a deliberate architectural choice.  Structural edges answer
+-- what the current tree looks like structurally, not how the structural
+-- graph has evolved over time.  Longitudinal file identity lives
+-- in `file_identities` / `file_path_observations` / `file_identity_commits`
+-- (commit history is identity-aware); the structural graph is snapshot-only.
+--
+-- Callers that need historical structural evidence must re-ingest the
+-- repository at each historical revision they care about.
 CREATE TABLE IF NOT EXISTS structural_edges (
     id             INTEGER PRIMARY KEY AUTOINCREMENT,
     repo_path      TEXT NOT NULL,
-    source_file    TEXT NOT NULL,
+    source_file    TEXT NOT NULL,   -- current-tree path (NOT identity id)
     source_symbol  TEXT,
-    target_file    TEXT NOT NULL,
+    target_file    TEXT NOT NULL,   -- current-tree path (NOT identity id)
     target_symbol  TEXT,
     kind           TEXT NOT NULL,
     evidence_line  INTEGER,
@@ -1475,6 +2829,72 @@ CREATE TABLE IF NOT EXISTS repository_profile_claims (
 
 CREATE INDEX IF NOT EXISTS idx_profile_claims_repo
     ON repository_profile_claims(repository_id);
+
+CREATE TABLE IF NOT EXISTS lexicon_relationships (
+    id                   INTEGER PRIMARY KEY AUTOINCREMENT,
+    repo_path            TEXT NOT NULL,
+    from_term            TEXT NOT NULL,
+    to_term              TEXT NOT NULL,
+    kind                 TEXT NOT NULL,
+    confidence           REAL NOT NULL,
+    co_occurrence_count  INTEGER NOT NULL DEFAULT 0,
+    UNIQUE(repo_path, from_term, to_term, kind)
+);
+
+CREATE INDEX IF NOT EXISTS idx_lexicon_from
+    ON lexicon_relationships(repo_path, from_term);
+CREATE INDEX IF NOT EXISTS idx_lexicon_to
+    ON lexicon_relationships(repo_path, to_term);
+
+CREATE TABLE IF NOT EXISTS investigations (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    repo_path     TEXT    NOT NULL,
+    anchors_key   TEXT    NOT NULL,
+    git_head      TEXT    NOT NULL,
+    ran_at        INTEGER NOT NULL,
+    document_json TEXT    NOT NULL,
+    UNIQUE(repo_path, anchors_key, git_head)
+);
+
+CREATE INDEX IF NOT EXISTS idx_investigations_repo
+    ON investigations(repo_path, ran_at DESC);
+
+-- Raw configuration artifact evidence (P1-8).  Preserves the original
+-- config file content so future queries can reason about what Atlas actually
+-- saw, without re-reading the working tree.  Typed parsing (compilerOptions,
+-- Docker stages, etc.) is out of scope; this is raw evidence.
+CREATE TABLE IF NOT EXISTS configuration_artifacts (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    repo_path     TEXT NOT NULL,
+    file_path     TEXT NOT NULL,    -- repo-relative path
+    artifact_kind TEXT NOT NULL,    -- e.g. package_json | tsconfig | dockerfile | ...
+    raw_content   TEXT NOT NULL,
+    sha256        TEXT NOT NULL,    -- sha256 of raw_content, hex
+    ingested_at   INTEGER NOT NULL,
+    UNIQUE(repo_path, file_path)
+);
+CREATE INDEX IF NOT EXISTS idx_config_artifacts_repo
+    ON configuration_artifacts(repo_path, artifact_kind);
+
+-- Ingest-run audit log (P1-4).  One row per `atlas ingest` invocation.
+-- Answers 'what did Atlas attempt on this repo, when, and how did it go?'
+CREATE TABLE IF NOT EXISTS ingest_runs (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    repo_path         TEXT    NOT NULL,
+    started_at        INTEGER NOT NULL,       -- unix seconds
+    ended_at          INTEGER,                -- NULL until the run finalises
+    atlas_version     TEXT    NOT NULL,       -- CARGO_PKG_VERSION at ingest
+    git_head          TEXT,                   -- HEAD commit hash at run start
+    git_branch        TEXT,                   -- current branch (or NULL if detached)
+    requested_scope   TEXT    NOT NULL,       -- 'head_only' | 'all_refs'
+    exit_status       TEXT    NOT NULL DEFAULT 'in_progress',
+                                              -- 'in_progress' | 'ok' | 'partial' | 'failed'
+    stages_json       TEXT    NOT NULL DEFAULT '[]',
+                                              -- JSON array of {stage,status,detail,duration_ms}
+    warnings_json     TEXT    NOT NULL DEFAULT '[]'
+);
+CREATE INDEX IF NOT EXISTS idx_ingest_runs_repo
+    ON ingest_runs(repo_path, started_at DESC);
 ";
 
 #[cfg(test)]
@@ -1492,7 +2912,8 @@ mod tests {
             author_email:  "a@x.com".into(),
             timestamp:     DateTime::from_timestamp(1_700_000_000, 0).unwrap(),
             files_changed: files.iter().map(|s| s.to_string()).collect(),
-        }
+
+            parents:       vec![],        }
     }
 
     fn test_pr(number: i64, merge_commit_sha: &str) -> PullRequest {
@@ -1703,7 +3124,8 @@ mod tests {
             author_email:  "alice@example.com".into(),
             timestamp:     DateTime::from_timestamp(1_700_000_001, 0).unwrap(),
             files_changed: vec!["auth.ts".into()],
-        };
+
+            parents:       vec![],        };
         let commit_b = Commit {
             hash:          hash_b.into(),
             short_hash:    "bbbbbbb".into(),
@@ -1712,7 +3134,8 @@ mod tests {
             author_email:  "alice@example.com".into(),
             timestamp:     DateTime::from_timestamp(1_700_000_002, 0).unwrap(),
             files_changed: vec!["auth.ts".into(), "user.ts".into()],
-        };
+
+            parents:       vec![],        };
         let commit_c = Commit {
             hash:          hash_c.into(),
             short_hash:    "ccccccc".into(),
@@ -1721,7 +3144,8 @@ mod tests {
             author_email:  "alice@example.com".into(),
             timestamp:     DateTime::from_timestamp(1_700_000_003, 0).unwrap(),
             files_changed: vec!["user.ts".into()],
-        };
+
+            parents:       vec![],        };
 
         store.insert_commit(&commit_a, ".").unwrap();
         store.insert_commit(&commit_b, ".").unwrap();
@@ -1944,6 +3368,32 @@ mod tests {
     }
 
     #[test]
+    fn current_path_if_historical_returns_new_path_after_rename() {
+        let store = Store::open(":memory:").unwrap();
+
+        // Simulate a rename chain via file_identity + observations.
+        let id = store.insert_file_identity(".").unwrap();
+        store.insert_path_observation(id, "old/service.ts", "aaaa1111", None, ".").unwrap();
+        store.supersede_path_observation(id, "old/service.ts", "bbbb2222", ".").unwrap();
+        store.insert_path_observation(id, "new/service.ts", "bbbb2222", None, ".").unwrap();
+
+        // Querying the historical path returns the current path.
+        let out = store.current_path_if_historical("old/service.ts", ".").unwrap();
+        assert_eq!(out.as_deref(), Some("new/service.ts"),
+            "historical path must redirect to current");
+
+        // Querying the current path returns None (no redirect needed).
+        let out = store.current_path_if_historical("new/service.ts", ".").unwrap();
+        assert!(out.is_none(),
+            "current path must NOT trigger a redirect");
+
+        // Querying an unrelated path returns None (no identity chain).
+        let out = store.current_path_if_historical("unrelated/x.ts", ".").unwrap();
+        assert!(out.is_none(),
+            "path with no identity chain must NOT trigger a redirect");
+    }
+
+    #[test]
     fn commits_for_file_asc_is_oldest_first() {
         let store = Store::open(":memory:").unwrap();
 
@@ -2054,19 +3504,22 @@ mod tests {
             author_name: "A".into(), author_email: "a@x.com".into(),
             timestamp: DateTime::from_timestamp(1_000, 0).unwrap(),
             files_changed: vec!["p1.rs".into()],
-        }, ".").unwrap();
+
+            parents:       vec![],        }, ".").unwrap();
         store.insert_commit(&atlas_ir::Commit {
             hash: h2.into(), short_hash: "bbbbbbb".into(), message: "rename p1→p2".into(),
             author_name: "A".into(), author_email: "a@x.com".into(),
             timestamp: DateTime::from_timestamp(2_000, 0).unwrap(),
             files_changed: vec!["p2.rs".into()],
-        }, ".").unwrap();
+
+            parents:       vec![],        }, ".").unwrap();
         store.insert_commit(&atlas_ir::Commit {
             hash: h3.into(), short_hash: "ccccccc".into(), message: "rename p2→p3".into(),
             author_name: "A".into(), author_email: "a@x.com".into(),
             timestamp: DateTime::from_timestamp(3_000, 0).unwrap(),
             files_changed: vec!["p3.rs".into()],
-        }, ".").unwrap();
+
+            parents:       vec![],        }, ".").unwrap();
         // Insert rename evidence manually (bypasses git connector for unit tests)
         store.insert_rename_evidence(&atlas_ir::RenameEvidence {
             commit_hash: h2.into(), old_path: "p1.rs".into(), new_path: "p2.rs".into(),
@@ -2196,7 +3649,8 @@ mod tests {
             message: "later".into(), author_name: "A".into(), author_email: "a@x.com".into(),
             timestamp: DateTime::from_timestamp(4_000, 0).unwrap(),
             files_changed: vec!["p2.rs".into()],
-        }, ".").unwrap();
+
+            parents:       vec![],        }, ".").unwrap();
 
         // Commits for p2.rs after ts=2000 (strictly): only the ts=4000 commit
         let after = store.commits_for_file_after_ts("p2.rs", 2_000, ".").unwrap();
@@ -2220,19 +3674,22 @@ mod tests {
             author_name: "A".into(), author_email: "a@x.com".into(),
             timestamp: DateTime::from_timestamp(100, 0).unwrap(),
             files_changed: vec!["service.rs".into()],
-        }, ".").unwrap();
+
+            parents:       vec![],        }, ".").unwrap();
         store.insert_commit(&atlas_ir::Commit {
             hash: hy.into(), short_hash: "hash_y_".into(), message: "rename S1".into(),
             author_name: "A".into(), author_email: "a@x.com".into(),
             timestamp: DateTime::from_timestamp(200, 0).unwrap(),
             files_changed: vec!["legacy/service.rs".into()],
-        }, ".").unwrap();
+
+            parents:       vec![],        }, ".").unwrap();
         store.insert_commit(&atlas_ir::Commit {
             hash: hz.into(), short_hash: "hash_z_".into(), message: "create S2".into(),
             author_name: "A".into(), author_email: "a@x.com".into(),
             timestamp: DateTime::from_timestamp(300, 0).unwrap(),
             files_changed: vec!["service.rs".into()],
-        }, ".").unwrap();
+
+            parents:       vec![],        }, ".").unwrap();
 
         let s1 = store.insert_file_identity(".").unwrap();
         let s2 = store.insert_file_identity(".").unwrap();

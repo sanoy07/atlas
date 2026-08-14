@@ -1,0 +1,158 @@
+{
+  "name": "adversarial-blind-jj-gigatoken-det-vs-agent",
+  "protocol": "Gold established in GOLD.md before Atlas execution. Do not edit gold after runs.",
+  "repos": {
+    "jj": {
+      "path": "/home/sanoy/projects/research/jj",
+      "db": "/home/sanoy/projects/research/jj/atlas.db"
+    },
+    "gigatoken": {
+      "path": "/home/sanoy/projects/research/gigatoken",
+      "db": "/home/sanoy/projects/research/gigatoken/atlas.db"
+    }
+  },
+  "cases": [
+    {
+      "id": "jj-orient",
+      "repo_key": "jj",
+      "workflow": "orientation",
+      "question": "What are the major production subsystems of this repository, and where should I start reading?",
+      "gold_files": ["lib/src/lib.rs", "lib/src/repo.rs", "cli/src/main.rs", "Cargo.toml", "README.md"],
+      "hard_negatives": ["demos/", ".github/workflows/", "web/"],
+      "flow_stages": ["lib core", "cli", "backends"],
+      "causal": false
+    },
+    {
+      "id": "jj-architecture",
+      "repo_key": "jj",
+      "workflow": "architecture",
+      "question": "What is the main architecture of this system? Identify the important layers/components and how they relate.",
+      "gold_files": ["lib/src/backend.rs", "lib/src/git_backend.rs", "lib/src/op_store.rs", "lib/src/working_copy.rs", "lib/src/repo.rs", "lib/src/conflicts.rs"],
+      "hard_negatives": ["demos/", "examples/", ".png"],
+      "flow_stages": ["backend", "op_store", "working_copy", "conflicts", "cli"],
+      "causal": false
+    },
+    {
+      "id": "jj-bug",
+      "repo_key": "jj",
+      "workflow": "bug_localization",
+      "question": "Users are seeing inconsistent repository state when two processes run Jujutsu operations on the same workspace at the same time. Where does this behavior originate and what should we inspect first?",
+      "gold_files": ["lib/src/op_heads_store.rs", "lib/src/simple_op_heads_store.rs", "lib/src/op_store.rs", "lib/src/transaction.rs", "lib/src/operation.rs"],
+      "hard_negatives": ["lib/src/annotate.rs", "demos/"],
+      "flow_stages": ["op_heads", "transaction", "op_store"],
+      "causal": true
+    },
+    {
+      "id": "jj-flow",
+      "repo_key": "jj",
+      "workflow": "system_flow",
+      "question": "Walk me through the end-to-end flow for creating and storing a new commit. Start from the working copy and follow it through the important stages.",
+      "gold_files": ["lib/src/working_copy.rs", "lib/src/local_working_copy.rs", "lib/src/commit_builder.rs", "lib/src/commit.rs", "lib/src/repo.rs", "lib/src/transaction.rs", "lib/src/backend.rs"],
+      "hard_negatives": ["lib/src/conflicts.rs", "lib/src/annotate.rs"],
+      "flow_stages": ["working_copy", "commit_builder", "transaction", "backend"],
+      "causal": false
+    },
+    {
+      "id": "jj-issue",
+      "repo_key": "jj",
+      "workflow": "issue_implementation",
+      "question": "Jujutsu treats conflicts as first-class objects rather than only textual merge failure. What would I need to change in this repository to extend or harden first-class conflict representation? Distinguish current implementation from documented intent.",
+      "gold_files": ["lib/src/conflicts.rs", "lib/src/merge.rs", "lib/src/conflict_labels.rs", "lib/src/merged_tree.rs", "docs/conflicts.md"],
+      "hard_negatives": ["demos/demo_juggle_conflicts", "demos/juggle_conflicts.png"],
+      "flow_stages": ["conflicts", "merge", "merged_tree"],
+      "causal": false
+    },
+    {
+      "id": "jj-impact",
+      "repo_key": "jj",
+      "workflow": "change_impact",
+      "question": "If I modify the operation store interface in lib/src/op_store.rs, what other production components should I investigate and why?",
+      "gold_files": ["lib/src/op_store.rs", "lib/src/simple_op_store.rs", "lib/src/operation.rs", "lib/src/op_heads_store.rs", "lib/src/transaction.rs", "lib/src/op_walk.rs"],
+      "hard_negatives": ["lib/src/conflicts.rs", "CHANGELOG.md"],
+      "flow_stages": ["op_store", "simple_op_store", "transaction"],
+      "causal": false
+    },
+    {
+      "id": "jj-adversarial",
+      "repo_key": "jj",
+      "workflow": "adversarial",
+      "question": "Could broken merges be caused by the Git backend mis-storing conflict data?",
+      "gold_files": ["lib/src/conflicts.rs", "lib/src/merge.rs", "lib/src/git_backend.rs", "lib/src/backend.rs"],
+      "hard_negatives": ["lib/src/annotate.rs"],
+      "flow_stages": ["conflicts", "merge", "backend"],
+      "causal": true,
+      "must_not_supported_cause": true
+    },
+    {
+      "id": "gt-orient",
+      "repo_key": "gigatoken",
+      "workflow": "orientation",
+      "question": "What are the major production subsystems of this repository, and where should I start reading?",
+      "gold_files": ["src/lib.rs", "src/token.rs", "src/batch.rs", "Cargo.toml", "README.md"],
+      "hard_negatives": ["notebooks/", "profiling/"],
+      "flow_stages": ["lib", "pretokenize", "bpe", "batch"],
+      "causal": false
+    },
+    {
+      "id": "gt-architecture",
+      "repo_key": "gigatoken",
+      "workflow": "architecture",
+      "question": "What is the main architecture of this system? Identify the important layers/components and how they relate.",
+      "gold_files": ["src/lib.rs", "src/token.rs", "src/pretokenize/mod.rs", "src/bpe/mod.rs", "src/batch.rs", "src/load_tokenizer/mod.rs"],
+      "hard_negatives": ["notebooks/", "src/input/decompress.rs"],
+      "flow_stages": ["load_tokenizer", "pretokenize", "bpe", "batch"],
+      "causal": false
+    },
+    {
+      "id": "gt-bug",
+      "repo_key": "gigatoken",
+      "workflow": "bug_localization",
+      "question": "Encoding throughput drops sharply when the same short strings are tokenized over and over in a long batch. Where does this behavior originate?",
+      "gold_files": ["src/bpe/pretoken_cache.rs", "src/pretokenize/pretoken.rs", "src/bpe/mod.rs"],
+      "hard_negatives": ["src/load_tokenizer/hub.rs", "src/input/jsonl.rs"],
+      "flow_stages": ["pretoken_cache", "bpe", "batch"],
+      "causal": true
+    },
+    {
+      "id": "gt-flow",
+      "repo_key": "gigatoken",
+      "workflow": "system_flow",
+      "question": "Walk me through the end-to-end flow from loading a tokenizer to encoding a batch of text. Start from the entry point and follow the important stages.",
+      "gold_files": ["src/load_tokenizer/mod.rs", "src/token.rs", "src/pretokenize/mod.rs", "src/bpe/mod.rs", "src/batch.rs"],
+      "hard_negatives": ["notebooks/", "gigatok/", "jeton/"],
+      "flow_stages": ["load_tokenizer", "token", "pretokenize", "bpe", "batch"],
+      "causal": false
+    },
+    {
+      "id": "gt-issue",
+      "repo_key": "gigatoken",
+      "workflow": "issue_implementation",
+      "question": "The design document describes persisting tokenizer state so repeated Python use keeps cache memory. What would I need to change to implement or harden that requirement? Distinguish documented intent from current implementation.",
+      "gold_files": ["src/bpe/pretoken_cache.rs", "design_doc.md", "src/bpe/mod.rs"],
+      "hard_negatives": ["src/load_tokenizer/hub.rs", "notebooks/"],
+      "flow_stages": ["design_doc", "pretoken_cache", "bindings"],
+      "causal": false
+    },
+    {
+      "id": "gt-impact",
+      "repo_key": "gigatoken",
+      "workflow": "change_impact",
+      "question": "If I modify src/bpe/pretoken_cache.rs, what other production components should I investigate and why?",
+      "gold_files": ["src/bpe/pretoken_cache.rs", "src/bpe/tiktoken.rs", "src/bpe/mod.rs", "src/batch.rs"],
+      "hard_negatives": ["src/input/parquet.rs", "notebooks/"],
+      "flow_stages": ["pretoken_cache", "tiktoken", "batch"],
+      "causal": false
+    },
+    {
+      "id": "gt-adversarial",
+      "repo_key": "gigatoken",
+      "workflow": "adversarial",
+      "question": "Could slow tokenization be caused by the HuggingFace hub loader always re-downloading model files?",
+      "gold_files": ["src/bpe/pretoken_cache.rs", "src/batch.rs", "src/load_tokenizer/hub.rs", "src/pretokenize/mod.rs"],
+      "hard_negatives": ["src/input/jsonl.rs"],
+      "flow_stages": ["encode path vs load path"],
+      "causal": true,
+      "must_not_supported_cause": true
+    }
+  ]
+}

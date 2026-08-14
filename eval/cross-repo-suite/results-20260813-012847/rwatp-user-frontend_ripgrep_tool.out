@@ -1,0 +1,16 @@
+/home/sanoy/Vesta/rwatp-user-frontend/codegen.ts-47-};
+/home/sanoy/Vesta/rwatp-user-frontend/codegen.ts-48-
+/home/sanoy/Vesta/rwatp-user-frontend/codegen.ts:49:export default config;
+--
+/home/sanoy/Vesta/rwatp-user-frontend/next.config.ts-15-};
+/home/sanoy/Vesta/rwatp-user-frontend/next.config.ts-16-
+/home/sanoy/Vesta/rwatp-user-frontend/next.config.ts:17:export default nextConfig;
+--
+/home/sanoy/Vesta/rwatp-user-frontend/src/graphql/codegen/gql.ts-59- * Please regenerate the types.
+/home/sanoy/Vesta/rwatp-user-frontend/src/graphql/codegen/gql.ts-60- */
+/home/sanoy/Vesta/rwatp-user-frontend/src/graphql/codegen/gql.ts:61:export function graphql(source: string): unknown;
+/home/sanoy/Vesta/rwatp-user-frontend/src/graphql/codegen/gql.ts-62-
+/home/sanoy/Vesta/rwatp-user-frontend/src/graphql/codegen/gql.ts-63-/**
+/home/sanoy/Vesta/rwatp-user-frontend/src/graphql/codegen/gql.ts-64- * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+/home/sanoy/Vesta/rwatp-user-frontend/src/graphql/codegen/gql.ts-65- */
+/home/sanoy/Vesta/rwatp-user-frontend/src/graphql/codegen/gql.ts:66:export function graphql(source: "mutation SelectMyInvestorType($investorType: InvestorType!) {\n  selectMyInvestorType(investorType: $investorType) {\n    investorType\n    requiresReverification\n    supersededProfileCount\n    onchainEligibilityStale\n  }\n}\n\nmutation InitializeKyc($method: KycProvider, $level: KycLevel) {\n  initializeKyc(method: $method, 

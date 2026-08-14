@@ -1,0 +1,27 @@
+{
+  "name": "c5.0-rwatp-localization",
+  "repository": "rwatp-core",
+  "atlas_db_hint": "~/.atlas/rwatp-core.db",
+  "repo_path_hint": "/home/sanoy/Vesta/rwatp-core",
+  "gate": {
+    "min_case_pass_rate": 0.8,
+    "case_pass": [
+      "top5_hard_neg == 0",
+      "top5_gold_hits >= min(3, gold_files.length) OR top1_hit",
+      "c4_expectations satisfied when present"
+    ],
+    "next_milestone_if_pass": "C5.2 symbol/path fidelity",
+    "next_if_fail": "Diagnose ranking failure modes; do not add AI tools"
+  },
+  "cases": [
+    "rwatp-orders-timeout.json",
+    "rwatp-orders-concurrent-race.json",
+    "rwatp-order-error-clue.json",
+    "rwatp-auth-login-failure.json",
+    "rwatp-explain-order-flow.json",
+    "rwatp-order-created.json",
+    "rwatp-how-auth-works.json",
+    "rwatp-issue-12-share-class.json",
+    "rwatp-issue-19-redis-timeout.json"
+  ]
+}

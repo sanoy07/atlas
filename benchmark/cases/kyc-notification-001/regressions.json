@@ -1,0 +1,8 @@
+[
+  {
+    "id": "E16",
+    "max_rank": 30,
+    "failure_mode": "cross_type_disconnect",
+    "reason": "Webhook handler must rank in Top-30; cross-type connectivity (structural edge + documentary Issue #60 + PR #69) must outweigh local structural degree"
+  }
+]

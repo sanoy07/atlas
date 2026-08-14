@@ -1,0 +1,85 @@
+[34mDEBUG[0m [2matlas_storage[0m[2m:[0m schema migration complete
+ATLAS MAP
+  repo: /home/sanoy/Vesta/vestascan-user-fe
+  git_head: 1061f12
+  modules_subject: src
+  modules (15): adapters, app, assets, blockchain, common, components, config, contexts, features, hooks, lib, schemas, services, styles, types
+
+CLAIMS  (observed | derived | inferred | unknown)
+  [OBSERVED] map-001 — Module/layer inventory under `src` has 15 child directories.
+    method: compute_modules immediate children of subject from files table
+    evidence: [method] compute_modules — total_modules=15
+    limitation: Names are path segments, not business-domain labels.
+    limitation: Historical paths in files table may appear as modules.
+
+  [DERIVED] map-002 — `components` has the highest observed commit touch count under the inventory (87 commits).
+    method: max(observed_commit_count) over ModuleEntry
+    evidence: [module] src/components — commits=87
+    limitation: Commit count is not ownership or importance.
+
+  [OBSERVED] map-003 — Strongest observed cross-module coupling cell: app → components (177 structural edges).
+    method: compute_module_coupling sparse cells sorted by edge_count
+    evidence: [structural] app→components — 177 edges
+    limitation: Static edges only; snapshot of working tree at last structural ingest.
+
+  [OBSERVED] map-004 — Hottest file by commit touches: `src/modules/core/graphql/resolvers.ts` (37 commits).
+    method: hot_files(repo, 15)
+    evidence: [file] src/modules/core/graphql/resolvers.ts — touches=37
+    limitation: Path-scoped hot files; identity-aware hot files not used in map v1.
+
+  [DERIVED] map-005 — Most prevalent peer structural pattern: `icons/` in 2/15 peers.
+    method: detect_peer_structure patterns prevalence
+    evidence: [pattern] icons/ — 2/15
+    limitation: Prevalence is not a style judgment.
+
+  [DERIVED] map-006 — Dependency linkage: 109 declared, 82 observed via structural edges, 82 both.
+    method: compute_dependency_linkage
+    evidence: [config] package.json — working-tree package.json (not present in configuration_artifacts)
+    limitation: OBSERVED ≠ runtime usage.
+
+  [DERIVED] map-007 — Test↔module links: 5 links from 16 test files under path rules (11 unlinked).
+    method: compute_test_module_links
+    evidence: [method] test_linkage — links=5
+    limitation: Path rules only; unlinked is not 'orphan ownership'.
+
+HOT FILES
+    37  src/modules/core/graphql/resolvers.ts
+    34  package.json
+    33  src/modules/core/graphql/typeDefs.ts
+    31  package-lock.json
+    30  src/modules/core/services/token.service.ts
+    24  src/app/(main)/scan/page.tsx
+    19  src/common/enums/index.ts
+    18  src/app/(auth)/login/page.tsx
+    17  src/components/auth/AuthProvider.tsx
+    17  src/components/token/management/AdminControls.tsx
+    17  src/modules/core/graphql/permissions.ts
+    16  src/components/token/management/ManagementView.tsx
+    15  src/app/providers.tsx
+    14  codegen.ts
+    14  src/app/(main)/scan/[address]/page.tsx
+
+TOP COUPLING CELLS
+   177  app → components
+   106  components → lib
+    83  components → hooks
+    49  components → common
+    40  features → components
+    34  app → features
+    31  app → hooks
+    28  app → lib
+    27  hooks → lib
+    24  features → lib
+    23  features → common
+    19  app → common
+
+COVERAGE
+  · commits_in_db≈160
+  · structural_edges=2321
+  · modules_subject=src
+
+LIMITATIONS
+  · Map is orientation, not architectural meaning or quality judgment.
+  · Structural data is a working-tree snapshot from last structural ingest.
+  · Git history scope depends on last ingest (often HEAD-only).
+  · No runtime DI, dynamic dispatch, or production traffic.

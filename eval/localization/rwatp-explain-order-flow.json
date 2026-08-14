@@ -1,0 +1,30 @@
+{
+  "id": "rwatp-explain-order-flow",
+  "repository": "rwatp-core",
+  "workflow": "system_flow",
+  "question": "Explain the order flow in RWATP from the point where an order operation enters the system through the major processing stages until completion.",
+  "notes": "Flow reconstruction. Gold = entry resolvers + order service + models + payment/signing/settlement. Not infrastructure Redis.",
+  "gold_files": [
+    "src/modules/core/graphql/order.resolvers.ts",
+    "src/modules/core/services/order.service.ts",
+    "src/modules/core/models/order.model.ts",
+    "src/modules/core/services/pricing-engine.service.ts",
+    "src/modules/payment/services/payment.service.ts",
+    "src/modules/signing/services/signing.service.ts",
+    "src/modules/core/services/settlement.service.ts",
+    "src/modules/core/services/share-class.service.ts"
+  ],
+  "gold_optional": [
+    "src/modules/core/services/order-eligibility.ts",
+    "src/modules/core/services/order-fulfillment.service.ts",
+    "src/modules/core/services/order-history.service.ts",
+    "src/handlers/expire-orders.handler.ts",
+    "src/modules/core/graphql/order.typeDefs.ts"
+  ],
+  "hard_negatives": [
+    "src/infrastructure/image-processor/index.ts",
+    "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts",
+    "src/modules/support/services/support-ticket.service.ts"
+  ],
+  "metrics": { "top_k": [1, 5, 10] }
+}

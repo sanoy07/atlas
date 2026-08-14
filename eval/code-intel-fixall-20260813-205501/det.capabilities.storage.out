@@ -1,0 +1,136 @@
+ATLAS CAPABILITIES
+  repo: /home/sanoy/Vesta/rwatp-core
+
+CAPABILITY  caching
+  layer: infrastructure
+  infrastructure (9)
+    · src/infrastructure/caching/cache-keys.ts
+    · src/infrastructure/caching/cache.factory.ts
+    · src/infrastructure/caching/cache.interface.ts
+    · src/infrastructure/caching/cache.manager.ts
+    · src/infrastructure/caching/decorators/cache-evict.decorator.ts
+    · src/infrastructure/caching/decorators/cacheable.decorator.ts
+    · src/infrastructure/caching/implementations/memory-cache.service.ts
+    · src/infrastructure/caching/implementations/redis-cache.service.ts
+    · src/infrastructure/caching/index.ts
+  product_surfaces (13)
+    · scripts/verify-auth-user-cache.ts
+    · src/modules/core/services/analytics/analytics.service.ts
+    · src/modules/core/services/content-block.service.ts
+    · src/modules/core/services/currency.service.ts
+    · src/modules/core/services/global-settings.service.ts
+    · src/modules/core/services/integration.service.ts
+    · src/modules/core/services/wallet.service.ts
+    · src/modules/identity/models/user.model.ts
+    · src/modules/identity/services/permission.service.ts
+    · src/modules/identity/services/resource-member.service.ts
+    · src/modules/identity/services/role.service.ts
+    · src/modules/identity/services/user.service.ts
+    · src/modules/support/services/support-faq.service.ts
+  notes:
+    · Product surfaces = non-test files with OBSERVED imports into `src/infrastructure/caching`
+
+CAPABILITY  logger
+  layer: infrastructure
+  infrastructure (6)
+    · src/infrastructure/logger/console.adapter.ts
+    · src/infrastructure/logger/google-cloud-logging.adapter.ts
+    · src/infrastructure/logger/index.ts
+    · src/infrastructure/logger/logger.factory.ts
+    · src/infrastructure/logger/logger.interface.ts
+    · src/infrastructure/logger/types.ts
+  product_surfaces (69)
+    · scripts/migrations/migrate-currency-blockchain-to-chainid.ts
+    · scripts/seeders/seed-kyc-flows.ts
+    · scripts/seeders/seed-native-currencies.ts
+    · scripts/seeders/seed-permissions.ts
+    · src/common/utils/code-generator.util.ts
+    · src/config/cors.ts
+    · src/config/default.ts
+    · src/graphql/context.ts
+    · src/handlers/delivery-callbacks.handler.ts
+    · src/handlers/expire-orders.handler.ts
+    · src/handlers/refresh-fx.handler.ts
+    · src/handlers/sweep-listing-assets.handler.ts
+    · src/handlers/sync-kyc-registry.handler.ts
+    · src/lib/commands/handler.ts
+    · src/lib/commands/publisher.ts
+    · src/lib/events/publisher.ts
+    · src/lib/events/subscriber.ts
+    · src/middleware/command-context.middleware.ts
+    · src/middleware/pubsub-auth.middleware.ts
+    · src/modules/blockchain/services/blockchain-config.service.ts
+    … 49 more
+  notes:
+    · Product surfaces = non-test files with OBSERVED imports into `src/infrastructure/logger`
+
+CAPABILITY  messaging
+  layer: infrastructure
+  infrastructure (7)
+    · src/infrastructure/messaging/pubsub/connection.ts
+    · src/infrastructure/messaging/pubsub/google-pubsub.adapter.ts
+    · src/infrastructure/messaging/pubsub/index.ts
+    · src/infrastructure/messaging/pubsub/pubsub.factory.ts
+    · src/infrastructure/messaging/pubsub/pubsub.interface.ts
+    · src/infrastructure/messaging/redis/connection.ts
+    · src/infrastructure/messaging/redis/index.ts
+  product_surfaces (2)
+    · src/lib/commands/publisher.ts
+    · src/server.ts
+  notes:
+    · Product surfaces = non-test files with OBSERVED imports into `src/infrastructure/messaging`
+
+CAPABILITY  rate-limiting
+  layer: infrastructure
+  infrastructure (13)
+    · src/infrastructure/rate-limiting/implementations/memory-rate-limiter.ts
+    · src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts
+    · src/infrastructure/rate-limiting/index.ts
+    · src/infrastructure/rate-limiting/key-builder.ts
+    · src/infrastructure/rate-limiting/plugins/graphql-rate-limit.plugin.ts
+    · src/infrastructure/rate-limiting/rate-limiter.factory.ts
+    · src/infrastructure/rate-limiting/rate-limiter.interface.ts
+    · src/infrastructure/rate-limiting/registry/base-limits.ts
+    · src/infrastructure/rate-limiting/registry/field-limits.ts
+    · src/infrastructure/rate-limiting/registry/index.ts
+    · src/infrastructure/rate-limiting/types.ts
+    · src/infrastructure/rate-limiting/utils/message-formatter.ts
+    … 1 more
+  product_surfaces (1)
+    · src/graphql/index.ts
+  notes:
+    · Product surfaces = non-test files with OBSERVED imports into `src/infrastructure/rate-limiting`
+
+CAPABILITY  storage
+  layer: infrastructure
+  infrastructure (5)
+    · src/infrastructure/storage/google-cloud-storage.adapter.ts
+    · src/infrastructure/storage/index.ts
+    · src/infrastructure/storage/signed-url-cache.ts
+    · src/infrastructure/storage/storage.factory.ts
+    · src/infrastructure/storage/storage.interface.ts
+  product_surfaces (9)
+    · src/modules/compliance/providers/internal.provider.ts
+    · src/modules/core/graphql/listing-asset.resolvers.ts
+    · src/modules/core/services/global-settings.service.ts
+    · src/modules/core/services/listing-asset.service.ts
+    · src/modules/payment/graphql/payment.resolvers.ts
+    · src/modules/payment/services/manual-payment.service.ts
+    · src/modules/signing/services/signable-document.service.ts
+    · src/modules/signing/services/signing.service.ts
+    · src/modules/support/services/support-attachment.service.ts
+  notes:
+    · Product surfaces = non-test files with OBSERVED imports into `src/infrastructure/storage`
+    · KYC/compliance storage consumer: src/modules/compliance/providers/internal.provider.ts
+    · data-room / listing assets: src/modules/core/graphql/listing-asset.resolvers.ts
+    · data-room / listing assets: src/modules/core/services/listing-asset.service.ts
+    · payment proofs/media: src/modules/payment/graphql/payment.resolvers.ts
+    · payment proofs/media: src/modules/payment/services/manual-payment.service.ts
+    · signing documents: src/modules/signing/services/signable-document.service.ts
+    · signing documents: src/modules/signing/services/signing.service.ts
+    · support attachments: src/modules/support/services/support-attachment.service.ts
+
+LIMITATIONS
+  · Capabilities are DERIVED from import fan-in to infrastructure path prefixes.
+  · Missing edges ⇒ missing surfaces. Re-run `atlas ingest . --typescript` after large refactors.
+  · Not a business-domain ontology — path-derived only.

@@ -1,0 +1,110 @@
+{
+  "runId": "qwen2.5-coder-7b-instruct_kyc-notification-001_B-combined_rep2",
+  "model": "qwen2.5-coder:7b-instruct",
+  "caseId": "kyc-notification-001",
+  "condition": "B-combined",
+  "repetition": 2,
+  "decisions": [
+    {
+      "id": "E1",
+      "class": "RELEVANT",
+      "reason": "This file contains enums related to KYC, which may be relevant for understanding the state of KYC processes."
+    },
+    {
+      "id": "E2",
+      "class": "RELEVANT",
+      "reason": "This file contains enums related to KYC, which may be relevant for understanding the state of KYC processes."
+    },
+    {
+      "id": "E3",
+      "class": "RELEVANT",
+      "reason": "This resolver is likely involved in handling compliance-related queries, which could include KYC status updates."
+    },
+    {
+      "id": "E4",
+      "class": "POSSIBLY_RELEVANT",
+      "reason": "Type definitions for GraphQL resolvers may provide context on how data is queried and returned."
+    },
+    {
+      "id": "E5",
+      "class": "UNKNOWN",
+      "reason": "This model's purpose is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E6",
+      "class": "RELEVANT",
+      "reason": "This model contains fields related to KYC profiles, which are likely crucial for understanding user KYC statuses."
+    },
+    {
+      "id": "E7",
+      "class": "UNKNOWN",
+      "reason": "The purpose of this provider is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E8",
+      "class": "UNKNOWN",
+      "reason": "This factory's purpose is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E9",
+      "class": "UNKNOWN",
+      "reason": "The interface's purpose is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E10",
+      "class": "RELEVANT",
+      "reason": "This service likely contains business logic for handling KYC processes, which could explain why users don't receive emails."
+    },
+    {
+      "id": "E11",
+      "class": "UNKNOWN",
+      "reason": "The purpose of this model is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E12",
+      "class": "UNKNOWN",
+      "reason": "This service's purpose is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E13",
+      "class": "UNKNOWN",
+      "reason": "The purpose of this enum is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E14",
+      "class": "UNKNOWN",
+      "reason": "The model's purpose is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E15",
+      "class": "UNKNOWN",
+      "reason": "The model's purpose is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E16",
+      "class": "RELEVANT",
+      "reason": "This handler processes webhooks, which could include KYC-related events that trigger email notifications."
+    },
+    {
+      "id": "E17",
+      "class": "UNKNOWN",
+      "reason": "The middleware's purpose is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E18",
+      "class": "UNKNOWN",
+      "reason": "The model's purpose is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E19",
+      "class": "UNKNOWN",
+      "reason": "The utility's purpose is not clear from the given evidence; it could be relevant but requires more context."
+    },
+    {
+      "id": "E20",
+      "class": "UNKNOWN",
+      "reason": "The utility's purpose is not clear from the given evidence; it could be relevant but requires more context."
+    }
+  ],
+  "rawOutput": "```json\n{\n  \"decisions\": [\n    {\n      \"id\": \"E1\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This file contains enums related to KYC, which may be relevant for understanding the state of KYC processes.\"\n    },\n    {\n      \"id\": \"E2\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This file contains enums related to KYC, which may be relevant for understanding the state of KYC processes.\"\n    },\n    {\n      \"id\": \"E3\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This resolver is likely involved in handling compliance-related queries, which could include KYC status updates.\"\n    },\n    {\n      \"id\": \"E4\",\n      \"class\": \"POSSIBLY_RELEVANT\",\n      \"reason\": \"Type definitions for GraphQL resolvers may provide context on how data is queried and returned.\"\n    },\n    {\n      \"id\": \"E5\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This model's purpose is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E6\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This model contains fields related to KYC profiles, which are likely crucial for understanding user KYC statuses.\"\n    },\n    {\n      \"id\": \"E7\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The purpose of this provider is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E8\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This factory's purpose is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E9\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The interface's purpose is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E10\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This service likely contains business logic for handling KYC processes, which could explain why users don't receive emails.\"\n    },\n    {\n      \"id\": \"E11\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The purpose of this model is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E12\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"This service's purpose is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E13\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The purpose of this enum is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E14\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The model's purpose is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E15\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The model's purpose is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E16\",\n      \"class\": \"RELEVANT\",\n      \"reason\": \"This handler processes webhooks, which could include KYC-related events that trigger email notifications.\"\n    },\n    {\n      \"id\": \"E17\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The middleware's purpose is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E18\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The model's purpose is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E19\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The utility's purpose is not clear from the given evidence; it could be relevant but requires more context.\"\n    },\n    {\n      \"id\": \"E20\",\n      \"class\": \"UNKNOWN\",\n      \"reason\": \"The utility's purpose is not clear from the given evidence; it could be relevant but requires more context.\"\n    }\n  ]\n}\n```"
+}

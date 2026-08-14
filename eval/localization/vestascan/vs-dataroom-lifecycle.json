@@ -1,0 +1,24 @@
+{
+  "id": "vs-dataroom-lifecycle",
+  "repository": "vestascan-api",
+  "workflow": "system_flow",
+  "cluster": "data_rooms",
+  "question": "Trace the lifecycle of a data room from creation through access and modification.",
+  "notes": "Full lifecycle: file service + access service + models + permissions.",
+  "gold_files": [
+    "src/modules/core/services/data-room-file.service.ts",
+    "src/modules/core/services/data-room-file-access.service.ts",
+    "src/modules/core/models/data-room-file.model.ts",
+    "src/modules/core/models/data-room-file-access.model.ts",
+    "src/modules/core/graphql/permissions.ts"
+  ],
+  "gold_optional": [
+    "src/config/data-room.config.ts",
+    "src/modules/core/graphql/resolvers.ts",
+    "src/common/constants/data-room.ts"
+  ],
+  "hard_negatives": [
+    "src/modules/core/services/deployment.service.ts",
+    "src/modules/core/services/token.service.ts"
+  ]
+}

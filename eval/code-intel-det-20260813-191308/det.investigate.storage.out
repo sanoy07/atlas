@@ -1,0 +1,85 @@
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  data room GCS ListingAsset
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · compliance
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  0.87  implementation  [file] src/modules/compliance/types/normalized-data.types.ts — candidate score≈0.90
+  #2  0.72  implementation  [file] src/modules/compliance/services/kyc-flow-engine.service.ts — candidate score≈0.90
+  #3  0.72  implementation  [file] src/modules/compliance/services/kyc-flow-presentation.service.ts — candidate score≈0.90
+  #4  0.72  implementation  [file] src/modules/compliance/services/compliance.service.ts — candidate score≈0.90
+  #5  0.44  implementation  [commit] 3929700d4b5d1a3fa3e362fc9dc896818e5a7f9e — 3929700 — feat(compliance): operator-configurable KYC flow engine (#165) (src/modules/compliance/types/normalized-data.types.ts)
+  #6  0.43  implementation  [file] src/modules/compliance/config/normalized-paths.config.ts — candidate score≈0.90
+  #7  0.43  implementation  [file] src/modules/compliance/validation/kyc-flow.validation.ts — candidate score≈0.90
+  #8  0.30  implementation  [commit] 79de9c724ea0ae190de43856f95d76e7fc8c0048 — 79de9c7 — feat(compliance): write approved investors to the on-chain whitelist registry (… (src/modules/compliance/services/compliance.service.ts)
+  #9  0.30  implementation  [commit] 97fc7666080de90afc7546a04b2a60057df9d772 — 97fc766 — fix(compliance): make internal KYC document upload work (#142) (src/modules/compliance/services/compliance.service.ts)
+  #10 0.30  implementation  [commit] cb44c9162d05d8cdd034df4260dd623d972b8e22 — cb44c91 — fix(compliance): read applicableFor as the objects it is written as (#139) (src/modules/compliance/services/compliance.service.ts)
+  #11 0.30  implementation  [commit] 875ed6d17ea4478ab76daed45113da78462fe7ea — 875ed6d — feat(compliance): add getKycProfile(profileId) admin query (#94) (src/modules/compliance/services/compliance.service.ts)
+  #12 0.24  implementation  [commit] f0e0ad1f919c805d07ba3b19101657fe678f904f — f0e0ad1 — feat(kyc): complete KYC data sync implementation (src/modules/compliance/types/normalized-data.types.ts)
+  … 1 more
+
+SUPERSESSION  (not mere recency)
+  f0e0ad1f919c805d07ba3b19101657fe678f904f → 875ed6d17ea4478ab76daed45113da78462fe7ea  (implementation_supersedes_implementation)
+  f0e0ad1f919c805d07ba3b19101657fe678f904f → cb44c9162d05d8cdd034df4260dd623d972b8e22  (implementation_supersedes_implementation)
+  f0e0ad1f919c805d07ba3b19101657fe678f904f → 97fc7666080de90afc7546a04b2a60057df9d772  (implementation_supersedes_implementation)
+  f0e0ad1f919c805d07ba3b19101657fe678f904f → 79de9c724ea0ae190de43856f95d76e7fc8c0048  (implementation_supersedes_implementation)
+  f0e0ad1f919c805d07ba3b19101657fe678f904f → 3929700d4b5d1a3fa3e362fc9dc896818e5a7f9e  (implementation_supersedes_implementation)
+  875ed6d17ea4478ab76daed45113da78462fe7ea → cb44c9162d05d8cdd034df4260dd623d972b8e22  (implementation_supersedes_implementation)
+  … 9 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/modules/compliance/types/normalized-data.types.ts` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/modules/compliance/types/normalized-data.types.ts — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1766570559  implementation  f0e0ad1f919c805d07ba3b19101657fe678f904f  f0e0ad1 — feat(kyc): complete KYC data sync implementation (src/modules/compliance/types/normalized-data.types.ts)
+  1785604697  implementation  875ed6d17ea4478ab76daed45113da78462fe7ea  875ed6d — feat(compliance): add getKycProfile(profileId) admin query (#94) (src/modules/compliance/services/compliance.service.ts)
+  1785925916  implementation  cb44c9162d05d8cdd034df4260dd623d972b8e22  cb44c91 — fix(compliance): read applicableFor as the objects it is written as (#139) (src/modules/compliance/services/compliance.service.ts)
+  1785928332  implementation  97fc7666080de90afc7546a04b2a60057df9d772  97fc766 — fix(compliance): make internal KYC document upload work (#142) (src/modules/compliance/services/compliance.service.ts)
+  1785959477  implementation  79de9c724ea0ae190de43856f95d76e7fc8c0048  79de9c7 — feat(compliance): write approved investors to the on-chain whitelist registry (… (src/modules/compliance/services/compliance.service.ts)
+  1786228824  implementation  3929700d4b5d1a3fa3e362fc9dc896818e5a7f9e  3929700 — feat(compliance): operator-configurable KYC flow engine (#165) (src/modules/compliance/types/normalized-data.types.ts)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/modules/compliance/types/normalized-data.types.ts
+  · src/modules/compliance/services/kyc-flow-engine.service.ts
+  · src/modules/compliance/services/kyc-flow-presentation.service.ts
+  · src/modules/compliance/services/compliance.service.ts
+  · src/modules/compliance/config/normalized-paths.config.ts
+  · src/modules/compliance/validation/kyc-flow.validation.ts
+  · tests/compliance/test-issue-164-kyc-flow-engine.ts
+
+WHAT ATLAS KNOWS
+  · 7 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 6 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=2 top=src/modules/compliance/types/normalized-data.types.ts
+  · c5.1e_concept_fragments domain=Generic flow=false n=19
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

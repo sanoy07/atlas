@@ -1,0 +1,30 @@
+{
+  "id": "rwatp-orders-concurrent-race",
+  "repository": "rwatp-core",
+  "workflow": "bug_localization",
+  "question": "Orders are occasionally timing out or getting stuck under concurrent activity. Investigate.",
+  "notes": "CTO-style vague concurrency bug. Same order core as timeout; emphasize expire/settlement paths. Still not Redis-as-root-cause gold.",
+  "gold_files": [
+    "src/modules/core/services/order.service.ts",
+    "src/modules/core/models/order.model.ts",
+    "src/handlers/expire-orders.handler.ts",
+    "src/modules/core/services/settlement.service.ts",
+    "src/modules/core/services/order-fulfillment.service.ts",
+    "src/modules/core/graphql/order.resolvers.ts",
+    "tests/core/test-order-lifecycle.ts"
+  ],
+  "gold_optional": [
+    "src/modules/payment/services/payment.service.ts",
+    "src/modules/core/services/share-class.service.ts",
+    "tests/core/test-issue-112-orders-payments.ts"
+  ],
+  "hard_negatives": [
+    "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts",
+    "src/infrastructure/image-processor/index.ts",
+    "src/infrastructure/caching/implementations/redis-cache.service.ts"
+  ],
+  "c4_expectations": {
+    "forbid_supported_causal_redis": true
+  },
+  "metrics": { "top_k": [1, 5, 10] }
+}

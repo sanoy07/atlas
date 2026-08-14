@@ -1,0 +1,20 @@
+=== code-intel bench phase=full 2026-08-13T20:55:01+05:30 ===
+ATLAS=/home/sanoy/.local/bin/atlas REPO=/home/sanoy/Vesta/rwatp-core DB=/home/sanoy/projects/atlas/eval/cross-repo-suite/rwatp-eval.db
+atlas version: atlas 0.2.0
+--- deterministic ---
+  OK   det.callers.tryEnqueue (15ms)
+  OK   det.callers.OrderFulfillmentService.tryEnqueue (13ms)
+  OK   det.implementations.IStorageProvider (23ms)
+  OK   det.implements.edge.IStorage (9ms)
+  OK   det.capabilities.storage (22ms)
+  OK   det.code-search.ListingAsset (10ms)
+  OK   det.code-search.getSignedUrl (15ms)
+  OK   det.callers.json (10ms)
+  OK   det.capabilities.json (18ms)
+  OK   det.map (47ms)
+  OK   det.investigate.storage (168ms)
+--- agent (qwen) ---
+  OK   agent.storing_files (59349ms)
+  OK   agent.data_room_gcs (182945ms)
+  OK   agent.payment_fulfill (144358ms)
+=== done pass=14 fail=0 out=/home/sanoy/projects/atlas/eval/code-intel-fixall-20260813-205501 ===

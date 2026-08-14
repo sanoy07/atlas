@@ -1,0 +1,21 @@
+/home/sanoy/Vesta/vestascan-user-fe/tailwind.config.ts-156-};
+/home/sanoy/Vesta/vestascan-user-fe/tailwind.config.ts-157-
+/home/sanoy/Vesta/vestascan-user-fe/tailwind.config.ts:158:export default config;
+--
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useDataRoomFileAccess.ts-48-}
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useDataRoomFileAccess.ts-49-
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useDataRoomFileAccess.ts:50:export function useDataRoomFileAccess({
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useDataRoomFileAccess.ts-51-  fileId,
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useDataRoomFileAccess.ts-52-  skip = 0,
+--
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useAuth.ts-1-import { useAuthContext } from "@/components/auth/AuthProvider";
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useAuth.ts-2-
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useAuth.ts:3:export function useAuth() {
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useAuth.ts-4-  return useAuthContext();
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useAuth.ts-5-}
+--
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useNewDeploymentsPoller.ts-84- *    with the new variables.
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useNewDeploymentsPoller.ts-85- */
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useNewDeploymentsPoller.ts:86:export function useNewDeploymentsPoller({
+/home/sanoy/Vesta/vestascan-user-fe/src/hooks/useNewDeploymentsPoller.ts-87-  anchorTimestamp,
+/home/sanoy/Vesta/vestascan-user-fe

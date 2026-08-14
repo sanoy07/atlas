@@ -1,0 +1,21 @@
+/home/sanoy/Vesta/rwatp-console/codegen.ts-31-  // produces duplicate identifiers. Schema types therefore live in their own
+/home/sanoy/Vesta/rwatp-console/codegen.ts-32-  // file, and the operations file imports them via `importSchemaTypesFrom`
+/home/sanoy/Vesta/rwatp-console/codegen.ts:33:  // (and re-exports them so existing imports from ./generated keep working).
+/home/sanoy/Vesta/rwatp-console/codegen.ts-34-  generates: {
+/home/sanoy/Vesta/rwatp-console/codegen.ts-35-    "src/graphql/codegen/schema-types.ts": {
+--
+/home/sanoy/Vesta/rwatp-console/codegen.ts-56-        {
+/home/sanoy/Vesta/rwatp-console/codegen.ts-57-          add: {
+/home/sanoy/Vesta/rwatp-console/codegen.ts:58:            content: "/* eslint-disable */\nexport * from './schema-types';",
+/home/sanoy/Vesta/rwatp-console/codegen.ts-59-          },
+/home/sanoy/Vesta/rwatp-console/codegen.ts-60-        },
+--
+/home/sanoy/Vesta/rwatp-console/codegen.ts-87-};
+/home/sanoy/Vesta/rwatp-console/codegen.ts-88-
+/home/sanoy/Vesta/rwatp-console/codegen.ts:89:export default config;
+--
+/home/sanoy/Vesta/rwatp-console/src/hooks/useListQueryState.ts-12-
+/home/sanoy/Vesta/rwatp-console/src/hooks/useListQueryState.ts-13-/**
+/home/sanoy/Vesta/rwatp-console/src/hooks/useListQueryState.ts:14: * nuqs does not export its parser-map type, so it is derived from the hook
+/home/sanoy/Vesta/rwatp-console/src/hooks/useListQueryState.ts-15- * that consumes it — which keeps this exactly in step with nuqs rather than
+/home/sanoy/Vesta/rwatp

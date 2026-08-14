@@ -1,0 +1,97 @@
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  data room GCS ListingAsset
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · src/common/enum
+  · compliance
+  · core
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  0.71  implementation  [file] src/common/enum/index.ts — candidate score≈0.81
+  #2  0.63  implementation  [file] src/modules/compliance/services/kyc-flow-engine.service.ts — candidate score≈0.90
+  #3  0.63  implementation  [file] src/modules/compliance/graphql/kyc-flow.resolvers.ts — candidate score≈0.90
+  #4  0.63  implementation  [file] src/modules/compliance/services/compliance.service.ts — candidate score≈0.90
+  #5  0.63  implementation  [file] src/modules/compliance/services/investor-type.service.ts — candidate score≈0.90
+  #6  0.63  implementation  [file] src/modules/compliance/services/kyc-flow-binding.service.ts — candidate score≈0.90
+  #7  0.63  implementation  [file] src/modules/compliance/services/kyc-flow-presentation.service.ts — candidate score≈0.90
+  #8  0.63  implementation  [file] src/modules/compliance/services/kyc-flow.service.ts — candidate score≈0.90
+  #9  0.63  implementation  [file] src/modules/core/services/order.service.ts — candidate score≈0.90
+  #10 0.61  implementation  [file] src/modules/compliance/types/normalized-data.types.ts — candidate score≈0.90
+  #11 0.51  implementation  [file] src/modules/compliance/providers/internal.provider.ts — candidate score≈0.90
+  #12 0.50  implementation  [commit] 835803b4080fe1056b5fb27897ff56ecd6ffdc62 — 835803b — feat(listings): ListingAsset media library with presigned GCS uploads (#166) (#… (src/common/enum/index.ts)
+  … 16 more
+
+SUPERSESSION  (not mere recency)
+  b6aba48ad4a030f217d21ea29061ec3f05ecaa9e → 29d5eb860cc3b5ab7ab62894595dcded03a81450  (implementation_supersedes_implementation)
+  b6aba48ad4a030f217d21ea29061ec3f05ecaa9e → f0e0ad1f919c805d07ba3b19101657fe678f904f  (implementation_supersedes_implementation)
+  b6aba48ad4a030f217d21ea29061ec3f05ecaa9e → f4a5c3c8c691017efc483188d03d368c76be0088  (implementation_supersedes_implementation)
+  b6aba48ad4a030f217d21ea29061ec3f05ecaa9e → aab59b0bfe3c6b5b71c120da5fa306ccd50b570d  (implementation_supersedes_implementation)
+  b6aba48ad4a030f217d21ea29061ec3f05ecaa9e → 86add817f11f09f3faec6adf41331d72a750664b  (implementation_supersedes_implementation)
+  b6aba48ad4a030f217d21ea29061ec3f05ecaa9e → 97fc7666080de90afc7546a04b2a60057df9d772  (implementation_supersedes_implementation)
+  … 14 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/common/enum/index.ts` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/common/enum/index.ts — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1766500127  implementation  29d5eb860cc3b5ab7ab62894595dcded03a81450  29d5eb8 — feat(kyc): implement KYC data sync to user profile (src/modules/compliance/providers/kyc.provider.interface.ts)
+  1766570559  implementation  f0e0ad1f919c805d07ba3b19101657fe678f904f  f0e0ad1 — feat(kyc): complete KYC data sync implementation (src/modules/compliance/types/normalized-data.types.ts)
+  1785925209  implementation  9552f507da86e830e58509cdcb017f3ad97cac1a  9552f50 — feat(fulfillment): trigger delivery at payment confirmation, order-type-agnosti… (src/common/enum/index.ts)
+  1785928332  implementation  97fc7666080de90afc7546a04b2a60057df9d772  97fc766 — fix(compliance): make internal KYC document upload work (#142) (src/modules/compliance/providers/kyc.provider.interface.ts)
+  1785959477  implementation  79de9c724ea0ae190de43856f95d76e7fc8c0048  79de9c7 — feat(compliance): write approved investors to the on-chain whitelist registry (… (src/modules/compliance/models/kyc-profile.model.ts)
+  1786228824  implementation  3929700d4b5d1a3fa3e362fc9dc896818e5a7f9e  3929700 — feat(compliance): operator-configurable KYC flow engine (#165) (src/modules/compliance/types/normalized-data.types.ts)
+  1786306227  implementation  835803b4080fe1056b5fb27897ff56ecd6ffdc62  835803b — feat(listings): ListingAsset media library with presigned GCS uploads (#166) (#… (src/common/enum/index.ts)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/common/enum/index.ts
+  · src/modules/compliance/services/kyc-flow-engine.service.ts
+  · src/modules/compliance/graphql/kyc-flow.resolvers.ts
+  · src/modules/compliance/services/compliance.service.ts
+  · src/modules/compliance/services/investor-type.service.ts
+  · src/modules/compliance/services/kyc-flow-binding.service.ts
+  · src/modules/compliance/services/kyc-flow-presentation.service.ts
+  · src/modules/compliance/services/kyc-flow.service.ts
+  · src/modules/core/services/order.service.ts
+  · src/modules/compliance/types/normalized-data.types.ts
+  · src/modules/compliance/providers/internal.provider.ts
+  · src/modules/compliance/config/normalized-paths.config.ts
+  · src/modules/compliance/providers/kyc.provider.interface.ts
+  · src/modules/compliance/models/kyc-profile.model.ts
+  · src/modules/compliance/validation/kyc-flow.validation.ts
+  · tests/compliance/test-issue-164-kyc-flow-model.ts
+
+WHAT ATLAS KNOWS
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 7 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=5 top=src/modules/compliance/types/normalized-data.types.ts
+  · c5.1e_concept_fragments domain=Generic flow=false n=19
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

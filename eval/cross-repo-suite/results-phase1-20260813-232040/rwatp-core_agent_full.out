@@ -1,0 +1,16 @@
+atlas agent → /home/sanoy/projects/atlas/agent/atlas_agent.py  model=qwen3:4b  repo=/home/sanoy/Vesta/rwatp-core
+[36m→ atlas_investigate(question='where is order fulfillment defined and what calls it?')[0m
+[2m  ← 5538 chars[0m
+[36m→ atlas_callers(subject='src/modules/core/services/order-fulfillment.service.ts')[0m
+[2m  ← 1538 chars[0m
+
+Order fulfillment is defined in `src/modules/core/services/order-fulfillment.service.ts`. It is triggered by `payment-settlement.service.ts` and `signing.service.ts` via `tryEnqueue` calls.
+
+---
+C4 FINAL GATE: SUPPORTED
+  Non-causal synthesis grounded in tool evidence.
+  evidence_paths_cited: 3
+  (Existence in a neighborhood ≠ causal support.)
+
+
+[2m[3 step(s), 80.4s, model=qwen3:4b, num_ctx=12288, investigate=yes, flow_drill=no, storage_drill=no][0m

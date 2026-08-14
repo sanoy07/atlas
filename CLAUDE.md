@@ -42,7 +42,7 @@ Rust workspace. All crates are in `crates/`, the CLI is in `apps/cli/`.
 | `atlas-git` | Git connectors — reads raw git log, GitHub PRs, GitHub issues |
 | `atlas-parser` | Parsers — git log, GitHub JSON, TypeScript structural extraction, rename evidence |
 | `atlas-storage` | SQLite persistence — all DB reads and writes. Never contains business logic |
-| `atlas-core` | Orchestration — `ingest_git`, `build_context`, `search`, `build_investigation`. Only place allowed to call multiple crates together |
+| `atlas-core` | Orchestration — `ingest_git`, `build_context`, `search`, `build_investigation`, `code_intel` (callers/implementations/capabilities/ranked search), `freshness` (is the graph still current?). Only place allowed to call multiple crates together |
 | `atlas` (CLI) | Terminal presentation only. No business logic. Calls `atlas-core` and prints |
 
 **Layering rule:** No layer does another layer's job. Connectors collect. Parsers transform. Storage persists. Core orchestrates. CLI presents.
@@ -63,6 +63,7 @@ IMPORTS          — ES import statements
 CALLS_STATIC     — static method calls (ClassName.method)
 CALLS_INSTANCE   — instance method calls (obj.method)
 REFERENCES_MODEL — Mongoose model operations (Model.findOne, Model.create, etc.)
+IMPLEMENTS       — TypeScript `class X implements I` (target_symbol = interface name)
 ```
 
 ## Evidence vs. Context
@@ -137,9 +138,20 @@ This sequence is mandatory. Do not skip steps.
 
 ## Common Atlas CLI Commands
 
-Run from the relevant repository directory with `ATLAS_DB` set:
+Run from anywhere inside the repository — the database is anchored at the git
+root, so `ATLAS_DB` is only needed to point at a *different* database (multi-repo
+or eval DBs), where it wins verbatim.
 
 ```bash
+# First-time setup: creates <git root>/atlas.db, ignores it, first ingest
+atlas init
+
+# Structural code-intel (deterministic, ~10–50ms, no model)
+atlas callers tryEnqueue                        # who calls this symbol
+atlas implementations IStorageProvider          # OBSERVED implements edges preferred
+atlas capabilities                              # infra capabilities → product surfaces
+atlas code-search ListingAsset                  # ranked DEFINITION/WIRING/CALL_SITE/TEST
+
 # Investigation (most powerful — multi-anchor structural neighborhood)
 atlas investigate token deployment
 
@@ -164,10 +176,17 @@ atlas hot-files --limit 20
 # First commit introducing a file
 atlas when-introduced src/modules/core/services/token.service.ts
 
-# Ingest a repository
-atlas ingest . --typescript   # git + TypeScript structural edges
+# Ingest a repository (structural extractors are auto-detected)
+atlas ingest .                # --typescript now only forces TS on
 atlas ingest . --github       # also fetch GitHub PRs and issues
+
+# Health + whether the graph still describes the current tree
+atlas status                  # reports commits behind HEAD
 ```
+
+**Evidence is a snapshot at ingest time.** The structural graph reflects the
+working tree when `atlas ingest` last ran. `atlas status` reports drift against
+HEAD; re-ingest after significant changes.
 
 **Running against a non-Atlas repo:**
 ```bash
@@ -282,7 +301,7 @@ Each phase has: one objective, explicit deliverables, explicit stopping conditio
 
 Every PR or implementation session must produce:
 1. Code (smallest change that addresses the classified failure)
-2. Tests (verify the new behavior; do not break existing 166 tests)
+2. Tests (verify the new behavior; do not break the existing suite — 407 passing as of 2026-08-13)
 3. Decision record
 4. Benchmark update (or new benchmark)
 5. Documentation updates if commands or output format changed
@@ -324,8 +343,13 @@ The goal is:
 | Cross-repo event contracts (PubSub topics, HTTP triggers invisible) | 2 | Candidate — needs N=3 |
 | Short anchor false positives ("AI"⊂"blockchain") | 2 | Candidate — needs N=3 |
 | Configuration-time wiring (GraphQL permissions.ts invisible) | 1 | Watch — needs N=2 |
-| No rename/move tracking | — | Known, deferred |
 | GitHub PRs/issues require token | — | Operational, not architectural |
+| Code-intel validated on one repository only | — | Principle 4 debt — see `docs/benchmarks/2026-08-13-code-intel-rwatp.md` |
+
+**Closed:** *No rename/move tracking* — implemented. `crates/parser/src/git_renames.rs`
+extracts rename evidence, `rebuild_file_identities` builds identity chains, and
+`current_path_if_historical` redirects path-scoped commands from historical
+addresses. Do not rebuild this.
 
 ---
 

@@ -1,0 +1,106 @@
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  pretokenizer cache
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · src/bpe
+  · src/pretokenize
+  · src/pretokenize/fast
+  · bpe
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  0.88  implementation  [file] src/bpe/pretoken_cache.rs — candidate score≈0.90
+  #2  0.73  implementation  [file] src/pretokenize/pretoken.rs — candidate score≈0.20
+  #3  0.61  implementation  [file] src/pretokenize/mod.rs — candidate score≈0.56
+  #4  0.52  implementation  [file] src/pretokenize/fast/mask.rs — candidate score≈0.20
+  #5  0.52  implementation  [file] src/pretokenize/fast/cl100k_family.rs — candidate score≈0.20
+  #6  0.51  implementation  [file] src/pretokenize/fast/cl100k.rs — candidate score≈0.19
+  #7  0.51  implementation  [file] src/pretokenize/options.rs — candidate score≈0.18
+  #8  0.50  implementation  [commit] bd4fe5c055697e1ef8313d797554effed4e2a0fb — bd4fe5c — Take the pretokenizer and specials from the caller in from_tiktoken (src/bpe/tiktoken.rs)
+  #9  0.49  implementation  [commit] 5cc4453cd27bcab26d06f88a6c9da74f7b3a8009 — 5cc4453 — Load from HF directly from Rust instead of relying on Python. Use this to profi… (tests/hf_cache.py)
+  #10 0.49  implementation  [commit] 869d3972ab1f6ae6a0197f1038c6570a772e4803 — 869d397 — Serve HuggingFace files from the standard HF cache without heavyweight imports (tests/hf_cache.py)
+  #11 0.49  implementation  [commit] f886ca15ab46c37f9e41f45e34eb91d93fdbd857 — f886ca1 — Replace Rust examples with minimal Python examples (examples/cache_memory.rs)
+  #12 0.48  implementation  [commit] c63fb14ffc1debf1a9446d2ee0689a1189ecf46a — c63fb14 — Zen 5 profile-guided encode optimization: THP ordering/alignment fixes, emit-lo… (src/bpe/pretoken_cache.rs)
+  … 18 more
+
+SUPERSESSION  (not mere recency)
+  c0b55cc9c47f3db5c9dfda4dbb6186a3bc11dae8 → 260762669a0ee5f867e33ad90d862c2dfe006661  (implementation_supersedes_implementation)
+  c0b55cc9c47f3db5c9dfda4dbb6186a3bc11dae8 → 946906ff1e1a97a739e88ebe8494bf77775a0bd2  (implementation_supersedes_implementation)
+  c0b55cc9c47f3db5c9dfda4dbb6186a3bc11dae8 → 66d490ed9bc63f4dac420ac964df4dc9fcaf0a8b  (implementation_supersedes_implementation)
+  c0b55cc9c47f3db5c9dfda4dbb6186a3bc11dae8 → 96c48acdc3309697db35a0d68a105f1ce6872344  (implementation_supersedes_implementation)
+  c0b55cc9c47f3db5c9dfda4dbb6186a3bc11dae8 → 3ba9d1dcfdcad0a6b9175b3515144b72610c2b7b  (implementation_supersedes_implementation)
+  c0b55cc9c47f3db5c9dfda4dbb6186a3bc11dae8 → abeb699ea9239cf7729827a24f078d9e9856fbe2  (implementation_supersedes_implementation)
+  … 14 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/bpe/pretoken_cache.rs` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/bpe/pretoken_cache.rs — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1774473712  implementation  c0b55cc9c47f3db5c9dfda4dbb6186a3bc11dae8  c0b55cc — Change line length for formatting (tests/test_pretokenizer_iterator.py)
+  1774563114  implementation  260762669a0ee5f867e33ad90d862c2dfe006661  2607626 — Rename to Jeton (tests/test_pretokenizer_iterator.py)
+  1774634886  implementation  946906ff1e1a97a739e88ebe8494bf77775a0bd2  946906f — Portable tests download necessary data (tests/test_pretokenizer_iterator.py)
+  1783444881  implementation  66d490ed9bc63f4dac420ac964df4dc9fcaf0a8b  66d490e — Rename jeton -> gigatok (tests/test_pretokenizer_iterator.py)
+  1783448682  implementation  3ba9d1dcfdcad0a6b9175b3515144b72610c2b7b  3ba9d1d — Keep DCLM corpus in HF cache instead of data/ (tests/dclm_fixture.py)
+  1783458935  implementation  13aba75ca5f8c631bb9e5d8b06f2d2d2b3f5e06a  13aba75 — Fix tiktoken added token issue, add tokenization cache instrumentation (examples/cache_memory.rs)
+  1783898912  implementation  97043f6532e495dfadae9fdcfb7cbc9af9a9b67d  97043f6 — Rename gigatok -> gigatoken (tests/test_pretokenizer_iterator.py)
+  1784028138  implementation  8723407a6697924bfb653a89be5286315ecd673f  8723407 — Fix vocab-seeded cache: seed merge decompositions, drop the long-path vocab_inv… (src/bpe/pretoken_cache.rs)
+  1784034281  implementation  4b352fe8888903c8798f5408e6dd63b423cd9d0c  4b352fe — x86-64 port of the encode-opt aarch64 pins: probe_pair cmov-of-values, SSE4.2 C… (src/bpe/pretoken_cache.rs)
+  1784050377  implementation  ff7c821a9525fd2f1b8f956b2264611788683715  ff7c821 — Simplify post-campaign accretions: shared helpers, test dedup, invariant docs (src/bpe/pretoken_cache.rs)
+  1784051542  implementation  8d704a3464a6b2ea8b61d4a3fd8309670ed8d523  8d704a3 — Simplify dispatch, fill, prefetch, and Committer structure (A/B-verified neutra… (src/bpe/pretoken_cache.rs)
+  1784061235  implementation  c63fb14ffc1debf1a9446d2ee0689a1189ecf46a  c63fb14 — Zen 5 profile-guided encode optimization: THP ordering/alignment fixes, emit-lo… (src/bpe/pretoken_cache.rs)
+  1784308820  implementation  f886ca15ab46c37f9e41f45e34eb91d93fdbd857  f886ca1 — Replace Rust examples with minimal Python examples (examples/cache_memory.rs)
+  1784322354  implementation  869d3972ab1f6ae6a0197f1038c6570a772e4803  869d397 — Serve HuggingFace files from the standard HF cache without heavyweight imports (tests/hf_cache.py)
+  1784417813  implementation  5cc4453cd27bcab26d06f88a6c9da74f7b3a8009  5cc4453 — Load from HF directly from Rust instead of relying on Python. Use this to profi… (tests/hf_cache.py)
+  1784998068  implementation  bd4fe5c055697e1ef8313d797554effed4e2a0fb  bd4fe5c — Take the pretokenizer and specials from the caller in from_tiktoken (src/bpe/tiktoken.rs)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/bpe/pretoken_cache.rs
+  · src/pretokenize/pretoken.rs
+  · src/pretokenize/mod.rs
+  · src/pretokenize/fast/mask.rs
+  · src/pretokenize/fast/cl100k_family.rs
+  · src/pretokenize/fast/cl100k.rs
+  · src/pretokenize/options.rs
+  · src/bpe/tiktoken.rs
+  · benches/pretokenize.rs
+  · examples/cache_memory.rs
+  · tests/conftest.py
+  · tests/dclm_fixture.py
+  · tests/hf_cache.py
+  · tests/test_kimi.py
+  · tests/test_pretokenizer_iterator.py
+
+WHAT ATLAS KNOWS
+  · 15 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 16 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=8 top=src/bpe/pretoken_cache.rs
+  · c5.1e_concept_fragments domain=Generic flow=false n=11
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

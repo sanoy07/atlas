@@ -1,0 +1,23 @@
+{
+  "id": "vs-dataroom-investigate",
+  "repository": "vestascan-api",
+  "workflow": "bug_localization",
+  "cluster": "data_rooms",
+  "question": "If a data-room operation fails, where should I start investigating?",
+  "notes": "Bug entry: data-room services first.",
+  "gold_files": [
+    "src/modules/core/services/data-room-file.service.ts",
+    "src/modules/core/services/data-room-file-access.service.ts",
+    "src/modules/core/models/data-room-file.model.ts",
+    "src/config/data-room.config.ts"
+  ],
+  "gold_optional": [
+    "src/modules/core/graphql/resolvers.ts",
+    "src/modules/core/graphql/permissions.ts",
+    "src/schemas/data-room-file.schema.ts"
+  ],
+  "hard_negatives": [
+    "src/modules/core/services/token.service.ts",
+    "src/modules/core/services/deployment.service.ts"
+  ]
+}

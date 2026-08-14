@@ -1,0 +1,1 @@
+{"id":"gt-bpe","repo_key":"gigatoken","workflow":"architecture","question":"How is BPE encoding implemented?","notes":"bpe/mod, tiktoken, sentencepiece, bpe_train.","gold_files":["src/bpe/mod.rs","src/bpe/tiktoken.rs","src/bpe/sentencepiece.rs"],"gold_optional":["src/bpe_train.rs","src/bpe/pretoken_cache.rs"],"hard_negatives":["src/input/parquet.rs","src/bindings/sources.rs"]}

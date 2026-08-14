@@ -1,0 +1,81 @@
+atlas agent → /home/sanoy/projects/atlas/agent/atlas_agent.py  model=qwen3:4b  repo=/home/sanoy/projects/research/gigatoken
+[2m[fast path: atlas investigate --no-ai][0m
+ATLAS INVESTIGATE EVIDENCE PACKET (deterministic C5.1 + C4)
+QUESTION: pretokenizer cache
+MODE: deterministic_only
+
+RANKED_FILES (highest weight first — prefer these):
+  #1 w=0.88  src/bpe/pretoken_cache.rs
+      core_candidate rank_index=0; c5.1_pagerank=0.914
+  #2 w=0.74  src/pretokenize/pretoken.rs
+      core_candidate rank_index=11; c5.1_pagerank=0.848
+  #3 w=0.61  src/pretokenize/mod.rs
+      core_candidate rank_index=8; c5.1_pagerank=0.351
+  #4 w=0.52  src/pretokenize/fast/mask.rs
+      core_candidate rank_index=10; c5.1_pagerank=0.260
+  #5 w=0.52  src/pretokenize/fast/cl100k_family.rs
+      core_candidate rank_index=9; c5.1_pagerank=0.256
+  #6 w=0.51  src/pretokenize/fast/cl100k.rs
+      core_candidate rank_index=12; c5.1_pagerank=0.258
+  #7 w=0.51  src/pretokenize/options.rs
+      core_candidate rank_index=13; c5.1_pagerank=0.256
+  #21 w=0.43  src/bpe/tiktoken.rs
+      core_candidate rank_index=4; c5.1_pagerank=0.001
+
+CORE_CANDIDATES:
+  - src/bpe/pretoken_cache.rs
+  - src/pretokenize/pretoken.rs
+  - src/pretokenize/mod.rs
+  - src/pretokenize/fast/mask.rs
+  - src/pretokenize/fast/cl100k_family.rs
+  - src/pretokenize/fast/cl100k.rs
+  - src/pretokenize/options.rs
+  - src/bpe/tiktoken.rs
+  - benches/pretokenize.rs
+  - examples/cache_memory.rs
+  - tests/conftest.py
+  - tests/dclm_fixture.py
+
+LIKELY_AREA: src/bpe, src/pretokenize, src/pretokenize/fast, bpe
+
+HYPOTHESES (already C4-gated by Atlas — status is authoritative):
+  [PLAUSIBLE] Deterministic retrieval associates this question with `src/bpe/pretoken_cache.rs` and its neighborhood.
+      evidence: file:src/bpe/pretoken_cache.rs
+
+CHRONOLOGY (sample):
+  implementation c0b55cc9c47f — c0b55cc — Change line length for formatting (tests/test_pretokenizer_iterator.py)
+  implementation 260762669a0e — 2607626 — Rename to Jeton (tests/test_pretokenizer_iterator.py)
+  implementation 946906ff1e1a — 946906f — Portable tests download necessary data (tests/test_pretokenizer_iterator.py)
+  implementation 66d490ed9bc6 — 66d490e — Rename jeton -> gigatok (tests/test_pretokenizer_iterator.py)
+  implementation 3ba9d1dcfdca — 3ba9d1d — Keep DCLM corpus in HF cache instead of data/ (tests/dclm_fixture.py)
+  implementation 13aba75ca5f8 — 13aba75 — Fix tiktoken added token issue, add tokenization cache instrumentation (examples/cache_memory.rs)
+  implementation 97043f6532e4 — 97043f6 — Rename gigatok -> gigatoken (tests/test_pretokenizer_iterator.py)
+  implementation 8723407a6697 — 8723407 — Fix vocab-seeded cache: seed merge decompositions, drop the long-path vocab_inv… (src/bpe/pretoken_cache.rs)
+
+C4_VERIFICATION_POLICY:
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+WHAT_ATLAS_KNOWS:
+  · 15 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 16 chronology event(s) assembled (intent + implementation)
+
+WHAT_ATLAS_DOES_NOT_KNOW:
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=8 top=src/bpe/pretoken_cache.rs
+  · c5.1e_concept_fragments domain=Generic flow=false n=11
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+NEXT_INVESTIGATION:
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+RULE: Existence of a ranked file is NOT causal support. Do not upgrade [PLAUSIBLE]/[UNRESOLVED] to factual cause language. Prefer ranked files over map hot-files alone for localization.

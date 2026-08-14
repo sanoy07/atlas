@@ -1,0 +1,11 @@
+{"case":"rwatp-core/modules_auto","status":"ok","total":11}
+{"case":"rwatp-notifier/modules_auto","status":"ok","total":16}
+{"case":"rwatp-console/modules_auto","status":"ok","total":14}
+{"case":"rwatp-user-frontend/modules_auto","status":"ok","total":9}
+{"case":"vestascan-api/modules_auto","status":"ok","total":9}
+{"case":"vestascan-notifier/modules_auto","status":"ok","total":15}
+{"case":"vestascan-blockchain/modules_auto","status":"ok","total":11}
+{"case":"vestascan-user-fe/modules_auto","status":"ok","total":7}
+{"case":"vestascan-console/modules_auto","status":"ok","total":13}
+{"case":"jj/modules_auto","status":"ok","total":5}
+{"case":"gigatoken/modules_auto","status":"ok","total":8}

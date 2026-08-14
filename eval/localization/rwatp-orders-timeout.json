@@ -1,0 +1,32 @@
+{
+  "id": "rwatp-orders-timeout",
+  "repository": "rwatp-core",
+  "workflow": "bug_localization",
+  "question": "orders timeout",
+  "notes": "Vague concurrency/timeout bug. Gold = order lifecycle code. Redis rate-limiter is hard-negative for causal localization of ORDER timeouts.",
+  "gold_files": [
+    "src/modules/core/services/order.service.ts",
+    "src/modules/core/models/order.model.ts",
+    "src/modules/core/graphql/order.resolvers.ts",
+    "src/modules/core/services/order-history.service.ts",
+    "src/handlers/expire-orders.handler.ts",
+    "tests/core/test-issue-112-orders-payments.ts",
+    "tests/core/test-order-lifecycle.ts"
+  ],
+  "gold_optional": [
+    "src/modules/payment/services/payment.service.ts",
+    "src/modules/signing/services/signing.service.ts",
+    "src/modules/core/services/pricing-engine.service.ts",
+    "src/modules/core/services/order-eligibility.ts",
+    "src/modules/core/services/order-fulfillment.service.ts"
+  ],
+  "hard_negatives": [
+    "src/infrastructure/rate-limiting/implementations/redis-rate-limiter.ts",
+    "src/infrastructure/image-processor/index.ts",
+    "src/infrastructure/messaging/redis/connection.ts"
+  ],
+  "c4_expectations": {
+    "forbid_supported_causal_redis": true
+  },
+  "metrics": { "top_k": [1, 5, 10] }
+}

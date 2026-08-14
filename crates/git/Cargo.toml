@@ -8,3 +8,5 @@ atlas-connectors = { path = "../connectors" }
 atlas-ir         = { path = "../ir" }
 anyhow           = { workspace = true }
 tracing          = { workspace = true }
+serde            = { workspace = true }
+serde_json       = { workspace = true }

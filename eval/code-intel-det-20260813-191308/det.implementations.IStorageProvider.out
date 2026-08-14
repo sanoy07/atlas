@@ -1,0 +1,26 @@
+ATLAS IMPLEMENTATIONS
+  subject: IStorageProvider
+
+INTERFACE FILES
+  · src/infrastructure/storage/storage.interface.ts
+
+IMPLEMENTATION CANDIDATES  (DERIVED)
+  [prod] src/infrastructure/storage/google-cloud-storage.adapter.ts  — imported by factory src/infrastructure/storage/storage.factory.ts
+
+IMPORTERS  (all, may include non-impls)
+  · src/infrastructure/storage/signed-url-cache.ts
+  · src/infrastructure/storage/storage.factory.ts
+  · src/modules/compliance/providers/internal.provider.ts
+  · src/modules/core/graphql/listing-asset.resolvers.ts
+  · src/modules/core/services/listing-asset.service.ts
+  · src/modules/payment/graphql/payment.resolvers.ts
+  · src/modules/payment/services/manual-payment.service.ts
+  · src/modules/support/services/support-attachment.service.ts
+  · tests/core/test-issue-166-listing-assets-integration.ts
+  · tests/core/test-issue-166-listing-assets-storage.ts
+  · tests/support/test-support-tickets.ts
+
+LIMITATIONS
+  · No true `implements` edge kind yet — results are DERIVED from imports + naming.
+  · Prefer adapter/factory paths; plain importers are listed separately.
+  · Type-only interfaces (no runtime symbol) resolve via *.interface.ts + factory wiring.

@@ -1,0 +1,102 @@
+Deterministic evidence packet only …
+ATLAS INVESTIGATION
+
+Question:
+  token deploy
+
+Mode: deterministic_only
+
+LIKELY AREA
+  · core
+  · marketing
+
+RANKED EVIDENCE  (weight · semantics · ref)
+  #1  0.91  implementation  [file] src/modules/core/models/token.model.ts — candidate score≈0.90
+  #2  0.84  implementation  [file] src/modules/core/services/token.service.ts — candidate score≈0.90
+  #3  0.84  implementation  [file] src/modules/core/services/deployment.service.ts — candidate score≈0.90
+  #4  0.77  implementation  [file] src/modules/marketing/loaders/tokens-by-deployer.loader.ts — candidate score≈0.90
+  #5  0.74  implementation  [file] src/modules/core/services/token-image.service.ts — candidate score≈0.90
+  #6  0.74  implementation  [file] src/modules/core/services/token-verification.service.ts — candidate score≈0.90
+  #7  0.66  implementation  [file] src/common/constants/token-verification.constants.ts — candidate score≈0.90
+  #8  0.62  implementation  [commit] 69fdc3d194b249fe916a3ca521a6dc9026fb7ca5 — 69fdc3d — feat(marketing): marketingUsers & marketingTokens GraphQL queries for n8n (#67) (src/modules/marketing/loaders/tokens-by-deployer.loader.ts)
+  #9  0.61  implementation  [file] src/common/constants/restricted-token-symbols.ts — candidate score≈0.90
+  #10 0.61  implementation  [file] src/modules/core/models/token-holder.model.ts — candidate score≈0.90
+  #11 0.58  implementation  [commit] 5a13f15e9f0c3728870f2ac8bc776202852fa44d — 5a13f15 — feat(cap-table): gate cap-table to deployer + current holders (#44) (#45) (src/modules/core/services/token.service.ts)
+  #12 0.57  implementation  [file] src/modules/core/models/token-association.model.ts — candidate score≈0.90
+  … 17 more
+
+SUPERSESSION  (not mere recency)
+  9b9f787d8dd5e7afc13cf8d9ab58a4d000509491 → 4889ed52e253bd7f63d124319e6cb06432991a85  (implementation_supersedes_implementation)
+  9b9f787d8dd5e7afc13cf8d9ab58a4d000509491 → 56a482f23a5af603ec9baef1e8e424f7ee5220f9  (implementation_supersedes_implementation)
+  9b9f787d8dd5e7afc13cf8d9ab58a4d000509491 → d981e12bc0c201614be41ab47820afbe7d629fd9  (implementation_supersedes_implementation)
+  9b9f787d8dd5e7afc13cf8d9ab58a4d000509491 → 4224a33b1c34323cf4d124eaef3bfad9d285aad0  (implementation_supersedes_implementation)
+  9b9f787d8dd5e7afc13cf8d9ab58a4d000509491 → 3982094455f03025edf480c596e95026b89760ee  (implementation_supersedes_implementation)
+  9b9f787d8dd5e7afc13cf8d9ab58a4d000509491 → 2b8635b41a84ff1a281ba720ec05ad1f551e70ab  (implementation_supersedes_implementation)
+  … 14 more
+
+HYPOTHESIS 1
+  Deterministic retrieval associates this question with `src/modules/core/models/token.model.ts` and its neighborhood.
+  STATUS: PLAUSIBLE
+  Supporting evidence:
+    - [file] src/modules/core/models/token.model.ts — Top-ranked core candidate from anchor investigation (localization only, not causal support)
+
+CHRONOLOGY  (intent vs implementation)
+  1776263648  implementation  9b9f787d8dd5e7afc13cf8d9ab58a4d000509491  9b9f787 — Initial commit for decoupled backend maintaing parity with main branch of vesta… (src/modules/core/services/deployment.service.ts)
+  1776333450  implementation  4889ed52e253bd7f63d124319e6cb06432991a85  4889ed5 — Code changes to acheive 100% parity with vestascan-user-fe's development branch… (src/modules/core/models/token.model.ts)
+  1776338134  implementation  56a482f23a5af603ec9baef1e8e424f7ee5220f9  56a482f — converted import statements to match google cloud run specs (src/modules/core/services/deployment.service.ts)
+  1776375737  implementation  d981e12bc0c201614be41ab47820afbe7d629fd9  d981e12 — chore: finalize observability refactor replacing console logs with structured l… (src/modules/core/services/deployment.service.ts)
+  1776493410  implementation  4224a33b1c34323cf4d124eaef3bfad9d285aad0  4224a33 — feat(notifications): wire all 23 notify commands to Pub/Sub (#3) (src/modules/core/services/deployment.service.ts)
+  1777516618  implementation  3982094455f03025edf480c596e95026b89760ee  3982094 — feat(schema): add token discoverability, PAUSED fundraising status, and ARCHIVE… (src/modules/core/models/token.model.ts)
+  1779877095  implementation  2b8635b41a84ff1a281ba720ec05ad1f551e70ab  2b8635b — fix: attachment deletion, asset classification, URL validation, show interest d… (src/modules/core/models/token.model.ts)
+  1781601987  implementation  12b1345f3c1334eecefa570cf73c8885f8a65534  12b1345 — Consume vestascan-blockchain indexer + cap-table endpoint (#16) (src/modules/core/services/token.service.ts)
+  1781696800  implementation  a19c8751539ff1caf8ad7c677b70f9347edd93ad  a19c875 — feat(cap-table): group holders by user with per-wallet breakdown (#32) (src/modules/core/services/token.service.ts)
+  1781713262  implementation  56e3eb486e26061b9b70db1a5c2f6621a4ec4764  56e3eb4 — feat(cap-table): expose circulatingSupply on TokenHolderConnection (#34) (src/modules/core/services/token.service.ts)
+  1781719134  implementation  89719f397d5eb232ee43bfcdb90833ebc1310674  89719f3 — fix(cap-table): exclude zero-balance rows from tokenHolders (#36) (src/modules/core/services/token.service.ts)
+  1782516485  implementation  5a13f15e9f0c3728870f2ac8bc776202852fa44d  5a13f15 — feat(cap-table): gate cap-table to deployer + current holders (#44) (#45) (src/modules/core/services/token.service.ts)
+  1783976685  implementation  69fdc3d194b249fe916a3ca521a6dc9026fb7ca5  69fdc3d — feat(marketing): marketingUsers & marketingTokens GraphQL queries for n8n (#67) (src/modules/marketing/loaders/tokens-by-deployer.loader.ts)
+
+AFFECTED COMPONENTS  (retrieval neighborhood)
+  · src/modules/core/models/token.model.ts
+  · src/modules/core/services/token.service.ts
+  · src/modules/core/services/deployment.service.ts
+  · src/modules/marketing/loaders/tokens-by-deployer.loader.ts
+  · src/modules/core/services/token-image.service.ts
+  · src/modules/core/services/token-verification.service.ts
+  · src/common/constants/token-verification.constants.ts
+  · src/common/constants/restricted-token-symbols.ts
+  · src/modules/core/models/token-holder.model.ts
+  · src/modules/core/models/token-association.model.ts
+  · src/modules/marketing/loaders/deploy-count.loader.ts
+  · src/common/enums/index.ts
+  · src/infrastructure/logger/logger.factory.ts
+  · src/graphql/loaders/index.ts
+  · src/modules/core/models/token-verification.model.ts
+  · src/contracts/commands/notify/constants.ts
+
+WHAT ATLAS KNOWS
+  · 16 core candidate file(s) from deterministic investigation
+  · 0 documentary item(s) (PR/issue matches)
+  · 13 chronology event(s) assembled (intent + implementation)
+
+WHAT ATLAS DOES NOT KNOW
+  · Structural edges are working-tree snapshot, not historical structure.
+  · Git history may be HEAD-only depending on last ingest scope.
+  · No runtime scheduling, production traffic, or dynamic DI graph.
+  · AI synthesis is optional and never persisted as repository truth.
+  · c5.1s_subjects n=20 top=src/modules/marketing/loaders/tokens-by-deployer.loader.ts
+  · c5.1e_concept_fragments domain=Generic flow=false n=13
+  · GitHub PRs not ingested for this repository.
+  · GitHub issues not ingested for this repository.
+
+VERIFICATION POLICY  (C4-ER)
+  · Existence of an evidence ref is necessary but not sufficient for SUPPORTED.
+  · Causal claims (cause/because/related-to/timeout-is/…) default to PLAUSIBLE max unless multi-source same-subject structural+historical support.
+  · Cross-domain causal links (e.g. order↔redis) require structural co-evidence; otherwise PLAUSIBLE/UNRESOLVED, never SUPPORTED.
+  · Intent evidence cannot alone SUPPORT claims about current runtime behavior.
+  · Implementation evidence is preferred for current-behavior claims; intent remains historical context.
+
+NEXT INVESTIGATION
+  · Drill with `atlas show <file>` or `atlas inspect <module>` on likely area.
+  · Compare chronology intent (PRs) vs recent implementation commits.
+
+Use --json for the full evidence packet and claim structures.

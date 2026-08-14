@@ -1,0 +1,27 @@
+{
+  "name": "c5-vestascan-api-generalization",
+  "repository": "vestascan-api",
+  "atlas_db_hint": "~/.atlas/vestascan-api.db",
+  "repo_path_hint": "/home/sanoy/Vesta/vestascan-api",
+  "gate": {
+    "min_case_pass_rate": 0.7,
+    "note": "Cross-repo generalization bar; RWATP was 0.8 on mature gold"
+  },
+  "cases": [
+    "vs-token-deploy-how.json",
+    "vs-token-deploy-trace.json",
+    "vs-token-deploy-fail.json",
+    "vs-token-deploy-modules.json",
+    "vs-dataroom-create.json",
+    "vs-dataroom-lifecycle.json",
+    "vs-dataroom-access.json",
+    "vs-dataroom-investigate.json",
+    "vs-secret-how.json",
+    "vs-secret-load-consume.json",
+    "vs-secret-startup-missing.json",
+    "vs-secret-centralized.json",
+    "vs-adv-token-intermittent.json",
+    "vs-adv-dataroom-create-no-access.json",
+    "vs-adv-secret-change-failure.json"
+  ]
+}

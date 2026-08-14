@@ -1,0 +1,35 @@
+{
+  "name": "blind-crossrepo-jj-gigatoken",
+  "description": "Independent evaluator corpus: JJ + GigaToken. Gold established from repo inspection without using Atlas for ground truth.",
+  "gate": {
+    "min_pass_rate": 0.6,
+    "note": "Blind unfamiliar-repo bar; lower than RWATP development corpus"
+  },
+  "repos": {
+    "jj": {
+      "path": "/home/sanoy/projects/research/jj",
+      "db": "/home/sanoy/projects/research/jj/atlas.db"
+    },
+    "gigatoken": {
+      "path": "/home/sanoy/projects/research/gigatoken",
+      "db": "/home/sanoy/projects/research/gigatoken/atlas.db"
+    }
+  },
+  "cases": [
+    "jj-orient.json",
+    "jj-op-log.json",
+    "jj-conflicts.json",
+    "jj-backend.json",
+    "jj-workspace.json",
+    "jj-flow-commit.json",
+    "jj-impact-op-store.json",
+    "jj-adversarial-git.json",
+    "gt-orient.json",
+    "gt-tokenize.json",
+    "gt-cache.json",
+    "gt-batch.json",
+    "gt-bpe.json",
+    "gt-flow-encode.json",
+    "gt-adversarial-cache-cause.json"
+  ]
+}

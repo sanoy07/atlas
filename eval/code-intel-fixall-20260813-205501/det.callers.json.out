@@ -1,0 +1,33 @@
+{
+  "subject": "tryEnqueue",
+  "resolved_as": "symbol",
+  "production_callers": [
+    {
+      "caller_file": "src/modules/payment/services/payment-settlement.service.ts",
+      "caller_symbol": null,
+      "callee_file": "src/modules/core/services/order-fulfillment.service.ts",
+      "callee_symbol": "OrderFulfillmentService.tryEnqueue",
+      "kind": "calls_static",
+      "evidence_line": 253,
+      "evidence_snippet": "OrderFulfillmentService.tryEnqueue(confirmedOrder._id.toString()).catch(",
+      "is_test": false
+    },
+    {
+      "caller_file": "src/modules/signing/services/signing.service.ts",
+      "caller_symbol": null,
+      "callee_file": "src/modules/core/services/order-fulfillment.service.ts",
+      "callee_symbol": "OrderFulfillmentService.tryEnqueue",
+      "kind": "calls_static",
+      "evidence_line": 1254,
+      "evidence_snippet": "await OrderFulfillmentService.tryEnqueue(sig.order.toString(), {",
+      "is_test": false
+    }
+  ],
+  "test_callers": [],
+  "callees": [],
+  "limitations": [
+    "Call edges are static snapshot from last typescript ingest (CALLS_STATIC/INSTANCE).",
+    "Dynamic import, DI, and string-based dispatch are not observed.",
+    "Symbol match is string equality / Class.method suffix — not type-checked."
+  ]
+}
